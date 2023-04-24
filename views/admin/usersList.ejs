@@ -94,15 +94,19 @@
                                     <td class="text-end">
                                         <% if (users.blocked) { %>
                                             <a href="/admin/unblockUser/<%= users.id %>">
-                                                <button class="btn btn-warning rounded font-sm mt-15">
+                                                <button
+                                                onclick="return confirm('Are you want to unblock <%= users.name %>?')" 
+                                                class="btn btn-warning rounded font-sm mt-15">
                                                     Unblock
                                                 </button>
                                             </a>
                                             <% } else { %>
                                                 <a href="/admin/blockUser/<%= users.id %>">
-                                                    <button class="btn btn-danger rounded font-sm mt-15">
-                                                        Block
-                                                    </button>
+                                                <button id="blockButton"
+                                                    onclick="return confirm('Are you want to block <%= users.name %>?')"
+                                                    class="btn btn-danger rounded font-sm mt-15">
+                                                    Block
+                                                </button>
                                                 </a>
                                                 <% } %>
                                     </td>
@@ -133,5 +137,25 @@
             </nav>
         </div>
     </section> <!-- content-main end// -->
+    <!-- <script>
+        document
+            .getElementById('blockButton')
+            .addEventListener('click', (e) => {
+                e.preventDefault();
 
+                swal({
+                    title: "Are you sure?",
+                    text: 'you are about to block this user',
+                    icon: 'warning',
+                    buttons: true,
+                    dangerMode: true
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        window.location.href = '/admin/blockUser/<%=users.id%>'
+                    } else {
+                        swal('cancelled')
+                    }
+                });
+            })
+    </script> -->
     <%- include('../partials/adminFooter') %>

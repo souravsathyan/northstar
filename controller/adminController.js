@@ -61,8 +61,11 @@ module.exports = {
             adminHelpers.blockUser(req.params.id).then((response)=>{
                 res.redirect('/admin/usersList')
             })
+            .catch((error)=>{
+                console.error(error)
+            })
         } catch (error) {
-            
+            console.error(error);
         }
     },
     getUnblockUser:(req,res)=>{

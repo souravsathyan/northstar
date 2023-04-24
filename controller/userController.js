@@ -19,9 +19,13 @@ module.exports = {
                 if (!response.isUserExists) {
                     res.redirect('/')
                 } else {
-    
-                    console.log('******************************************USER EXISTS****************************************');
-                    res.render('user/userSignUp', { oldUser: true })
+                    req.flash('error')
+                    const message = 'You are an existing user please Login '
+                    console.log('***USER EXISTS***');
+                    res.render('user/userSignUp', {
+                         oldUser: true,
+                        message:message
+                        })
                 }
             })
         } catch (error) {
@@ -46,11 +50,18 @@ module.exports = {
                     res.render('user/index', { user })
                 } else if(response.blocked){
                     req.flash('error')
+                    const message = 'you are blocked'
                     res.render('user/userLogin',{
                         userBlocked:true,
+                        message:message
                     })
                 } else {
-                    res.redirect('/userLogin')
+                    req.flash("error")
+                    const message = 'Incorrect credentials. Please try again'
+                    res.render('user/userLogin',{
+                        credentialErr : true,
+                        message:message
+                    })
                 }
             } catch (error) {
                 console.error(error);

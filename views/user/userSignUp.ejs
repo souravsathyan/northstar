@@ -7,15 +7,15 @@
             <div class="col-md-6 m-auto">
                 <div class="container mt-5 pl-5">
                     <h2 class="text-center">Sign Up</h2>
-                    <% var oldUser=oldUser %>
-                        <% if (oldUser) { %>
-                            <div>
-                                <p class="text center" style="color: red;">
-                                    email already exists
-                                </p>
-                            </div>
+                    <% var oldUser %>
+                    <% var message %>
+                    
+                        <% if (oldUser ) { %>
+                                <div id="flashMessage" class="alert alert-danger">
+                                    <%=message %></div>
                             <% } %>
-                                <form action="/userSignUpPost" method="post" id="form">
+                            
+                                <form action="/userSignUpPost" method="post" id="form" onsubmit="return submitForm(this);">
                                     <div class="form-group ">
                                         <label for="">Name</label>
                                         <input type="text" class="form-control" name="Name"
@@ -41,14 +41,13 @@
                                         <label for="">Password</label>
                                         <input type="password" class="form-control" name="Password"
                                             placeholder="Password" id="password" onkeyup="validateConfirmPassword()">
-                                        <span  id="password-error"></span>
+                                        <span id="password-error"></span>
                                     </div>
                                     <div class="form-group">
                                         <label for="">confirm Password</label>
                                         <input type="password" class="form-control" id="cnfrm-password"
-                                             placeholder="Confirm password"
-                                            onkeyup="validateConfirmPassword()">
-                                        <span id="pass-error" ></span>
+                                            placeholder="Confirm password" onkeyup="validateConfirmPassword()">
+                                        <span id="pass-error"></span>
                                         <a href="/login">Already have a Account?</a>
                                         <button type="submit" class="btn btn-primary float-right">Submit</button>
                                     </div>
@@ -82,7 +81,7 @@
                     validateConfirmPassword(passwordValue.value, cfmPassword.value)
                 })
 
-                passwordValue.addEventListener('keyup',()=>{
+                passwordValue.addEventListener('keyup', () => {
                     validateConfirmPassword(passwordValue.value, cfmPassword.value)
                 })
 
@@ -146,19 +145,37 @@
                     const passError = document.getElementById('password-error')
                     if (password == confirmPassword) {
                         cfrmPass.innerHTML = 'password match';
-                        passError.innerHTML='password match'
-                        passError.style.color='green'
+                        passError.innerHTML = 'password match'
+                        passError.style.color = 'green'
                         cfrmPass.style.color = 'green';
                     } else {
                         cfrmPass.innerHTML = 'password is not matching';
-                        passError.innerHTML='password is not matching'
-                        passError.style.color='red'
+                        passError.innerHTML = 'password is not matching'
+                        passError.style.color = 'red'
                         cfrmPass.style.color = 'red';
                     }
                 }
 
+                function submitForm(form){
+                    swal({
+                        title:"Are you sure?",
+                        text:"This form will be submitted",
+                        icon:"warning",
+                        buttons:true,
+                        dangerMode:true
+                    })
+                    .then((isOkay)=>{
+                        if(isOkay){
+                            form.submit();
+                        }
+                    })
+                    return false
+                }
 
-
+                //disappearing the flash message
+                    setTimeout(() => {
+                        document.getElementById('flashMessage').style.display = 'none';
+                    }, 3000);
 
 
 

@@ -5,12 +5,13 @@
             <div class="col-md-6 m-auto bg-light border rounded myFormBody">
                 <div class="container mt-5 pl-5  ">
                     <h2 class="text-center">Login</h2>
-                    <% var userBlocked=userBlocked %>
-                    <% var error = "You are blocked. PLease contact the admin " %>
-                        <% if (userBlocked ) { %>
-                                <div  class="alert alert-danger">
+                    <% var userBlocked%>
+                    <% var credentialErr%>
+                    
+                        <% if (userBlocked || credentialErr ) { %>
+                                <div  class="alert alert-danger " id="flashMessage">
                                     <i class="fa-solid fa-triangle-exclamation" style="color: #ff0000;"></i>
-                                    <%=error %></div>
+                                    <%=message %></div>
                             <% } %>
                                 <form action="/userLoginPost" method="post" id="form">
                                     <div class="mb-3">
@@ -99,6 +100,11 @@
                     </script>
                 <!-- Form Validation ends -->
 
+                <script>
+                    setTimeout(() => {
+                        document.getElementById('flashMessage').style.display = 'none';
+                    }, 3000); // 3000 milliseconds = 3 seconds
+                </script>
 
 
 
