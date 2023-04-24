@@ -1,0 +1,5 @@
+<% var userBlocked=userBlocked %>
+<% var error = error %>
+    <% if (userBlocked && error) { %>
+            <div class="alert alert-danger"><%=error %></div>
+        <% } %>

@@ -1,0 +1,22 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.myForm.success input {
+  border-color: #09c372;
+}
+
+.myForm.error input {
+  border-color: #ff3860;
+}
+
+.myForm .error {
+  color: #ff3860;
+  font-size: 9px;
+  height: 13px;
+}

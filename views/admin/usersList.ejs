@@ -1,0 +1,137 @@
+<%- include('../partials/adminHeader') %>
+
+    <section class="content-main">
+        <div class="content-header">
+            <h2 class="content-title">Users list</h2>
+            <div>
+                <a href="#" class="btn btn-primary"><i class="material-icons md-plus"></i> Create new</a>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <header class="card-header">
+                <div class="row gx-3">
+                    <!-- <div class="col-lg-4 col-md-6 me-auto">
+                        <input type="text" placeholder="Search..." class="form-control">
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-6">
+                        <select class="form-select">
+                            <option>Status</option>
+                            <option>Active</option>
+                            <option>Disabled</option>
+                            <option>Show all</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-6">
+                        <select class="form-select">
+                            <option>Show 20</option>
+                            <option>Show 30</option>
+                            <option>Show 40</option>
+                        </select>
+                    </div> -->
+                </div>
+            </header> <!-- card-header end// -->
+
+            <!-- table starts  -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+
+                                <th class="text-end"> Action </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% users.forEach((users,index)=> { %>
+
+                                <tr>
+                                    <td>
+                                        <%= index+1 %>
+                                    </td>
+                                    <td width="40%">
+                                        <a href="#" class="itemside">
+                                            <div class="left">
+                                                <img src="assets/imgs/people/avatar1.jpg" class="img-sm img-avatar"
+                                                    alt="Userpic">
+                                            </div>
+                                            <div class="info pl-3">
+                                                <h6 class="mb-0 title">
+                                                    <%= users.name %>
+                                                </h6>
+                                            </div>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <div class="info">
+                                            <h6 class="mb-0 title">
+                                                <%= users.email %>
+                                            </h6>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="info">
+                                            <h6 class="mb-0 title">
+                                                <%= users.phone %>
+                                            </h6>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <% if (!users.blocked) { %>
+                                            <span class="badge rounded-pill alert-success">
+                                                active
+                                            </span>
+                                            <% } else { %>
+                                                <span class="badge rounded-pill alert-success">
+                                                    inActive
+                                                </span>
+                                                <% } %>
+                                    </td>
+                                    <td class="text-end">
+                                        <% if (users.blocked) { %>
+                                            <a href="/admin/unblockUser/<%= users.id %>">
+                                                <button class="btn btn-warning rounded font-sm mt-15">
+                                                    Unblock
+                                                </button>
+                                            </a>
+                                            <% } else { %>
+                                                <a href="/admin/blockUser/<%= users.id %>">
+                                                    <button class="btn btn-danger rounded font-sm mt-15">
+                                                        Block
+                                                    </button>
+                                                </a>
+                                                <% } %>
+                                    </td>
+                                    <td class="text-end">
+                                        <button class="btn btn-brand rounded font-sm mt-15">
+                                            view Details
+                                        </button>
+                                    </td>
+                                </tr>
+                                <% }) ;%>
+
+                        </tbody>
+                    </table> <!-- table-responsive.// -->
+                </div>
+            </div> <!-- card-body end// -->
+        </div> <!-- card end// -->
+        <div class="pagination-area mt-15 mb-50">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-start">
+                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                    <li class="page-item"><a class="page-link" href="#">02</a></li>
+                    <li class="page-item"><a class="page-link" href="#">03</a></li>
+                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                    <li class="page-item"><a class="page-link" href="#">16</a></li>
+                    <li class="page-item"><a class="page-link" href="#"><i
+                                class="material-icons md-chevron_right"></i></a></li>
+                </ul>
+            </nav>
+        </div>
+    </section> <!-- content-main end// -->
+
+    <%- include('../partials/adminFooter') %>

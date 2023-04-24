@@ -1,0 +1,170 @@
+<%- include('../partials/userHeader') %>
+
+    <body>
+
+
+        <div class="row">
+            <div class="col-md-6 m-auto">
+                <div class="container mt-5 pl-5">
+                    <h2 class="text-center">Sign Up</h2>
+                    <% var oldUser=oldUser %>
+                        <% if (oldUser) { %>
+                            <div>
+                                <p class="text center" style="color: red;">
+                                    email already exists
+                                </p>
+                            </div>
+                            <% } %>
+                                <form action="/userSignUpPost" method="post" id="form">
+                                    <div class="form-group ">
+                                        <label for="">Name</label>
+                                        <input type="text" class="form-control" name="Name"
+                                            placeholder="Enter Your Name" id="name">
+
+                                        <span class=" text-danger" id="name-error"></span>
+
+
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="">Email Address</label>
+                                        <input type="text" class="form-control" name="Email" placeholder="Enter email"
+                                            id="email">
+                                        <span class=" text-danger" id="email-error"></span>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="">Mobile Number</label>
+                                        <input type="text" class="form-control" name="Mobile"
+                                            placeholder="Enter your Mobile number" id="mobile">
+                                        <span class=" text-danger" id="mob-error"></span>
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="">Password</label>
+                                        <input type="password" class="form-control" name="Password"
+                                            placeholder="Password" id="password" onkeyup="validateConfirmPassword()">
+                                        <span  id="password-error"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">confirm Password</label>
+                                        <input type="password" class="form-control" id="cnfrm-password"
+                                             placeholder="Confirm password"
+                                            onkeyup="validateConfirmPassword()">
+                                        <span id="pass-error" ></span>
+                                        <a href="/login">Already have a Account?</a>
+                                        <button type="submit" class="btn btn-primary float-right">Submit</button>
+                                    </div>
+                                </form>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../partials/userFooter') %>
+            <script>
+                const form = document.getElementById('form')
+
+                form.addEventListener('submit', (event) => {
+                    validateForm();
+
+
+                    const nameError = document.getElementById('name-error');
+                    const emailError = document.getElementById('email-error');
+                    const mobError = document.getElementById('mob-error');
+                    const passError = document.getElementById('password-error');
+
+                    if (nameError.innerHTML !== '' || emailError.innerHTML !== '' || mobError.innerHTML !== '' || passError.innerHTML !== '') {
+                        event.preventDefault(); // Prevent form submission only when there are validation errors
+                    }
+                });
+
+                const passwordValue = document.getElementById('password')
+                const cfmPassword = document.getElementById('cnfrm-password')
+
+                cfmPassword.addEventListener('keyup', () => {
+                    validateConfirmPassword(passwordValue.value, cfmPassword.value)
+                })
+
+                passwordValue.addEventListener('keyup',()=>{
+                    validateConfirmPassword(passwordValue.value, cfmPassword.value)
+                })
+
+
+                function validateForm() {
+                    //name Validation
+                    var nameValue = document.getElementById("name").value;
+                    const nameError = document.getElementById('name-error')
+
+                    if (nameValue.trim() == '') {
+                        nameError.innerHTML = 'Name is required'
+                        // setError(name, 'name acnnot be empty')
+                    } else if (!nameValue.match(/^[a-zA-Z0-9_]+$/)) {
+                        nameError.innerHTML = "Write valid name";
+                    } else if (nameValue.match(/^[a-zA-Z0-9_]+$/)) {
+                        nameError.innerHTML = "";
+                    }
+
+                    //emial Validation
+                    var emailValue = document.getElementById("email").value;
+                    const emailError = document.getElementById('email-error')
+
+                    if (emailValue.trim() == "") {
+                        emailError.innerHTML = 'emial id is reqired'
+                    } else if (!emailValue.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                        emailError.innerHTML = 'type a valid emial id'
+                    } else if (emailValue.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                        emailError.innerHTML = "";
+                    }
+
+                    //mobile validation
+                    var mobValue = document.getElementById("mobile").value;
+                    const mobError = document.getElementById('mob-error')
+
+                    if (mobValue.trim() == "") {
+                        mobError.innerHTML = 'mobile number is reqired'
+                    } else if (!mobValue.match(/^\d{10}$/)) {
+                        mobError.innerHTML = 'type a valid mobile number'
+                    } else if (mobValue.match(/^\d{10}$/)) {
+                        mobError.innerHTML = "";
+                    }
+
+                    //password validation
+                    var passwordValue = document.getElementById('password').value
+                    const passError = document.getElementById('password-error')
+                    // const cfrmPass = document.getElementById('pass-error')
+                    // const cfrmPassValue = document.getElementById('cnfrm-password').value
+
+                    if (passwordValue.trim() == "") {
+                        passError.innerHTML = 'please enter a password'
+                    } else if (!passwordValue.match(/^(?=.*[\W_])[\w\W]|^[a-zA-Z]|^.{8,}$/)) {
+                        passError.innerHTML = 'please enter a valid password please'
+                    } else if (passwordValue.match(/^(?=.*[\W_])[\w\W]|^[a-zA-Z]|^.{8,}$/)) {
+                        passError.innerHTML = ''
+                    }
+
+                }
+
+                function validateConfirmPassword(password, confirmPassword) {
+                    const cfrmPass = document.getElementById('pass-error')
+                    const passError = document.getElementById('password-error')
+                    if (password == confirmPassword) {
+                        cfrmPass.innerHTML = 'password match';
+                        passError.innerHTML='password match'
+                        passError.style.color='green'
+                        cfrmPass.style.color = 'green';
+                    } else {
+                        cfrmPass.innerHTML = 'password is not matching';
+                        passError.innerHTML='password is not matching'
+                        passError.style.color='red'
+                        cfrmPass.style.color = 'red';
+                    }
+                }
+
+
+
+
+
+
+            </script>
+
+
+    </body>
+
+    </html>
