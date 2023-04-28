@@ -12,6 +12,9 @@
     <link href="assets/css/main.css" rel="stylesheet" type="text/css" />
     <!-- sweetalert -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    //adding dataTables
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
 
 </head>
 
@@ -184,13 +187,13 @@
                     </li>
                     <li class="dropdown nav-item">
                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
-                            aria-expanded="false"> 
-                            <% var myAdmin = myAdmin %>
-                            <% if (myAdmin) { %>
-                                <%= myAdmin.name %>
-                                    <% } else { %>
-                                        Account
-                                        <% } %>
+                            aria-expanded="false">
+                            <% var myAdmin=myAdmin %>
+                                <% if (myAdmin) { %>
+                                    <%= myAdmin.name %>
+                                        <% } else { %>
+                                            Account
+                                            <% } %>
 
                         </a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">

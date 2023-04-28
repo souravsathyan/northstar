@@ -5,16 +5,14 @@
             <div class="col-md-6 m-auto bg-light border rounded myFormBody">
                 <div class="container mt-5 pl-5  ">
                     <h2 class="text-center">Login</h2>
-                    <% var userBlocked%>
-                        <% var credentialErr%>
-                        <% var invalidOtp %>
-
-                            <% if (userBlocked || credentialErr || invalidOtp) { %>
-                                <div class="alert alert-danger fade" id="flashMessage">
-                                    <i class="fa-solid fa-triangle-exclamation" style="color: #ff0000;"></i>
-                                    <%=message %>
-                                </div>
-                                <% } %>
+                    
+                    <% if (message.length>0) { %>
+                        <div class="alert alert-danger" id="flashMessage">
+                            <i class="fa-solid fa-triangle-exclamation" style="color: #ff0000;"></i>
+                            <%=message %>
+                        </div>
+                      <% } %>
+                            
                                     <form action="/userLoginPost" method="post" id="form">
                                         <div class="mb-3">
                                             <label for="exampleInputEmail1" class="form-label">Email address</label>
@@ -100,8 +98,8 @@
                 }
 
                 setTimeout(() => {
-                    document.getElementById('flashMessage').style.display = 'none';
-                }, 3000); // 3000 milliseconds = 3 seconds
+                        document.getElementById('flashMessage').style.display = 'none';
+                    }, 5000);
                 
 
             </script>

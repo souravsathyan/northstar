@@ -12,8 +12,12 @@ module.exports = {
     //user Signup /creation
 
     userSignUp: (req, res) => {
-        let user = false
-        res.render('user/userSignUp')
+
+        res.render('user/userSignUp', {
+
+            message: req.flash('message')
+
+        })
     },
     userSignUpPost: async (req, res) => {
         console.log(req.body);
@@ -22,13 +26,9 @@ module.exports = {
                 if (!response.isUserExists) {
                     res.redirect('/')
                 } else {
-                    req.flash('error')
-                    const message = 'You are an existing user please Login '
+                    req.flash('message', 'You are an existing user please Login ')
                     console.log('***USER EXISTS***');
-                    res.render('user/userSignUp', {
-                        oldUser: true,
-                        message: message
-                    })
+                    res.redirect('/userSignUp')
                 }
             })
         } catch (error) {
@@ -40,7 +40,9 @@ module.exports = {
     //User login
 
     userLogin: (req, res) => {
-        res.render('user/userLogin')
+        res.render('user/userLogin', {
+            message: req.flash('message')
+        })
     },
 
     userLoginPost: (req, res) => {
@@ -54,19 +56,11 @@ module.exports = {
                     let user = response.user.name
                     res.render('user/index', { user })
                 } else if (response.blocked) {
-                    req.flash('error')
-                    const message = 'you are blocked'
-                    res.render('user/userLogin', {
-                        userBlocked: true,
-                        message: message
-                    })
+                    req.flash('message', 'you are blocked. PLease contact Admin')
+                    res.redirect('/userLogin')
                 } else {
-                    req.flash("error")
-                    const message = 'Incorrect credentials. Please try again'
-                    res.render('user/userLogin', {
-                        credentialErr: true,
-                        message: message
-                    })
+                    req.flash('message', 'Incorrect credentials. PLease try again')
+                    res.redirect('/userLogin')
                 }
             } catch (error) {
                 console.error(error);
@@ -85,25 +79,25 @@ module.exports = {
         res.render('user/otpLogin')
     },
 
-    postOtpMob:(req,res)=>{
+    postOtpMob: (req, res) => {
         console.log(req.body.phone);
-        const {phone}= req.body;
+        const { phone } = req.body;
         console.log(phone);
         req.session.phone = phone
-        userHelpers.sendOtp(phone).then((response)=>{
-            if(response.status){
+        userHelpers.sendOtp(phone).then((response) => {
+            if (response.status) {
                 req.session.tempUser = response.user
                 const msg = 'OTP has been Sent. Please check your Mobile'
-                res.render('user/otpVerify',{
-                    msg:msg,
-                    phone:phone
+                res.render('user/otpVerify', {
+                    msg: msg,
+                    phone: phone
                 })
-            }else{
+            } else {
                 res.render('user/userLogin')
             }
         })
     },
-    otpVerify:(req,res)=>{
+    otpVerify: (req, res) => {
         const phoneNo = req.session.phone
         const otpArray = [
             req.body.otp1,
@@ -112,22 +106,22 @@ module.exports = {
             req.body.otp4,
             req.body.otp5,
             req.body.otp6
-        ];
-        otpValues = otpArray.join('')
+        ]; //recieving the otp values in Array
+        otpValues = otpArray.join('')//transforming array to string
         console.log(otpValues);
-        userHelpers.otpVerification(phoneNo,otpValues).then((response)=>{
-            if(response.status){
+        userHelpers.otpVerification(phoneNo, otpValues).then((response) => {
+            if (response.status) {
                 req.session.user = req.session.tempUser
                 req.session.login = true
                 let user = req.session.user.name
                 res.render('user/index', { user })
-            }else{
+            } else {
                 req.flash('error')
-                    const message = 'Invalid Otp'
-                    res.render('user/userLogin', {
-                        invalidOtp: true,
-                        message: message
-                    })
+                const message = 'Invalid Otp'
+                res.render('user/userLogin', {
+                    invalidOtp: true,
+                    message: message
+                })
                 res.redirect('/userLogin')
             }
         })

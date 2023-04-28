@@ -3,9 +3,7 @@
     <section class="content-main">
         <div class="content-header">
             <h2 class="content-title">Users list</h2>
-            <div>
-                <a href="#" class="btn btn-primary"><i class="material-icons md-plus"></i> Create new</a>
-            </div>
+
         </div>
         <div class="card mb-4">
             <header class="card-header">
@@ -34,7 +32,7 @@
             <!-- table starts  -->
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="userTable">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -42,8 +40,9 @@
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Status</th>
+                                <th>Action</th>
 
-                                <th class="text-end"> Action </th>
+                                <th class="text-end"> Details </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -83,11 +82,11 @@
                                     <td>
                                         <% if (!users.blocked) { %>
                                             <span class="badge rounded-pill alert-success">
-                                                active
+                                                Active
                                             </span>
                                             <% } else { %>
                                                 <span class="badge rounded-pill alert-success">
-                                                    inActive
+                                                    Inactive
                                                 </span>
                                                 <% } %>
                                     </td>
@@ -95,18 +94,18 @@
                                         <% if (users.blocked) { %>
                                             <a href="/admin/unblockUser/<%= users.id %>">
                                                 <button
-                                                onclick="return confirm('Are you want to unblock <%= users.name %>?')" 
-                                                class="btn btn-warning rounded font-sm mt-15">
+                                                    onclick="return confirm('Are you want to unblock <%= users.name %>?')"
+                                                    class="btn btn-warning rounded font-sm mt-15">
                                                     Unblock
                                                 </button>
                                             </a>
                                             <% } else { %>
                                                 <a href="/admin/blockUser/<%= users.id %>">
-                                                <button id="blockButton"
-                                                    onclick="return confirm('Are you want to block <%= users.name %>?')"
-                                                    class="btn btn-danger rounded font-sm mt-15">
-                                                    Block
-                                                </button>
+                                                    <button id="blockButton"
+                                                        onclick="return confirm('Are you want to block <%= users.name %>?')"
+                                                        class="btn btn-danger rounded font-sm mt-15">
+                                                        Block
+                                                    </button>
                                                 </a>
                                                 <% } %>
                                     </td>
@@ -119,25 +118,16 @@
                                 <% }) ;%>
 
                         </tbody>
-                    </table> <!-- table-responsive.// -->
+                    </table>
+                    
+                    <!-- table-responsive.// -->
                 </div>
             </div> <!-- card-body end// -->
         </div> <!-- card end// -->
-        <div class="pagination-area mt-15 mb-50">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-start">
-                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                    <li class="page-item"><a class="page-link" href="#">02</a></li>
-                    <li class="page-item"><a class="page-link" href="#">03</a></li>
-                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                    <li class="page-item"><a class="page-link" href="#">16</a></li>
-                    <li class="page-item"><a class="page-link" href="#"><i
-                                class="material-icons md-chevron_right"></i></a></li>
-                </ul>
-            </nav>
-        </div>
+
     </section> <!-- content-main end// -->
-    <script>
+    
+    <!-- <script>
         document
             .getElementById('blockButton')
             .addEventListener('click', (e) => {
@@ -157,5 +147,5 @@
                     }
                 });
             })
-    </script>
+    </script> -->
     <%- include('../partials/adminFooter') %>

@@ -7,7 +7,7 @@ const {isAdminLoggedIn} = require('../middlewares/adminSession');
 /* GET home page. */
 router.get('/',isAdminLoggedIn,adminController.getAdminDashboard);
 
-router.get("/login",isAdminLoggedIn, adminController.getAdminLogin);
+router.get("/login",adminController.getAdminLogin);
 
 router.post('/postAdminLogin',adminController.postAdminLogin);
 

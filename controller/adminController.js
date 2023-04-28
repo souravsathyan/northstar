@@ -27,11 +27,10 @@ module.exports = {
                 req.body.email == adminCredentials.email &&
                 req.body.password == adminCredentials.password
             ) {
-                req.session.login = true
-                req.session.admin = adminCredentials
-                const myAdmin = req.session.admin
-                res.render('admin/index', { myAdmin })
-                
+                req.session.admin = true
+                res.redirect('/admin')
+            }else{
+                res.redirect('/admin/login')
             }
 
         } catch (error) {
@@ -40,9 +39,8 @@ module.exports = {
     },
 
     getAdminLogout: (req, res) => {
-        req.session.login = false;
-        req.session.admin = null;
-        res.render('admin/adminLogin')
+        req.session.admin = false;
+        res.redirect('/admin')
     },
 
     getUsersList: async (req, res) => {

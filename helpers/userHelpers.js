@@ -54,15 +54,15 @@ module.exports = {
                         else if (status) {
                             response.user = user
                             response.status = true
-                            console.log('*********************************************************************login success');
+                            console.log('login success');
                             resolve(response)
                         } else {
-                            console.log('***********************************************************************login failure1');
+                            console.log('login failure1');
                             resolve({ status: false })
                         }
                     })
                 } else {
-                    console.log('**********************************************************************************login failure2');
+                    console.log('login failure2');
                     resolve({ status: false })
                 }
             } catch (error) {

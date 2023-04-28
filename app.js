@@ -11,7 +11,7 @@ const {check, validationResult} = require('express-validator')
 const session  = require('express-session')
 const morgan = require('morgan')
 const swal = require('sweetalert')
-const flash = require('flash');
+const flash = require('connect-flash');
 
 
 
@@ -50,6 +50,11 @@ app.use(
 )
 //inintializing flash middleware
 app.use(flash());
+app.use((req,res,next)=>{
+  res.locals.message = req.session.message;
+  delete req.session.message
+  next()
+})
 
 
 app.use('/admin', indexRouter);
