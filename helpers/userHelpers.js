@@ -1,6 +1,7 @@
 const connection = require('../config/connection');
 const bcrypt = require('bcrypt');
 const usersData = require('../model/userModel');
+const twilio = require('../api/twilio')
 
 module.exports = {
     //user sign up 
@@ -44,18 +45,18 @@ module.exports = {
             try {
                 if (user) {
                     bcrypt.compare(userData.Password, user.password).then((status) => {
-                        if(user.blocked){
-                            
+                        if (user.blocked) {
+
                             resolve({
-                                blocked:true
+                                blocked: true
                             })
-                        } 
+                        }
                         else if (status) {
                             response.user = user
                             response.status = true
                             console.log('*********************************************************************login success');
                             resolve(response)
-                        } else{
+                        } else {
                             console.log('***********************************************************************login failure1');
                             resolve({ status: false })
                         }
@@ -69,6 +70,47 @@ module.exports = {
             }
 
         })
+    },
+
+    //sending Otp
+    sendOtp: (phoneNo) => {
+
+        return new Promise(async (resolve, reject) => {
+            try {
+                let response = {}
+                const existingUser = await usersData.findOne({ phone: phoneNo });
+                if (!existingUser) {
+                    response.status = false
+                    resolve(response);
+                } else {
+                    twilio.sendOTP(phoneNo)
+                    response.status = true
+                    response.user = existingUser
+                    resolve(response)
+                }
+            } catch (error) {
+                console.log(error);
+                reject(error);
+            }
+        })
+    },
+
+    otpVerification: (phoneNo, otpValues) => {
+        try {
+            let response = {}
+            return new Promise(async (resolve, reject) => {
+                await twilio.verifyOtp(phoneNo, otpValues)
+                    .then((status) => {
+                        response.status = true
+                        resolve(response)
+                    })
+                    .catch((error) => {
+                        reject()
+                    })
+            })
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
 

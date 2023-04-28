@@ -1,0 +1,47 @@
+<%- include('../partials/userHeader') %>
+
+    <body>
+        <div class=" row ">
+            <div class="col-md-6 m-auto myOtpPage">
+                <div class="container height-100 d-flex justify-content-center align-items-center">
+                    <div class="position-relative">
+                        <div class="card  text-center">
+
+                         <form action="verifyOtp" method="post">
+                            <h6>Please enter the one time password <br> to verify your account</h6>
+                            <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2">
+                                <input class="m-2 text-center form-control rounded  otpLen" maxlength="1" name="otp1"
+                                    type="text" />
+                                <input class="m-2 text-center form-control rounded  otpLen" maxlength="1" name="otp2"
+                                    type="text" />
+                                <input class="m-2 text-center form-control rounded  otpLen" maxlength="1" name="otp3"
+                                    type="text" />
+                                <input class="m-2 text-center form-control rounded  otpLen" maxlength="1" name="otp4"
+                                    type="text" />
+                                <input class="m-2 text-center form-control rounded  otpLen" maxlength="1" name="otp5"
+                                    type="text" />
+                                <input class="m-2 text-center form-control rounded  otpLen" maxlength="1" name="otp6"
+                                    type="text" />
+                            </div>
+
+                            <div class="mt-4 pb-3">
+
+                                <a href="" class="p-5">
+                                    <button class="btn btn-danger px-4 validate">
+                                        Resend
+                                    </button>
+                                </a>
+
+                                <a href="">
+                                    <button type="submit" class="btn btn-success px-4 validate">Verify</button>
+                                </a>
+                            </div>
+                         </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <%- include('../partials/userFooter') %>

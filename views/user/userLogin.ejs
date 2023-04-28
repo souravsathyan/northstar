@@ -6,105 +6,108 @@
                 <div class="container mt-5 pl-5  ">
                     <h2 class="text-center">Login</h2>
                     <% var userBlocked%>
-                    <% var credentialErr%>
-                    
-                        <% if (userBlocked || credentialErr ) { %>
-                                <div  class="alert alert-danger " id="flashMessage">
-                                    <i class="fa-solid fa-triangle-exclamation" style="color: #ff0000;"></i>
-                                    <%=message %></div>
-                            <% } %>
-                                <form action="/userLoginPost" method="post" id="form">
-                                    <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">Email address</label>
-                                        <input type="text" class="form-control" name="Email" placeholder="Enter email"
-                                            id="email">
-                                        <span class=" text-danger" id="email-error"></span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="exampleInputPassword1" class="form-label">Password</label>
-                                        <input type="password" class="form-control" name="Password" id="password">
-                                        <div id="password-error" class="text-danger"></div>
-                                    </div>
+                        <% var credentialErr%>
+                        <% var invalidOtp %>
 
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <button class="btn btn-primary ms-5 btn-lg myLoginWithOTP">
-                                            <a href="" class="text-light">
-                                                Login with OTP
-                                            </a>
-                                        </button>
-                                    </div>
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <button type="submit"
-                                            class="btn btn-primary btn-lg ms-5 mt-2 mb-4 myLoginWithOTP">Submit</button>
-                                    </div>
-                                    <a href="/signup">Create New Account</a>
-                                </form>
+                            <% if (userBlocked || credentialErr || invalidOtp) { %>
+                                <div class="alert alert-danger fade" id="flashMessage">
+                                    <i class="fa-solid fa-triangle-exclamation" style="color: #ff0000;"></i>
+                                    <%=message %>
+                                </div>
+                                <% } %>
+                                    <form action="/userLoginPost" method="post" id="form">
+                                        <div class="mb-3">
+                                            <label for="exampleInputEmail1" class="form-label">Email address</label>
+                                            <input type="text" class="form-control" name="Email"
+                                                placeholder="Enter email" id="email">
+                                            <span class=" text-danger" id="email-error"></span>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="exampleInputPassword1" class="form-label">Password</label>
+                                            <input type="password" class="form-control" name="Password" id="password">
+                                            <div id="password-error" class="text-danger"></div>
+                                        </div>
+
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <button class="btn btn-primary ms-5 btn-lg myLoginWithOTP">
+                                                <a href="/otpLogin" class="text-light">
+                                                    Login with OTP
+                                                </a>
+                                            </button>
+                                        </div>
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <button type="submit"
+                                                class="btn btn-primary btn-lg ms-5 mt-2 mb-4 ">Submit</button>
+                                        </div>
+                                        <a href="/signup">Create New Account</a>
+                                    </form>
                 </div>
             </div>
         </div>
 
 
         <%- include('../partials/userFooter') %>
-       
-        <!-- Form Validations -->
-                    <script>
-                        const form = document.getElementById('form')
 
-                        form.addEventListener('submit', (event) => {
-                            event.preventDefault(); // Prevent form submission
+            <!-- Form Validations -->
+            <script>
+                const form = document.getElementById('form')
 
-                            // Call the validateForm() function to validate the form
-                            validateForm();
+                form.addEventListener('submit', (event) => {
+                    event.preventDefault(); // Prevent form submission
 
-                            // Check if there are any validation errors
-                            const emailError = document.getElementById('email-error');
-                            const passError = document.getElementById('password-error');
+                    // Call the validateForm() function to validate the form
+                    validateForm();
 
-                            if (emailError.innerHTML !== '' || passError.innerHTML !== '') {
-                                // If there are validation errors, do not submit the form
-                                return false;
-                            } else {
-                                // If there are no validation errors, submit the form
-                                form.submit();
-                            }
-                        });
+                    // Check if there are any validation errors
+                    const emailError = document.getElementById('email-error');
+                    const passError = document.getElementById('password-error');
+
+                    if (emailError.innerHTML !== '' || passError.innerHTML !== '') {
+                        // If there are validation errors, do not submit the form
+                        return false;
+                    } else {
+                        // If there are no validation errors, submit the form
+                        form.submit();
+                    }
+                });
 
 
-                        function validateForm() {
+                function validateForm() {
 
-                            //emial Validation
-                            var emailValue = document.getElementById("email").value;
-                            const emailError = document.getElementById('email-error')
+                    //emial Validation
+                    var emailValue = document.getElementById("email").value;
+                    const emailError = document.getElementById('email-error')
 
-                            if (emailValue.trim() == "") {
-                                emailError.innerHTML = 'emial id is reqired'
-                            } else if (!emailValue.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-                                emailError.innerHTML = 'type a valid emial id'
-                            } else if (emailValue.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-                                emailError.innerHTML = "";
-                            }
+                    if (emailValue.trim() == "") {
+                        emailError.innerHTML = 'emial id is reqired'
+                    } else if (!emailValue.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                        emailError.innerHTML = 'type a valid emial id'
+                    } else if (emailValue.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                        emailError.innerHTML = "";
+                    }
 
-                            //password validation
-                            var passwordValue = document.getElementById('password').value
-                            const passError = document.getElementById('password-error')
+                    //password validation
+                    var passwordValue = document.getElementById('password').value
+                    const passError = document.getElementById('password-error')
 
-                            if (passwordValue.trim() == "") {
-                                passError.innerHTML = 'please enter a password'
-                            } else if (!passwordValue.match(/^(?=.*[\W_])[\w\W]|^[a-zA-Z]|^.{8,}$/)) {
-                                passError.innerHTML = 'please enter a valid password please'
-                            } else if (passwordValue.match(/^(?=.*[\W_])[\w\W]|^[a-zA-Z]|^.{8,}$/)) {
-                                passError.innerHTML = ''
-                            }
-                        }
+                    if (passwordValue.trim() == "") {
+                        passError.innerHTML = 'please enter a password'
+                    } else if (!passwordValue.match(/^(?=.*[\W_])[\w\W]|^[a-zA-Z]|^.{8,}$/)) {
+                        passError.innerHTML = 'please enter a valid password please'
+                    } else if (passwordValue.match(/^(?=.*[\W_])[\w\W]|^[a-zA-Z]|^.{8,}$/)) {
+                        passError.innerHTML = ''
+                    }
+                }
 
-                    </script>
-                <!-- Form Validation ends -->
+                setTimeout(() => {
+                    document.getElementById('flashMessage').style.display = 'none';
+                }, 3000); // 3000 milliseconds = 3 seconds
+                
 
-                <script>
-                    setTimeout(() => {
-                        document.getElementById('flashMessage').style.display = 'none';
-                    }, 3000); // 3000 milliseconds = 3 seconds
-                </script>
+            </script>
+            <!-- Form Validation ends -->
+
+
 
 
 

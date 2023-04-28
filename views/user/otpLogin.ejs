@@ -1,0 +1,33 @@
+<%- include('../partials/userHeader') %>
+
+    <body>
+        <div class=" row ">
+            <div class="col-md-6 m-auto myOtpPage">
+                <div class="container height-100 d-flex justify-content-center align-items-center">
+                    <div class="position-relative">
+                        <div class="card  text-center">
+                            <form action="/otpLogin" method="post">
+                                <h2>OTP LOGIN</h2>
+                                <div class="form-outline mb-2 text-center">
+                                    <label for="" class="py-2">Enter your Mobile Number</label>
+                                    <input type="text" id="number" class="form-control form-control-lg " name="phone" />
+                                </div>
+
+                                <div class="mt-3 mb-4 ">
+                                    <a href="" class="p-5">
+                                        <button class="btn btn-primary px-4 validate">
+                                            Send
+                                        </button>
+                                    </a>
+                                </div>
+                            </form>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <%- include('../partials/userFooter') %>
