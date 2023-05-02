@@ -24,7 +24,7 @@ module.exports = {
         try {
             userHelpers.doSignUp(req.body).then((response) => {
                 if (!response.isUserExists) {
-                    res.redirect('/')
+                    res.redirect('/userLogin')
                 } else {
                     req.flash('message', 'You are an existing user please Login ')
                     console.log('***USER EXISTS***');
@@ -126,13 +126,5 @@ module.exports = {
             }
         })
     }
-
-
-
-
-
-
-
-
 
 }

@@ -101,8 +101,7 @@
                                             </a>
                                             <% } else { %>
                                                 <a href="/admin/blockUser/<%= users.id %>">
-                                                    <button id="blockButton"
-                                                        onclick="return confirm('Are you want to block <%= users.name %>?')"
+                                                    <button id="blockButton" data-user-id="<%= users.id %>"
                                                         class="btn btn-danger rounded font-sm mt-15">
                                                         Block
                                                     </button>
@@ -119,19 +118,22 @@
 
                         </tbody>
                     </table>
-                    
+
                     <!-- table-responsive.// -->
                 </div>
             </div> <!-- card-body end// -->
         </div> <!-- card end// -->
 
     </section> <!-- content-main end// -->
-    
+
     <!-- <script>
         document
             .getElementById('blockButton')
             .addEventListener('click', (e) => {
+                console.log(e.target);
                 e.preventDefault();
+
+                const userId = e.target.getAttribute('data-user-id')
 
                 swal({
                     title: "Are you sure?",
@@ -141,11 +143,14 @@
                     dangerMode: true
                 }).then((willDelete) => {
                     if (willDelete) {
-                        window.location.href = '/admin/blockUser/<%=users.id%>'
+                        window.location.href = '/admin/blockUser/${userId}'
                     } else {
                         swal('cancelled')
                     }
                 });
             })
     </script> -->
+   
+   
+
     <%- include('../partials/adminFooter') %>

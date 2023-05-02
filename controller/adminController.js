@@ -1,8 +1,8 @@
 const { response } = require('../app');
 const adminHelpers = require('../helpers/adminHelpers')
 const usersData = require('../model/userModel')
-
-
+const categoryHelpers = require('../helpers/categoryHelpers')
+const productHelpers = require('../helpers/productHelpers')
 
 const adminCredentials = {
     name: "Admin",
@@ -13,7 +13,15 @@ const adminCredentials = {
 module.exports = {
 
     getAdminLogin: (req, res, next) => {
-        res.render('admin/adminLogin');
+        if (req.session.admin) {
+            res.render('admin/adminLogin', {
+                admin: true
+            });
+        } else {
+            res.render('admin/adminLogin', {
+                admin: false
+            })
+        }
     },
 
     getAdminDashboard: (req, res, next) => {
@@ -29,7 +37,7 @@ module.exports = {
             ) {
                 req.session.admin = true
                 res.redirect('/admin')
-            }else{
+            } else {
                 res.redirect('/admin/login')
             }
 
@@ -45,35 +53,102 @@ module.exports = {
 
     getUsersList: async (req, res) => {
         try {
-            adminHelpers.getUsers().then((users)=>{
-                res.render('admin/usersList',{users})
+            adminHelpers.getUsers().then((users) => {
+                res.render('admin/usersList', { users })
             })
         } catch (error) {
             console.error(error);
         }
 
     },
-    getBlockUser:(req,res)=>{
-        
+    getBlockUser: (req, res) => {
         try {
-            adminHelpers.blockUser(req.params.id).then((response)=>{
+            adminHelpers.blockUser(req.params.id).then((response) => {
                 res.redirect('/admin/usersList')
+                // res.status(200).json({ message: 'User has been blocked' });
             })
-            .catch((error)=>{
-                console.error(error)
-            })
+                .catch((error) => {
+                    console.error(error)
+                    // res.status(500).json({ error: 'An error occurred while blocking the user' });
+                })
         } catch (error) {
             console.error(error);
+            // res.status(500).json({ error: 'An error occurred while blocking the user' });
         }
     },
-    getUnblockUser:(req,res)=>{
+    getUnblockUser: (req, res) => {
         try {
-            adminHelpers.unblockUser(req.params.id).then((response)=>{
+            adminHelpers.unblockUser(req.params.id).then((response) => {
                 res.redirect('/admin/usersList')
             })
         } catch (error) {
-            
+
         }
-    }
+    },
+
+    //***********CATEGORY MANAGEMENT***** 
+    //getting category
+    getCategory: (req, res) => {
+        try {
+            categoryHelpers.getAllCategory()
+                .then((category) => {
+                    res.render('admin/categories', { category })
+                })
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    //creating category
+    createCategory: (req, res) => {
+        console.log(req.body);
+        try {
+            categoryHelpers.addCategory(req.body)
+                .then((response) => {
+                    console.log(response);
+                    res.redirect('/admin/getCategories')
+                })
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    //deleting category
+    getDeleteCategory: (req, res) => {
+        categoryHelpers.deleteCategory(req.params.id)
+            .then((response) => {
+                res.redirect('/admin/getCategories')
+            })
+    },
+
+    //**********PRODUCT MANAGEMENT ******/
+    //getting product listing page
+    getProductList: (req, res) => {
+        // console.log('inprod**********');
+        productHelpers.getProducts()
+        .then((products)=>{
+            console.log(products.category);
+            res.render('admin/productsList',{
+                products:products
+            })
+        })
+    },
+    //getting add product page
+    getAddProduct: (req, res) => {
+        categoryHelpers.getAllCategory()
+            .then((category) => {
+                res.render('admin/addProduct', {
+                    category: category
+                })
+            })
+    },
+    //creating product
+    postAddProduct: (req, res) => {
+        console.log(req.body);
+        productHelpers.addProduct(req.body,req.file)
+        .then((response)=>{
+            res.redirect('/admin/addProduct')
+        })
+        
+    },
+
 
 }

@@ -1,0 +1,100 @@
+<%- include('../partials/adminHeader') %>
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Categories </h2>
+
+            </div>
+
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+
+                        <form action="/admin/addCategory" method="post">
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Name</label>
+                                <input type="text" placeholder="Type here" class="form-control" id="product_name"
+                                    name="catName" />
+                            </div>
+                            <!-- <div class="mb-4">
+                                    <label for="product_slug" class="form-label">Slug</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="product_slug" />
+                                </div> -->
+                            <!-- <div class="mb-4">
+                                    <label class="form-label">Parent</label>
+                                    <select class="form-select">
+                                        <option>Clothes</option>
+                                        <option>T-Shirts</option>
+                                    </select>
+                                </div> -->
+                            <div class="mb-4">
+                                <label class="form-label">Description</label>
+                                <textarea placeholder="Type here" class="form-control" name="catDescription"></textarea>
+                            </div>
+                            <div class="d-grid">
+                                <button class="btn btn-primary" type="submit">Create category</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="table-responsive">
+                            <table class="table " id="categoryTable">
+                                <thead>
+                                    <tr>
+
+                                        <th>No</th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <!-- <th>Slug</th>
+                                            <th>Order</th> -->
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% category.forEach((category,index)=> { %>
+
+                                        <tr>
+                                            <td>
+                                                <%= index+1 %>
+                                            </td>
+                                            <td><b>
+                                                    <%= category.name %>
+                                                </b></td>
+                                            <td class="fs-6">
+                                                <%= category.description %>
+                                            </td>
+                                            <td width="20%">
+
+                                                <button class="btn btn-sm btn-brand rounded  btn-warning"
+                                                    style="margin-right: 15px;" ">Edit</button>
+
+                                                <a href="/admin/deleteCategory/<%= category.id %>">
+                                                    <button id=" delete-category"
+                                                    class="btn btn-sm rounded btn-danger">Delete</button>
+                                                </a>
+                                            </td>
+                                            <!-- <td>/men</td>
+                                            <td>1</td> -->
+                                            <!-- <td class="text-end">
+                                                <div class="dropdown">
+                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="#">View detail</a>
+                                                        <a class="dropdown-item" href="#">Edit info</a>
+                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
+                                                    </div>
+                                                </div> <!-- dropdown //end -->
+                                            <!-- </td>  -->
+                                        </tr>
+                                        <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> <!-- .col// -->
+                </div> <!-- .row // -->
+            </div> <!-- card body .// -->
+        </div> <!-- card .// -->
+    </section> <!-- content-main end// -->
+    <%- include('../partials/adminFooter') %>

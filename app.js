@@ -12,6 +12,7 @@ const session  = require('express-session')
 const morgan = require('morgan')
 const swal = require('sweetalert')
 const flash = require('connect-flash');
+const multer = require('multer')
 
 
 
