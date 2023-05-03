@@ -5,8 +5,7 @@ const {isUserLogin,userAuthenticationCheck} = require('../middlewares/userSessio
 
 
 /* GET users listing. */
-router.get('/',userAuthenticationCheck,userController.userHome );
-
+router.get('/',userController.userHome );
 router.get('/landingPage',userController.landingPage)
 
 //<user signUp>

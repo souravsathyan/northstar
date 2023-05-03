@@ -17,9 +17,6 @@ const productSchema = new mongoose.Schema({
     type:Number,
     required:true
    },
-   prodPromoPrice:{
-    type:Number,
-   },
    prodQuantity:{
     type:Number
    },

@@ -13,7 +13,7 @@ const morgan = require('morgan')
 const swal = require('sweetalert')
 const flash = require('connect-flash');
 const multer = require('multer')
-
+const nocache = require('nocache')
 
 
 
@@ -39,8 +39,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'uploads')));
 
 //initializing session
+app.use(nocache())
 app.use(
   session({
     secret:"key",

@@ -86,8 +86,7 @@
                                             <th>Description</th>
                                             <th>Brand</th>
                                             <th>Category</th>
-                                            <th>Price</th>
-                                            <th>Discounted Price</th>
+                                            <th>Price</th>                                          
                                             <th>Qty</th>
                                             <th>Color</th>
                                             <th>Size</th>
@@ -104,7 +103,8 @@
                                                 <td >
                                                     <a href="#" class="itemside">
                                                         <div class="left">
-                                                            <img src="assets/imgs/people/avatar1.jpg" class="img-sm img-avatar"
+                                                            <% console.log(products.prodImage) %>
+                                                            <img src="/<%= products.prodImage %>" class="img-sm img-avatar"
                                                                 alt="Userpic">
                                                         </div>
                                                         
@@ -134,7 +134,7 @@
                                                 <td>
                                                     <div class="info">
                                                         <h6 class="mb-0 title">
-                                                            <% console.log(products); %>
+                                                            
                                                             <%= products.category[0].name %>
                                                         </h6>
                                                     </div>
@@ -146,13 +146,7 @@
                                                         </h6>
                                                     </div>
                                                 </td>
-                                                <td>
-                                                    <div class="info">
-                                                        <h6 class="mb-0 title">
-                                                            <%= products.prodPromoPrice %>
-                                                        </h6>
-                                                    </div>
-                                                </td>
+                                               
                                                 <td>
                                                     <div class="info">
                                                         <h6 class="mb-0 title">
@@ -183,17 +177,16 @@
                                                             </span> -->
                                                 </td>
                                                 <td >
-                                                        <!-- <a href="/admin/unblockUser/">
+                                                        <a href="/admin/editProduct/<%= products._id %>">
                                                             <button
-                                                                onclick="return confirm('Are you want to unblock ?')"
                                                                 class="btn btn-warning rounded font-sm ">
-                                                                Unblock
+                                                                Edit
                                                             </button>
-                                                        </a> -->
-                                                            <a href="">
-                                                                <button id="blockButton" data-user-id=""
+                                                        </a>
+                                                            <a href="/admin/deleteProduct/<%=products._id%>">
+                                                                <button 
                                                                     class="btn btn-danger rounded font-sm ">
-                                                                    Block
+                                                                    Delete
                                                                 </button>
                                                             </a>
                                                            

@@ -1,12 +1,21 @@
 const userHelpers = require('../helpers/userHelpers');
 const usersData = require('../model/userModel');
+const products = require('../model/productModel')
 module.exports = {
-    userHome: (req, res, next) => {
-        res.render('user/index');
+    userHome: async (req, res, next) => {
+        if(req.session.user){
+            let productList=[]
+            productList = await products.find()
+            let user = req.session.user.name
+            console.log(productList);
+            res.render('user/index',{ user,productList })
+        }else{
+            res.redirect('/landingPage')
+        }
     },
 
     landingPage: (req, res) => {
-        res.render('user/index')
+        res.render('user/landingPage')
     },
 
     //user Signup /creation
@@ -38,7 +47,6 @@ module.exports = {
     },
 
     //User login
-
     userLogin: (req, res) => {
         res.render('user/userLogin', {
             message: req.flash('message')
@@ -53,8 +61,8 @@ module.exports = {
                 if (response.status) {
                     req.session.login = true
                     req.session.user = response.user
-                    let user = response.user.name
-                    res.render('user/index', { user })
+                    res.redirect('/')
+                    console.log('kkkk');
                 } else if (response.blocked) {
                     req.flash('message', 'you are blocked. PLease contact Admin')
                     res.redirect('/userLogin')
@@ -73,6 +81,7 @@ module.exports = {
         res.redirect("/");
     },
 
+
     //:::::OTP LOGIN:::://
 
     getOtpLogin: (req, res) => {
@@ -80,9 +89,8 @@ module.exports = {
     },
 
     postOtpMob: (req, res) => {
-        console.log(req.body.phone);
+
         const { phone } = req.body;
-        console.log(phone);
         req.session.phone = phone
         userHelpers.sendOtp(phone).then((response) => {
             if (response.status) {
@@ -90,10 +98,10 @@ module.exports = {
                 const msg = 'OTP has been Sent. Please check your Mobile'
                 res.render('user/otpVerify', {
                     msg: msg,
-                    phone: phone
                 })
             } else {
-                res.render('user/userLogin')
+                const msg = 'enter a valid mobile number'
+                res.render('user/otpLogin',{msg})
             }
         })
     },
@@ -110,11 +118,11 @@ module.exports = {
         otpValues = otpArray.join('')//transforming array to string
         console.log(otpValues);
         userHelpers.otpVerification(phoneNo, otpValues).then((response) => {
+            console.log(response+"*****************************");
             if (response.status) {
                 req.session.user = req.session.tempUser
                 req.session.login = true
-                let user = req.session.user.name
-                res.render('user/index', { user })
+                res.redirect('/')
             } else {
                 req.flash('error')
                 const message = 'Invalid Otp'
@@ -122,7 +130,7 @@ module.exports = {
                     invalidOtp: true,
                     message: message
                 })
-                res.redirect('/userLogin')
+                
             }
         })
     }

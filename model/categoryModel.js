@@ -3,10 +3,10 @@ const mongoose = require('mongoose')
 const categoryModel = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+       
     }, description: {
         type: String,
-        required: true
+       
     },
     status: {
         type: Boolean,

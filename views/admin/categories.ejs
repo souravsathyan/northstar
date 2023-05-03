@@ -12,11 +12,14 @@
                 <div class="row">
                     <div class="col-md-3">
 
-                        <form action="/admin/addCategory" method="post">
+                        <form action="/admin/addCategory" method="post" id="catForm">
+                            <span id="catError"></span>
                             <div class="mb-4">
+
                                 <label for="product_name" class="form-label">Name</label>
                                 <input type="text" placeholder="Type here" class="form-control" id="product_name"
                                     name="catName" />
+
                             </div>
                             <!-- <div class="mb-4">
                                     <label for="product_slug" class="form-label">Slug</label>
@@ -30,8 +33,11 @@
                                     </select>
                                 </div> -->
                             <div class="mb-4">
+
                                 <label class="form-label">Description</label>
-                                <textarea placeholder="Type here" class="form-control" name="catDescription"></textarea>
+                                <textarea placeholder="Type here" class="form-control" name="catDescription"
+                                    id="textField"></textarea>
+
                             </div>
                             <div class="d-grid">
                                 <button class="btn btn-primary" type="submit">Create category</button>
@@ -67,13 +73,11 @@
                                             </td>
                                             <td width="20%">
 
-                                                <button class="btn btn-sm btn-brand rounded  btn-warning"
-                                                    style="margin-right: 15px;" ">Edit</button>
-
                                                 <a href="/admin/deleteCategory/<%= category.id %>">
                                                     <button id=" delete-category"
-                                                    class="btn btn-sm rounded btn-danger">Delete</button>
+                                                        class="btn btn-sm rounded btn-danger">Delete</button>
                                                 </a>
+
                                             </td>
                                             <!-- <td>/men</td>
                                             <td>1</td> -->
@@ -97,4 +101,38 @@
             </div> <!-- card body .// -->
         </div> <!-- card .// -->
     </section> <!-- content-main end// -->
+
+    <script>
+        const form = document.getElementById('catForm')
+        form.addEventListener('submit', (event) => {
+            event.preventDefault()
+            validateForm()
+
+            const catError = document.getElementById('catError')
+            if(catError.innerHTML!==""){
+                return false
+            }else{
+                form.submit()
+            }
+
+        })
+
+        function validateForm() {
+            const nameValue = document.getElementById('product_name').value
+            const textValue = document.getElementById('textField').value
+            const catError = document.getElementById('catError')
+
+            if (nameValue.trim() == "") {
+                catError.innerHTML = 'enter proper details'
+            }else{
+                catError.innerHTML=""
+            }
+
+            if(textValue.trim()==''){
+                catError.innerHTML='enter a valid description'
+            }else{
+                catError.innerHTML=''
+            }
+        }
+    </script>
     <%- include('../partials/adminFooter') %>

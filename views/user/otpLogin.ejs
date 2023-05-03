@@ -1,21 +1,71 @@
-<%- include('../partials/userHeader') %>
+<!-- -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--===============================================================================================-->
+    <title>Home</title>
+    <link rel="icon" type="image/png" href="images/icons/favicon.png" />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="fonts/linearicons-v1.0.0/icon-font.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/slick/slick.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/MagnificPopup/magnific-popup.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="stylesheets/util.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/main.css">
+    <script src="/node_modules/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <link href="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
+" rel="stylesheet">
+
+</head>
 
     <body>
-        <div class=" row ">
+        <div class=" row pt-5">
             <div class="col-md-6 m-auto myOtpPage">
                 <div class="container height-100 d-flex justify-content-center align-items-center">
                     <div class="position-relative">
                         <div class="card  text-center">
-                            <form action="/otpLogin" method="post">
+                            <form action="/otpLogin" method="post" id="otpForm">
                                 <h2>OTP LOGIN</h2>
+                                <% var msg %>
+                                <% if (msg) { %>
+                                    <span class="text-danger"><%= msg %></span>
+                                    <% } %>
                                 <div class="form-outline mb-2 text-center">
                                     <label for="" class="py-2">Enter your Mobile Number</label>
-                                    <input type="text" id="number" class="form-control form-control-lg " name="phone" />
+                                    <span id="mobError" class="text-danger"></span>
+                                    <input type="text" id="mobile" class="form-control form-control-lg " name="phone" >
                                 </div>
 
                                 <div class="mt-3 mb-4 ">
                                     <a href="" class="p-5">
-                                        <button class="btn btn-primary px-4 validate">
+                                        <button type="submit" class="btn btn-primary px-4 validate">
                                             Send
                                         </button>
                                     </a>
@@ -29,5 +79,137 @@
             </div>
         </div>
 
+        <script src="https://kit.fontawesome.com/1457d0b10a.js" crossorigin="anonymous"></script>
 
-        <%- include('../partials/userFooter') %>
+        <!--===============================================================================================-->
+        <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+        <!--===============================================================================================-->
+        <script src="vendor/animsition/js/animsition.min.js"></script>
+        <!--===============================================================================================-->
+        <script src="vendor/bootstrap/js/popper.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+        <!--===============================================================================================-->
+        <script src="vendor/select2/select2.min.js"></script>
+        <script>
+            $(".js-select2").each(function () {
+                $(this).select2({
+                    minimumResultsForSearch: 20,
+                    dropdownParent: $(this).next('.dropDownSelect2')
+                });
+            })
+        </script>
+        <!--===============================================================================================-->
+        <script src="vendor/daterangepicker/moment.min.js"></script>
+        <script src="vendor/daterangepicker/daterangepicker.js"></script>
+        <!--===============================================================================================-->
+        <script src="vendor/slick/slick.min.js"></script>
+        <script src="javascripts/slick-custom.js"></script>
+        <!--===============================================================================================-->
+        <script src="vendor/parallax100/parallax100.js"></script>
+        <script>
+            $('.parallax100').parallax100();
+        </script>
+        <!--===============================================================================================-->
+        <script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+        <script>
+            $('.gallery-lb').each(function () { // the containers for all your galleries
+                $(this).magnificPopup({
+                    delegate: 'a', // the selector for gallery item
+                    type: 'image',
+                    gallery: {
+                        enabled: true
+                    },
+                    mainClass: 'mfp-fade'
+                });
+            });
+        </script>
+        <!--===============================================================================================-->
+        <script src="vendor/isotope/isotope.pkgd.min.js"></script>
+        <!--===============================================================================================-->
+        <script src="
+        https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js
+        "></script>
+        <script>
+            $('.js-addwish-b2').on('click', function (e) {
+                e.preventDefault();
+            });
+    
+            $('.js-addwish-b2').each(function () {
+                var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
+                $(this).on('click', function () {
+                    swal(nameProduct, "is added to wishlist !", "success");
+    
+                    $(this).addClass('js-addedwish-b2');
+                    $(this).off('click');
+                });
+            });
+    
+            $('.js-addwish-detail').each(function () {
+                var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
+    
+                $(this).on('click', function () {
+                    swal(nameProduct, "is added to wishlist !", "success");
+    
+                    $(this).addClass('js-addedwish-detail');
+                    $(this).off('click');
+                });
+            });
+    
+            /*---------------------------------------------*/
+    
+            $('.js-addcart-detail').each(function () {
+                var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
+                $(this).on('click', function () {
+                    swal(nameProduct, "is added to cart !", "success");
+                });
+            });
+    
+        </script>
+        <!--===============================================================================================-->
+        <script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+        <script>
+            $('.js-pscroll').each(function () {
+                $(this).css('position', 'relative');
+                $(this).css('overflow', 'hidden');
+                var ps = new PerfectScrollbar(this, {
+                    wheelSpeed: 1,
+                    scrollingThreshold: 1000,
+                    wheelPropagation: false,
+                });
+    
+                $(window).on('resize', function () {
+                    ps.update();
+                })
+            });
+        </script>
+        <!--===============================================================================================-->
+        <script src="javascripts/main.js"></script>
+
+        <script>
+            const form = document.getElementById('otpForm')
+            form.addEventListener('submit',(event)=>{
+                event.preventDefault()
+
+                validateForm()
+                const mobError = document.getElementById('mobError')
+
+                if(mobError.innerHTML !== ""){
+                    return false
+                }else{
+                    form.submit()
+                }
+            })
+            
+            function validateForm() {
+                const mobValue = document.getElementById('mobile').value
+                const mobError = document.getElementById('mobError')
+                if(mobValue.trim() == ""){
+                    mobError.innerHTML='enter  mobile number'
+                }
+            }
+        </script>
+    
+    </body>
+    
+    </html>
+        

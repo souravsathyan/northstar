@@ -43,12 +43,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
 " rel="stylesheet">
 
 </head>
-
-<body>
-
     <body>
-
-
         <div class="row">
             <div class="col-md-6 m-auto">
                 <div class="container mt-5 pl-5">
@@ -61,15 +56,12 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
                         </div>
                         <% } %>
 
-                            <form action="/userSignUpPost" method="post" id="form" onsubmit="return submitForm(this);">
+                            <form action="/userSignUpPost" method="post" id="form" ">
                                 <div class="form-group ">
                                     <label for="">Name</label>
                                     <input type="text" class="form-control" name="Name" placeholder="Enter Your Name"
                                         id="name">
-
                                     <span class=" text-danger" id="name-error"></span>
-
-
                                 </div>
                                 <div class="form-group ">
                                     <label for="">Email Address</label>
@@ -92,7 +84,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
                                 <div class="form-group">
                                     <label for="">confirm Password</label>
                                     <input type="password" class="form-control" id="cnfrm-password"
-                                        placeholder="Confirm password" onkeyup="validateConfirmPassword()">
+                                        placeholder="Confirm password" >
                                     <span id="pass-error"></span>
                                 </div>
                                 <div class="form-group">
@@ -104,13 +96,12 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
             </div>
         </div>
 
-
+        <!-- form validation -->
         <script>
             const form = document.getElementById('form')
 
             form.addEventListener('submit', (event) => {
                 validateForm();
-
 
                 const nameError = document.getElementById('name-error');
                 const emailError = document.getElementById('email-error');
@@ -122,18 +113,11 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
                 }
             });
 
-            const passwordValue = document.getElementById('password')
-            const cfmPassword = document.getElementById('cnfrm-password')
-
-            cfmPassword.addEventListener('keyup', () => {
-                validateConfirmPassword(passwordValue.value, cfmPassword.value)
-            })
 
             function validateForm() {
                 //name Validation
                 var nameValue = document.getElementById("name").value;
                 const nameError = document.getElementById('name-error')
-
                 if (nameValue.trim() == '') {
                     nameError.innerHTML = 'Name is required'
                     // setError(name, 'name acnnot be empty')
@@ -146,7 +130,6 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
                 //emial Validation
                 var emailValue = document.getElementById("email").value;
                 const emailError = document.getElementById('email-error')
-
                 if (emailValue.trim() == "") {
                     emailError.innerHTML = 'emial id is reqired'
                 } else if (!emailValue.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
@@ -158,7 +141,6 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
                 //mobile validation
                 var mobValue = document.getElementById("mobile").value;
                 const mobError = document.getElementById('mob-error')
-
                 if (mobValue.trim() == "") {
                     mobError.innerHTML = 'mobile number is reqired'
                 } else if (!mobValue.match(/^\d{10}$/)) {
@@ -170,9 +152,6 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
                 //password validation
                 var passwordValue = document.getElementById('password').value
                 const passError = document.getElementById('password-error')
-                // const cfrmPass = document.getElementById('pass-error')
-                // const cfrmPassValue = document.getElementById('cnfrm-password').value
-
                 if (passwordValue.trim() == "") {
                     passError.innerHTML = 'please enter a password'
                 } else if (!passwordValue.match(/^(?=.*[\W_])[\w\W]|^[a-zA-Z]|^.{8,}$/)) {
@@ -181,55 +160,54 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
                     passError.innerHTML = ''
                 }
 
-            }
-
-            function validateConfirmPassword(password, confirmPassword) {
-                const cfrmPass = document.getElementById('pass-error')
-                const passError = document.getElementById('password-error')
-                if (password == confirmPassword) {
-                    cfrmPass.innerHTML = 'password match';
-                    passError.innerHTML = 'password match'
-                    passError.style.color = 'green'
-                    cfrmPass.style.color = 'green';
-                } else {
-                    cfrmPass.innerHTML = 'password is not matching';
-                    passError.innerHTML = 'password is not matching'
-                    passError.style.color = 'red'
-                    cfrmPass.style.color = 'red';
+                //confirm password matching
+                const cfrmError = document.getElementById('pass-error')
+                const cfrmPassValue = document.getElementById('cnfrm-password').value
+                if(cfrmPassValue.trim()!==passwordValue.trim()){
+                    cfrmError.innerHTML='password not matching'
+                    cfrmError.style.color = 'red'
+                }else if(cfrmPassValue.trim()==""){
+                    cfrmError.innerHTML='please enter password'
+                    cfrmError.style.color = 'red'
+                }else{
+                    cfrmError.innerHTML='password matched'
+                    cfrmError.style.color= 'green'
                 }
             }
 
-            function submitForm(form) {
-                const nameValue = document.getElementById("name").value;
-                const emailValue = document.getElementById("email").value;
-                const mobValue = document.getElementById("mobile").value;
-                const passwordValue = document.getElementById('password').value;
+            // onsubmit="return submitForm(this);
+            // function submitForm(form) {
+            //     const nameValue = document.getElementById("name").value;
+            //     const emailValue = document.getElementById("email").value;
+            //     const mobValue = document.getElementById("mobile").value;
+            //     const passwordValue = document.getElementById('password').value;
 
-                if (nameValue.trim() === '' || emailValue.trim() === '' || mobValue.trim() === '' || passwordValue.trim() === '') {
-                    swal.fire({
-                        title: "Please fill all fields",
-                        icon: "warning",
-                        confirmButtonText: "OK"
-                    });
-                    return false;
-                } else {
-                    swal.fire({
-                        title: "Are you sure?",
-                        text: "This form will be submitted",
-                        icon: "warning",
-                        buttons: true,
-                        dangerMode: true
-                    })
-                        .then((isOkay) => {
-                            if (isOkay) {
-                                form.submit();
-                            }
-                        });
-                    return false;
-                }
-            }
+            //     if (nameValue.trim() === '' || emailValue.trim() === '' || mobValue.trim() === '' || passwordValue.trim() === '') {
+            //         swal.fire({
+            //             title: "Please fill all fields",
+            //             icon: "warning",
+            //             confirmButtonText: "OK"
+            //         });
+            //         return false;
+            //     } else {
+            //         swal.fire({
+            //             title: "Are you sure?",
+            //             text: "This form will be submitted",
+            //             icon: "warning",
+            //             buttons: true,
+            //             dangerMode: true
+            //         })
+            //             .then((isOkay) => {
+            //                 if (isOkay) {
+            //                     form.submit();
+            //                 }
+            //             });
+            //         return false;
+            //     }
+            // }
 
             //disappearing the flash message
+            
             setTimeout(() => {
                 document.getElementById('flashMessage').style.display = 'none';
             }, 3000);
@@ -237,9 +215,9 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
 
 
         </script>
+        <!-- form validation ends -->
 
-        <script src="https://kit.fontawesome.com/1457d0b10a.js" crossorigin="anonymous"></script>
-
+       <script src="https://kit.fontawesome.com/1457d0b10a.js" crossorigin="anonymous"></script>
         <!--===============================================================================================-->
         <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
         <!--===============================================================================================-->
@@ -286,8 +264,8 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
         <script src="vendor/isotope/isotope.pkgd.min.js"></script>
         <!--===============================================================================================-->
         <script src="
-https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js
-"></script>
+        https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js
+        "></script>
         <script>
             $('.js-addwish-b2').on('click', function (e) {
                 e.preventDefault();
@@ -343,7 +321,6 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js
         </script>
         <!--===============================================================================================-->
         <script src="javascripts/main.js"></script>
-
     </body>
 
 </html>

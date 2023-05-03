@@ -3,6 +3,9 @@ const adminHelpers = require('../helpers/adminHelpers')
 const usersData = require('../model/userModel')
 const categoryHelpers = require('../helpers/categoryHelpers')
 const productHelpers = require('../helpers/productHelpers')
+const products = require('../model/productModel')
+const ObjectId = require('mongoose').Types.ObjectId
+
 
 const adminCredentials = {
     name: "Admin",
@@ -50,7 +53,7 @@ module.exports = {
         req.session.admin = false;
         res.redirect('/admin')
     },
-
+    //*********USER MANAGEMENT */
     getUsersList: async (req, res) => {
         try {
             adminHelpers.getUsers().then((users) => {
@@ -124,12 +127,12 @@ module.exports = {
     getProductList: (req, res) => {
         // console.log('inprod**********');
         productHelpers.getProducts()
-        .then((products)=>{
-            console.log(products.category);
-            res.render('admin/productsList',{
-                products:products
+            .then((products) => {
+                console.log(products.category);
+                res.render('admin/productsList', {
+                    products: products
+                })
             })
-        })
     },
     //getting add product page
     getAddProduct: (req, res) => {
@@ -143,12 +146,45 @@ module.exports = {
     //creating product
     postAddProduct: (req, res) => {
         console.log(req.body);
-        productHelpers.addProduct(req.body,req.file)
-        .then((response)=>{
-            res.redirect('/admin/addProduct')
-        })
-        
+        productHelpers.addProduct(req.body, req.file)
+            .then((response) => {
+                res.redirect('/admin/addProduct')
+            })
+
     },
+    //deleteing the product from list
+    DeleteProduct: async (req, res) => {
+        console.log(req.params.id);
+        await products.deleteOne({ _id: req.params.id })
+        res.redirect('/admin/getProducts')
+    },
+    getEditProduct: async (req, res) => {
+        try {
+            console.log('in edit prodyct******');
+            let product = await products.findById({ _id: req.params.id })
+            console.log(product);
+            let category = await categoryHelpers.getAllCategory()
+            console.log(product);
+            if (product) {
+                res.render('admin/editProduct', {
+                    product: product,
+                    category: category
+                })
+            } else {
+                res.send('error')
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    postEditProduct: (req,res)=>{
+        const body = req.body
+        const prodId = req.params.id
+        const file = req.file
+        const updatedProduct = productHelpers.postEditProduct(body,prodId,file)
+        res.redirect('/admin/getProducts')
+    }
+
 
 
 }

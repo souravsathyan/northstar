@@ -14,7 +14,7 @@ const isUserLogin = async (req, res, next) => {
 const userAuthenticationCheck = async (req, res, next) =>{
     try {
         if(req.session.user){
-            res.status(200).redirect('/index')
+            res.status(200).redirect('/')
         } else {
             next()
         }
