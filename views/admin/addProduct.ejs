@@ -17,10 +17,8 @@
 
                         <!-- ////////////// -->
                         <!-- form starts -->
-                        <form action="/admin/addProduct" 
-                        method="post" 
-                        enctype="multipart/form-data" 
-                        id="prodForm">
+                        <form action="/admin/addProduct" method="post" onsubmit="return myNewValidation()"
+                            enctype="multipart/form-data" id="prodForm">
                             <div class="mb-4">
                                 <label for="product_name" class="form-label">Product title</label>
                                 <span id="nameError" class="text-danger"></span>
@@ -31,8 +29,8 @@
                             <div class="mb-4">
                                 <label class="form-label">Full description</label>
                                 <span id="descError" class="text-danger"></span>
-                                <textarea placeholder="Type here" class="form-control" rows="4"
-                                    name="prodDescription" id="descValue"></textarea>
+                                <textarea placeholder="Type here" class="form-control" rows="4" name="prodDescription"
+                                    id="descValue"></textarea>
                             </div>
 
                             <div class="row">
@@ -42,8 +40,8 @@
                                         <label class="form-label">Brand</label>
                                         <span id="brandError" class="text-danger"></span>
                                         <div class="row gx-2">
-                                            <input placeholder="Brand" type="text" class="form-control"
-                                                name="prodBrand" id="brandValue">
+                                            <input placeholder="Brand" type="text" class="form-control" name="prodBrand"
+                                                id="brandValue">
                                         </div>
                                     </div>
                                 </div>
@@ -52,10 +50,11 @@
                                     <div class="mb-4">
                                         <label class="form-label">price</label>
                                         <span id="priceError" class="text-danger"></span>
-                                        <input placeholder="Rs" type="text" class="form-control" name="prodPrice" id="priceValue">
+                                        <input placeholder="Rs" type="text" class="form-control" name="prodPrice"
+                                            id="priceValue">
                                     </div>
                                 </div>
-                                
+
                             </div>
                             <div class="row">
                                 <div class="col-lg-4">
@@ -63,7 +62,8 @@
                                         <label class="form-label">Quantity</label>
                                         <span id="qtyError" class="text-danger"></span>
                                         <div class="row gx-2">
-                                            <input placeholder="No." type="text" class="form-control" name="prodQty" id="qtyValue">
+                                            <input placeholder="No." type="text" class="form-control" name="prodQty"
+                                                id="qtyValue">
                                         </div>
                                     </div>
                                 </div>
@@ -71,17 +71,20 @@
                                     <div class="mb-4">
                                         <label class="form-label">Color</label>
                                         <span id="colorError" class="text-danger"></span>
-                                        <input placeholder="Color" type="text" class="form-control" name="prodColor" id="colorValue">
+                                        <input placeholder="Color" type="text" class="form-control" name="prodColor"
+                                            id="colorValue">
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <label class="form-label">Size</label>
-                                    <span id="allError" class="text-danger"></span>
-                                    <select class="form-select" name="prodSize" id="allValue">
+                                    <span id="sizeError" class="text-danger"></span>
+                                    <!-- <select class="form-select" name="prodSize" id="sizeValue">
                                         <option> M </option>
                                         <option> L </option>
                                         <option> XL </option>
-                                    </select>
+                                    </select> -->
+                                    <input type="text" class="form-control" name="prodSize" id="sizeValue"
+                                        placeholder="enter size">
                                 </div>
                             </div>
 
@@ -110,7 +113,7 @@
                             </label>
                             <span id="imgError" class="text-danger"></span>
                             <input class="form-control" type="file" name="image" id="imgValue">
-                            
+
                         </div>
 
                     </div>
@@ -124,12 +127,14 @@
                             <div class="col-sm-6 mb-3">
                                 <label class="form-label">Category</label>
 
-                                <span id="catError" class="text-danger"></span>
+                                <span class="text-danger"></span>
 
-                                <select class="form-select" name="prodCategory" id="catValue">                                    
-                                    <% category.forEach(category => { %>
-                                            <option value="<%= category.id %>" id="catValue"><%= category.name %></option>                                    
-                                            <% }); %>                                    
+                                <select class="form-select" name="prodCategory">
+                                    <% category.forEach(category=> { %>
+                                        <option value="<%= category.id %>">
+                                            <%= category.name %>
+                                        </option>
+                                        <% }); %>
                                 </select>
 
                             </div>
@@ -150,94 +155,221 @@
         </div>
     </section> <!-- content-main end// -->
 
-     <!-- <script>
-        const form =document.getElementById('prodForm')
-        form.addEventListener('submit',(event)=>{
+    <!-- <script>
+        const form = document.getElementById('prodForm')
+        form.addEventListener('submit', (event) => {
             event.preventDefault()
             validateForm()
             const nameError = document.getElementById('nameError')
-            // if(nameError!==""){
-            //     return false
-            // }else{
-            //     form.submit()
-            // }
-            form.submit()
+            const descError = document.getElementById('descError')
+            const brandError = document.getElementById('brandError')
+            const priceError = document.getElementById('priceError')
+            const qtyError = document.getElementById('qtyError')
+            const colorError = document.getElementById('colorError')
+            const sizeError = document.getElementById('sizeError')
+
+
+            if (nameError.innerHTML != "" ||
+                descError.innerHTML != "" ||
+                brandError.innerHTML != "" ||
+                priceError.innerHTML != "" ||
+                qtyError.innerHTML != "" ||
+                colorError.innerHTML != "" ||
+                sizeError.innerHTML != ""
+            ) {
+
+                return false
+
+            } else {
+                form.submit()
+            }
+            // form.submit()
         })
 
         function validateForm() {
             //title validation
             const nameValue = document.getElementById('nameValue').value
-            const nameError = document.getElementById('nameError')  
-            if(nameValue.trim()==""){
+            const nameError = document.getElementById('nameError')
+            if (nameValue.trim() == "") {
                 nameError.innerHTML = 'please enter the product title'
-            }else{
-                nameError.innerHTML=""
+            } else {
+                nameError.innerHTML = ""
             }
 
             //description validation
             const descValue = document.getElementById('descValue').value
             const descError = document.getElementById('descError')
-            if(descValue.trim()==""){
+            if (descValue.trim() == "") {
                 descError.innerHTML = 'please enter the product description'
-            }else{
-                descError.innerHTML=""
+            } else {
+                descError.innerHTML = ""
             }
 
             //brand validation
             const brandValue = document.getElementById('brandValue').value
             const brandError = document.getElementById('brandError')
-            if(brandValue.trim()==""){
+            if (brandValue.trim() == "") {
                 brandError.innerHTML = 'please enter brand'
-            }else{
-                brandError.innerHTML=""
+            } else {
+                brandError.innerHTML = ""
             }
 
             //price validation
             const priceValue = document.getElementById('priceValue').value
             const priceError = document.getElementById('priceError')
-            if(priceValue.trim()==""){
-                priceError.innerHTML='enter the price'
-            }else{
-                priceError.innerHTML=""
+            if (priceValue.trim() == "") {
+                priceError.innerHTML = 'enter the price'
+            } else {
+                priceError.innerHTML = ""
             }
 
             //Qty validation
             const qtyValue = document.getElementById('qtyValue').value
             const qtyError = document.getElementById('qtyError')
-            if(qtyValue.trim()==""){
-                qtyError.innerHTML='enter quantity'
-            }else{
-                qtyError.innerHTML=""
+            if (qtyValue.trim() == "") {
+                qtyError.innerHTML = 'enter quantity'
+            } else {
+                qtyError.innerHTML = ""
             }
 
             // color Validation
             const colorValue = document.getElementById('colorValue').value
             const colorError = document.getElementById('colorError')
-            if(colorValue.trim()==""){
-                colorError.innerHTML='enter color'
-            }else{
-                colorError.innerHTML=""
+            if (colorValue.trim() == "") {
+                colorError.innerHTML = 'enter color'
+            } else {
+                colorError.innerHTML = ""
             }
 
             //size validation
             const sizeValue = document.getElementById('sizeValue').value
             const sizeError = document.getElementById('sizeError')
-            if(sizeValue.trim()==""){
-                sizeError.innerHTML='enter color'
-            }else{
-                sizeError.innerHTML=''
+            if (sizeValue.trim() == "") {
+                sizeError.innerHTML = 'enter size'
+            } else {
+                sizeError.innerHTML = ''
             }
 
             //category validation
-            const catValue = document.getElementById('catValue').value
-            const catError = document.getElementById('catError')
-            if(catValue.trim()==""){
-                catError.innerHTML='enter category'
-            }else{
-                catError.innerHTML=''
-            }
+            // const catValue = document.getElementById('catValue').value
+            // const catError = document.getElementById('catError')
+            // if (catValue.trim() == "") {
+            //     catError.innerHTML = 'enter category'
+            // } else {
+            //     catError.innerHTML = ''
+            // }
 
         }
-    </script>  -->
+    </script> -->
+    <script>
+        // const form = document.getElementById('prodForm')
+        // form.addEventListener('submit', (event) => {
+        //     event.preventDefault()
+           
+        //     // form.submit()
+        // })
+
+        function myNewValidation () {
+            validateForm()
+            const nameError = document.getElementById('nameError')
+            const descError = document.getElementById('descError')
+            const brandError = document.getElementById('brandError')
+            const priceError = document.getElementById('priceError')
+            const qtyError = document.getElementById('qtyError')
+            const colorError = document.getElementById('colorError')
+            const sizeError = document.getElementById('sizeError')
+
+
+            if (nameError.innerHTML != "" ||
+                descError.innerHTML != "" ||
+                brandError.innerHTML != "" ||
+                priceError.innerHTML != "" ||
+                qtyError.innerHTML != "" ||
+                colorError.innerHTML != "" ||
+                sizeError.innerHTML != ""
+            ) {
+
+                return false
+
+            } else {
+                form.submit()
+            }
+        }
+
+        function validateForm() {
+            //title validation
+            const nameValue = document.getElementById('nameValue').value
+            const nameError = document.getElementById('nameError')
+            if (nameValue.trim() == "") {
+                nameError.innerHTML = 'please enter the product title'
+            } else {
+                nameError.innerHTML = ""
+            }
+
+            //description validation
+            const descValue = document.getElementById('descValue').value
+            const descError = document.getElementById('descError')
+            if (descValue.trim() == "") {
+                descError.innerHTML = 'please enter the product description'
+            } else {
+                descError.innerHTML = ""
+            }
+
+            //brand validation
+            const brandValue = document.getElementById('brandValue').value
+            const brandError = document.getElementById('brandError')
+            if (brandValue.trim() == "") {
+                brandError.innerHTML = 'please enter brand'
+            } else {
+                brandError.innerHTML = ""
+            }
+
+            //price validation
+            const priceValue = document.getElementById('priceValue').value
+            const priceError = document.getElementById('priceError')
+            if (priceValue.trim() == "") {
+                priceError.innerHTML = 'enter the price'
+            } else {
+                priceError.innerHTML = ""
+            }
+
+            //Qty validation
+            const qtyValue = document.getElementById('qtyValue').value
+            const qtyError = document.getElementById('qtyError')
+            if (qtyValue.trim() == "") {
+                qtyError.innerHTML = 'enter quantity'
+            } else {
+                qtyError.innerHTML = ""
+            }
+
+            // color Validation
+            const colorValue = document.getElementById('colorValue').value
+            const colorError = document.getElementById('colorError')
+            if (colorValue.trim() == "") {
+                colorError.innerHTML = 'enter color'
+            } else {
+                colorError.innerHTML = ""
+            }
+
+            //size validation
+            const sizeValue = document.getElementById('sizeValue').value
+            const sizeError = document.getElementById('sizeError')
+            if (sizeValue.trim() == "") {
+                sizeError.innerHTML = 'enter size'
+            } else {
+                sizeError.innerHTML = ''
+            }
+
+            //category validation
+            // const catValue = document.getElementById('catValue').value
+            // const catError = document.getElementById('catError')
+            // if (catValue.trim() == "") {
+            //     catError.innerHTML = 'enter category'
+            // } else {
+            //     catError.innerHTML = ''
+            // }
+
+        }
+    </script>
 
     <%- include('../partials/adminFooter') %>

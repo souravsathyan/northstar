@@ -12,15 +12,15 @@
                 <div class="row">
                     <div class="col-md-3">
 
-                        <form action="/admin/addCategory" method="post" id="catForm">
-                            <span id="catError"></span>
-                            <div class="mb-4">
+                        <form action="/admin/addCategory" method="post" onsubmit="return validateForm()" id="catForm">
+                            <span id="catError" class="text-danger"></span>
 
+                            <div class="mb-4">
                                 <label for="product_name" class="form-label">Name</label>
                                 <input type="text" placeholder="Type here" class="form-control" id="product_name"
                                     name="catName" />
-
                             </div>
+
                             <!-- <div class="mb-4">
                                     <label for="product_slug" class="form-label">Slug</label>
                                     <input type="text" placeholder="Type here" class="form-control" id="product_slug" />
@@ -35,9 +35,9 @@
                             <div class="mb-4">
 
                                 <label class="form-label">Description</label>
-                                <textarea placeholder="Type here" class="form-control" name="catDescription"
-                                    id="textField"></textarea>
 
+                                <input type="text" placeholder="type here" class="form-control" name="catDescription"
+                                    id="textField">
                             </div>
                             <div class="d-grid">
                                 <button class="btn btn-primary" type="submit">Create category</button>
@@ -73,10 +73,10 @@
                                             </td>
                                             <td width="20%">
 
-                                                <a href="/admin/deleteCategory/<%= category.id %>">
-                                                    <button id=" delete-category"
-                                                        class="btn btn-sm rounded btn-danger">Delete</button>
-                                                </a>
+                                                <!-- <a href="/admin/deleteCategory/<%= category.id %>"> -->
+                                                <button id=" delete-category" class="btn btn-sm rounded btn-danger"
+                                                    onclick="deleteProduct('<%=category._id%>')">Delete</button>
+                                                <!-- </a> -->
 
                                             </td>
                                             <!-- <td>/men</td>
@@ -103,36 +103,49 @@
     </section> <!-- content-main end// -->
 
     <script>
-        const form = document.getElementById('catForm')
-        form.addEventListener('submit', (event) => {
-            event.preventDefault()
-            validateForm()
-
-            const catError = document.getElementById('catError')
-            if(catError.innerHTML!==""){
-                return false
-            }else{
-                form.submit()
-            }
-
-        })
-
+        //form validation
         function validateForm() {
             const nameValue = document.getElementById('product_name').value
-            const textValue = document.getElementById('textField').value
-            const catError = document.getElementById('catError')
+            const descValue = document.getElementById('textField').value
+            const error = document.getElementById('catError')
 
-            if (nameValue.trim() == "") {
-                catError.innerHTML = 'enter proper details'
-            }else{
-                catError.innerHTML=""
+            if (nameValue.trim() == "" || descValue.trim() == "") {
+                error.innerHTML = 'please fill the details'
+                return false
+            } else {
+                document.getElementById('catForm').submit()
             }
 
-            if(textValue.trim()==''){
-                catError.innerHTML='enter a valid description'
-            }else{
-                catError.innerHTML=''
-            }
+        }
+
+        //sweetAlert
+        function deleteProduct(userId) {
+            swal('are you sure you want to delete the category', {
+                title: "Are you sure?",
+                text: 'you are about to delete this',
+                icon: 'warning',
+                buttons: ["Cancel", "Delete"]
+            }).then((confirmed) => {
+                if (confirmed) {
+                    $.ajax({
+                        url: '/admin/deleteCategory/' + userId,
+                        type: 'get'
+                    }).done(res => {
+                        swal('successsfull', `done`, 'success').then(() => {
+                            location.reload();
+                        })
+                    }).fail((err) => {
+                        swal('error', `done`, 'error').then(() => {
+                            location.reload()
+                        })
+                    })
+                } else {
+                    swal('Canceleld', 'the category is not deleted', 'info')
+                }
+            })
+                .catch((error) => {
+                    swal('Error', `An error occured:${error}`, 'error')
+                })
         }
     </script>
     <%- include('../partials/adminFooter') %>

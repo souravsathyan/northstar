@@ -1,3 +1,8 @@
+<!-- <head>
+    <link href="
+    https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
+    " rel="stylesheet">
+</head> -->
 <%- include('../partials/adminHeader') %>
 
     <section class="content-main">
@@ -92,20 +97,21 @@
                                     </td>
                                     <td class="text-end">
                                         <% if (users.blocked) { %>
-                                            <a href="/admin/unblockUser/<%= users.id %>">
-                                                <button
-                                                    onclick="return confirm('Are you want to unblock <%= users.name %>?')"
-                                                    class="btn btn-warning rounded font-sm mt-15">
-                                                    Unblock
-                                                </button>
-                                            </a>
+
+                                            <button class="btn btn-warning rounded font-sm mt-15"
+                                                id="statusBtn <%= users._id %>" onclick="unblockUser('<%=users._id%>')"
+                                                type="button">
+                                                Unblock
+                                            </button>
+
                                             <% } else { %>
-                                                <a href="/admin/blockUser/<%= users.id %>">
-                                                    <button id="blockButton" data-user-id="<%= users.id %>"
-                                                        class="btn btn-danger rounded font-sm mt-15">
-                                                        Block
-                                                    </button>
-                                                </a>
+
+                                                <button id="statusBtn <%= users._id %>"
+                                                    class="btn btn-danger rounded font-sm mt-15"
+                                                    onclick="blockUser('<%=users._id%>')" type="button">
+                                                    Block
+                                                </button>
+
                                                 <% } %>
                                     </td>
                                     <td class="text-end">
@@ -126,31 +132,66 @@
 
     </section> <!-- content-main end// -->
 
-    <!-- <script>
-        document
-            .getElementById('blockButton')
-            .addEventListener('click', (e) => {
-                console.log(e.target);
-                e.preventDefault();
+    <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script> -->
 
-                const userId = e.target.getAttribute('data-user-id')
-
-                swal({
-                    title: "Are you sure?",
-                    text: 'you are about to block this user',
-                    icon: 'warning',
-                    buttons: true,
-                    dangerMode: true
-                }).then((willDelete) => {
-                    if (willDelete) {
-                        window.location.href = '/admin/blockUser/${userId}'
-                    } else {
-                        swal('cancelled')
-                    }
-                });
+    <script>
+        function blockUser(userId) {
+            swal('are you sure you want block this user', {
+                title: "Are you sure?",
+                text: 'you are about to block this user',
+                icon: 'warning',
+                buttons: ["Cancel", "Block"]
+            }).then((confirmed) => {
+                if (confirmed) {
+                    $.ajax({
+                        url: '/admin/blockUser/' + userId,
+                        type: 'get'
+                    }).done(res => {
+                        swal('successsfull', `${res.message}`, 'success').then(() => {
+                            location.reload();
+                        })
+                    }).fail((err) => {
+                        swal('error', `${err.responseJSON.message}`, 'error').then(() => {
+                            location.reload()
+                        })
+                    })
+                } else {
+                    swal('Canceleld', 'the user was not blocked', 'info')
+                }
             })
-    </script> -->
-   
-   
+                .catch((error) => {
+                    swal('Error', `An error occured:${error}`, 'error')
+                })
+        }
+        function unblockUser(userId) {
+            swal('are you sure you want unblock this user', {
+                title: "Are you sure?",
+                text: 'you are about to unblock this user',
+                icon: 'warning',
+                buttons: ["Cancel", "Un-Block"]
+            }).then((confirmed) => {
+                if (confirmed) {
+                    $.ajax({
+                        url: '/admin/unblockUser/' + userId,
+                        type: 'get'
+                    }).done(res => {
+                        swal('successsfull', `done`, 'success').then(() => {
+                            location.reload();
+                        })
+                    }).fail((err) => {
+                        swal('error', `done`, 'error').then(() => {
+                            location.reload()
+                        })
+                    })
+                } else {
+                    swal('Canceleld', 'the user was not blocked', 'info')
+                }
+            })
+                .catch((error) => {
+                    swal('Error', `An error occured:${error}`, 'error')
+                })
+        }
+    </script>
+
 
     <%- include('../partials/adminFooter') %>

@@ -45,8 +45,8 @@ app.use(express.static(path.join(__dirname, 'uploads')));
 app.use(nocache())
 app.use(
   session({
-    secret:"key",
-    cookie:{maxAge:600000},
+    secret:'key',
+    cookie:{maxAge:60000},
     saveUninitialized:false,
     resave:false
   })
@@ -62,13 +62,6 @@ app.use((req,res,next)=>{
 
 app.use('/admin', indexRouter);
 app.use('/', usersRouter);
-
-
-// app.use((req,res,next)=>{
-//   if(req.session.user && req.cookies.key){
-//       res.redirect('/')
-//   }
-// })
 
 
 //-------------------/>
