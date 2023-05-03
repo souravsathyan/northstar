@@ -78,11 +78,14 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             try {
                 let response = {}
+                //finding the user by the phone no.
                 const existingUser = await usersData.findOne({ phone: phoneNo });
+                //if no resolve it with false status
                 if (!existingUser) {
                     response.status = false
                     resolve(response);
-                } else {
+                } //if yes resolve it with true status also with user
+                else {
                     twilio.sendOTP(phoneNo)
                     response.status = true
                     response.user = existingUser
@@ -99,14 +102,21 @@ module.exports = {
         try {
             let response = {}
             return new Promise(async (resolve, reject) => {
-                await twilio.verifyOtp(phoneNo, otpValues)
-                    .then((status) => {
-                        response.status = true
-                        resolve(response)
-                    })
-                    .catch((error) => {
-                        reject()
-                    })
+                let verifiedOtp = await twilio.verifyOtp(phoneNo, otpValues)
+                if (verifiedOtp) {
+                    response.status = true
+                    resolve(response)
+                }else{
+                    response.stats=false
+                    resolve(response)
+                }
+                // .then((status) => {
+                //     response.status = true
+                //     resolve(response)
+                // })
+                // .catch((error) => {
+                //     reject()
+                // })
             })
         } catch (error) {
             console.log(error);

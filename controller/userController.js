@@ -89,15 +89,16 @@ module.exports = {
     },
 
     postOtpMob: (req, res) => {
-
         const { phone } = req.body;
+        //assigining the phone no to session inorder to retreive it when verifying the otp
         req.session.phone = phone
         userHelpers.sendOtp(phone).then((response) => {
             if (response.status) {
                 req.session.tempUser = response.user
-                const msg = 'OTP has been Sent. Please check your Mobile'
+                const sendMsg = 'OTP has been Sent. Please check your Mobile'
                 res.render('user/otpVerify', {
-                    msg: msg,
+                    otpSend:true,
+                    sendMsg: sendMsg,
                 })
             } else {
                 const msg = 'enter a valid mobile number'
@@ -125,10 +126,9 @@ module.exports = {
                 res.redirect('/')
             } else {
                 req.flash('error')
-                const message = 'Invalid Otp'
-                res.render('user/userLogin', {
-                    invalidOtp: true,
-                    message: message
+                const msg = 'Invalid Otp'
+                res.render('user/otpVerify', {
+                    msg: msg
                 })
                 
             }

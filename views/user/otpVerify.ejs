@@ -68,19 +68,36 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
                                     <input class="m-2 text-center form-control rounded  otpLen" maxlength="1"
                                         name="otp6" type="text" />
                                 </div>
+                                <% var msg %>
+                                <% var sendMsg %>
+                                <% var otpSend %>
+                                <% if (otpSend) { %>
+                                    <div>
+                                        <span class="text-success">
+                                            <%= sendMsg %>
+                                        </span>
+                                    </div>
+                                <% } %>
+                                    <% if (msg) { %> 
+                                        <div>
+                                            <span class="text-danger">
+                                                <%= msg %>
+                                            </span>
+                                        </div>
+                                        <% } %>
+                                            <div class="mt-4 pb-3">
 
-                                <div class="mt-4 pb-3">
+                                                <a href="" class="p-5">
+                                                    <button class="btn btn-danger px-4 validate">
+                                                        Resend
+                                                    </button>
+                                                </a>
 
-                                    <a href="" class="p-5">
-                                        <button class="btn btn-danger px-4 validate">
-                                            Resend
-                                        </button>
-                                    </a>
-
-                                    <a href="">
-                                        <button type="submit" class="btn btn-success px-4 validate">Verify</button>
-                                    </a>
-                                </div>
+                                                <a href="">
+                                                    <button type="submit"
+                                                        class="btn btn-success px-4 validate">Verify</button>
+                                                </a>
+                                            </div>
                             </form>
                         </div>
                     </div>
