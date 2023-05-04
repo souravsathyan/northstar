@@ -1,15 +1,21 @@
 const userHelpers = require('../helpers/userHelpers');
 const usersData = require('../model/userModel');
 const products = require('../model/productModel')
+const categoryHelpers = require('../helpers/categoryHelpers');
+const categoryDB = require('../model/categoryModel')
+const mongoose = require('mongoose');
+const productHelpers = require('../helpers/productHelpers');
+const { ObjectId } = mongoose.Types;
+
 module.exports = {
     userHome: async (req, res, next) => {
-        if(req.session.user){
-            let productList=[]
+        if (req.session.user) {
+            let productList = []
             productList = await products.find()
             let user = req.session.user.name
             console.log(productList);
-            res.render('user/index',{ user,productList })
-        }else{
+            res.render('user/index', { user, productList })
+        } else {
             res.redirect('/landingPage')
         }
     },
@@ -83,11 +89,9 @@ module.exports = {
 
 
     //:::::OTP LOGIN:::://
-
     getOtpLogin: (req, res) => {
         res.render('user/otpLogin')
     },
-
     postOtpMob: (req, res) => {
         const { phone } = req.body;
         //assigining the phone no to session inorder to retreive it when verifying the otp
@@ -97,12 +101,12 @@ module.exports = {
                 req.session.tempUser = response.user
                 const sendMsg = 'OTP has been Sent. Please check your Mobile'
                 res.render('user/otpVerify', {
-                    otpSend:true,
+                    otpSend: true,
                     sendMsg: sendMsg,
                 })
             } else {
                 const msg = 'enter a valid mobile number'
-                res.render('user/otpLogin',{msg})
+                res.render('user/otpLogin', { msg })
             }
         })
     },
@@ -119,7 +123,7 @@ module.exports = {
         otpValues = otpArray.join('')//transforming array to string
         console.log(otpValues);
         userHelpers.otpVerification(phoneNo, otpValues).then((response) => {
-            console.log(response+"*****************************");
+            console.log(response + "*****************************");
             if (response.status) {
                 req.session.user = req.session.tempUser
                 req.session.login = true
@@ -130,9 +134,49 @@ module.exports = {
                 res.render('user/otpVerify', {
                     msg: msg
                 })
-                
+
             }
         })
+    },
+
+    //filtering products based on category
+    getShopProducts: async (req, res) => {
+        let productList = []
+        let category = await categoryDB.find()
+        productList = await products.find()
+        let user = req.session.user.name;
+        if (req.session.filtered) {
+            req.session.filtered=false
+            const product = req.session.product
+            res.render('user/product', {
+                filtered:true,
+                product ,
+                category,
+                user
+            })
+        } else {
+            console.log(category);
+            res.render('user/product', {
+                category,
+                user,
+                productList
+            })
+        }
+
+    },
+
+    getProductByCategory:  (req, res) => {
+        let catId = req.params.id
+        console.log(catId);
+        productHelpers.getProductByCategory(catId).then((result)=>{
+            req.session.product = result
+            req.session.filtered = true
+            res.redirect('/getShopProducts')
+        })
+
+
+
     }
+
 
 }

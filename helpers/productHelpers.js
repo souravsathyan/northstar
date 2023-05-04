@@ -1,3 +1,4 @@
+const { response } = require("../app");
 const products = require("../model/productModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 // const fs = require('fs')
@@ -55,7 +56,7 @@ module.exports = {
   postEditProduct: async (prodBody, prodId, newImg) => {
     let updatedProduct;
     if (newImg) {
-       updatedProduct = await products.findByIdAndUpdate(
+      updatedProduct = await products.findByIdAndUpdate(
         { _id: prodId },
         {
           prodName: prodBody.prodName,
@@ -72,7 +73,7 @@ module.exports = {
       );
     } else {
       //if no product image then update the project with no image
-       updatedProduct = await products.findByIdAndUpdate(
+      updatedProduct = await products.findByIdAndUpdate(
         { _id: prodId },
         {
           prodName: prodBody.prodName,
@@ -89,6 +90,21 @@ module.exports = {
     }
     return updatedProduct
   },
+  
+  getProductByCategory:  (catId) => {  
+      return new Promise(async(resolve, reject) => {
+        await products.aggregate([{ $match: { prodCategory: new ObjectId(catId) } }])
+        .then((response)=>{
+          console.log(response);
+          resolve(response)
+        })
+      })  
+    // let filteredProducts = []
+      // filteredProducts =  await products.aggregate([{ $match: { prodCategory: new ObjectId(catId) } }])
+      // console.log(filteredProducts+'ooooooooooooooooooo');
+      // return filteredProducts 
+}
+
   // //deleteing the product from list
   // deleteProduct:(prodId)=>{
   //     return new Promise(async (resolve, reject) => {
