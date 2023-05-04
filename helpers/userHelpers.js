@@ -46,7 +46,6 @@ module.exports = {
                 if (user) {
                     bcrypt.compare(userData.Password, user.password).then((status) => {
                         if (user.blocked) {
-
                             resolve({
                                 blocked: true
                             })

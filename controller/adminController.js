@@ -50,6 +50,8 @@ module.exports = {
     req.session.admin = false;
     res.redirect("/admin");
   },
+
+
   //*********USER MANAGEMENT */
   getUsersList: async (req, res) => {
     try {
@@ -82,7 +84,7 @@ module.exports = {
       adminHelpers.unblockUser(req.params.id).then((response) => {
         res.redirect("/admin/usersList");
       });
-    } catch (error) {}
+    } catch (error) { }
   },
 
   //***********CATEGORY MANAGEMENT*****
@@ -90,7 +92,16 @@ module.exports = {
   getCategory: (req, res) => {
     try {
       categoryHelpers.getAllCategory().then((category) => {
-        res.render("admin/categories", { category });
+        if (req.session.updated) {
+          let editCat = req.session.tempCat
+          res.render("admin/categories", {
+            category: category,
+            editCat: editCat,
+            updated: true
+          });
+        } else {
+          res.render("admin/categories", { category });
+        }
       });
     } catch (error) {
       console.log(error);
@@ -113,6 +124,26 @@ module.exports = {
     categoryHelpers.deleteCategory(req.params.id).then((response) => {
       res.redirect("/admin/getCategories");
     });
+  },
+  //editing category
+  getEditCategory: async (req, res) => {
+    let catId = req.params.id;
+    let findResult = await categoryHelpers.getEditCategory(catId)
+    console.log(findResult);
+    req.session.tempCat = findResult;
+    req.session.updated = true
+    res.redirect('/admin/getCategories')
+
+  },
+  //Posting the updated details of category
+  postEditCategory: (req, res) => {
+    const catId = req.params.id
+    const catBody = req.body
+    categoryHelpers.postEditCategory(catId, catBody).then((response) => {
+      req.session.updated = false
+      res.redirect('/admin/getCategories')
+    })
+
   },
 
   //**********PRODUCT MANAGEMENT ******/
@@ -168,21 +199,12 @@ module.exports = {
     }
   },
   postEditProduct: (req, res) => {
-    uploads(req, res, function (err) {
-      // if (err instanceof multer.MulterError) {
-      //   // A Multer error occurred when uploading
-      //   req.flash('message','only .jpg . jpeg , .png files are accepted')
-      //   res.redirect('/admin/editProduct')
-      // } else if (err) {
-      //   // An unknown error occurred when uploading
-      //   req.flash('message','only .jpg . jpeg , .png files are accepted')
-      //   res.redirect('/admin/editProduct')
-      // }
-      const body = req.body;
-      const prodId = req.params.id;
-      const file = req.file;
-      const updatedProduct = productHelpers.postEditProduct(body, prodId, file);
-      res.redirect("/admin/getProducts");
-    });
+
+    const body = req.body;
+    const prodId = req.params.id;
+    const file = req.file;
+    const updatedProduct = productHelpers.postEditProduct(body, prodId, file);
+    res.redirect("/admin/getProducts");
+
   },
 };

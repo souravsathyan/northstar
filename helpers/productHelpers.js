@@ -51,6 +51,7 @@ module.exports = {
         });
     });
   },
+  //updating the product
   postEditProduct: async (prodBody, prodId, newImg) => {
     let updatedProduct;
     if (newImg) {

@@ -12,36 +12,53 @@
                 <div class="row">
                     <div class="col-md-3">
 
-                        <form action="/admin/addCategory" method="post" onsubmit="return validateForm()" id="catForm">
-                            <span id="catError" class="text-danger"></span>
+                        <% var editCat %>
+                            <% var category %>
+                                <% var updated %>
+                                    <% if (updated) { %>
+                                        <h5 class="text-dark">EDIT CATEGORY</h5>
+                                        <form action="/admin/postEditCategory/<%= editCat._id %>" method="post" onsubmit="return validateForm()"
+                                            id="catForm">
+                                            <span id="catError" class="text-danger"></span>
+                                            <div class="mb-4">
+                                                <label for="product_name" class="form-label">Name</label>
+                                                <input type="text" value="<%= editCat.name %>" class="form-control"
+                                                    id="product_name" name="catName" />
+                                            </div>
+                                            <div class="mb-4">
+                                                <label class="form-label">Description</label>
+                                                <input type="text"  class="form-control"
+                                                    name="catDescription"
+                                                    value="<%= editCat.description %>" id="textField">
+                                            </div>
+                                            <div class="d-grid">
+                                                <button class="btn btn-primary" type="submit">Edit
+                                                    category</button>
+                                            </div>
+                                        </form>
 
-                            <div class="mb-4">
-                                <label for="product_name" class="form-label">Name</label>
-                                <input type="text" placeholder="Type here" class="form-control" id="product_name"
-                                    name="catName" />
-                            </div>
-
-                            <!-- <div class="mb-4">
-                                    <label for="product_slug" class="form-label">Slug</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_slug" />
-                                </div> -->
-                            <!-- <div class="mb-4">
-                                    <label class="form-label">Parent</label>
-                                    <select class="form-select">
-                                        <option>Clothes</option>
-                                        <option>T-Shirts</option>
-                                    </select>
-                                </div> -->
-                            <div class="mb-4">
-                                <label class="form-label">Description</label>
-                                <input type="text" placeholder="type here" class="form-control" name="catDescription"
-                                    id="textField">
-                            </div>
-                            <div class="d-grid">
-                                <button class="btn btn-primary" type="submit">Create category</button>
-                            </div>
-                        </form>
+                                        <% } else {%>
+                                            <form action="/admin/addCategory" method="post"
+                                                onsubmit="return validateForm()" id="catForm">
+                                                <span id="catError" class="text-danger"></span>
+                                                <div class="mb-4">
+                                                    <label for="product_name" class="form-label">Name</label>
+                                                    <input type="text" placeholder="Type here" class="form-control"
+                                                        id="product_name" name="catName" />
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label class="form-label">Description</label>
+                                                    <input type="text" placeholder="type here" class="form-control"
+                                                        name="catDescription" id="textField">
+                                                </div>
+                                                <div class="d-grid">
+                                                    <button class="btn btn-primary" type="submit">Create
+                                                        category</button>
+                                                </div>
+                                            </form>
+                                            <% } %>
                     </div>
+                    <!-- category displaying in tables -->
                     <div class="col-md-9">
                         <div class="table-responsive">
                             <table class="table " id="categoryTable">
@@ -69,25 +86,13 @@
                                                 <%= category.description %>
                                             </td>
                                             <td width="20%">
-
-                                                <!-- <a href="/admin/deleteCategory/<%= category.id %>"> -->
-                                                <button id=" delete-category" class="btn btn-sm rounded btn-danger"
-                                                    onclick="deleteProduct('<%=category._id%>')">Delete</button>
-                                                <!-- </a> -->
-
+                                                <a href="/admin/editCategory/<%= category._id %>">
+                                                    <button type="button"
+                                                        class="btn btn-sm rounded btn-warning">Edit</button>
+                                                </a>
+                                                <button class="btn btn-sm rounded btn-danger"
+                                                    onclick="deleteCategory('<%=category._id%>')">Delete</button>
                                             </td>
-                                            <!-- <td>/men</td>
-                                            <td>1</td> -->
-                                            <!-- <td class="text-end">
-                                                <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                    </div>
-                                                </div> <!-- dropdown //end -->
-                                            <!-- </td>  -->
                                         </tr>
                                         <% }) %>
                                 </tbody>
@@ -99,8 +104,46 @@
         </div> <!-- card .// -->
     </section> <!-- content-main end// -->
 
+    <!-- category modal -> for editing -->
+    <!-- Modal -->
+    <!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" onsubmit="return validateForm()" id="catForm">
+                        <span id="catError" class="text-danger"></span>
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Name</label>
+                            <input type="text" value="<%= category.name %>" class="form-control" 
+                                name="catName">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Description</label>
+                            <input type="text" value="<%= category.description %>" class="form-control" name="catDescription"
+                                id="textField">
+                        </div>
+                        
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="/admin/editCategory/<%= category._id %>">
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+
+
+
     <script>
-        //form validation
+        // form validation
         function validateForm() {
             const nameValue = document.getElementById('product_name').value
             const descValue = document.getElementById('textField').value
@@ -115,8 +158,8 @@
 
         }
 
-        //sweetAlert
-        function deleteProduct(userId) {
+        // sweetAlert for deleting category
+        function deleteCategory(catId) {
             swal('are you sure you want to delete the category', {
                 title: "Are you sure?",
                 text: 'you are about to delete this',
@@ -125,15 +168,11 @@
             }).then((confirmed) => {
                 if (confirmed) {
                     $.ajax({
-                        url: '/admin/deleteCategory/' + userId,
+                        url: '/admin/deleteCategory/' + catId,
                         type: 'get'
                     }).done(res => {
                         swal('successsfull', `done`, 'success').then(() => {
                             location.reload();
-                        })
-                    }).fail((err) => {
-                        swal('error', `done`, 'error').then(() => {
-                            location.reload()
                         })
                     })
                 } else {
@@ -144,5 +183,8 @@
                     swal('Error', `An error occured:${error}`, 'error')
                 })
         }
+
+
+
     </script>
     <%- include('../partials/adminFooter') %>

@@ -3,19 +3,20 @@ const mongoose = require('mongoose')
 const categoryModel = new mongoose.Schema({
     name: {
         type: String,
-       
-    }, description: {
+
+    }, 
+    description: {
         type: String,
-       
+
     },
     status: {
         type: Boolean,
         default: true
     },
 },
-{
-    timestamps:true
-}
+    {
+        timestamps: true
+    }
 )
 
 const categoryDB = mongoose.model("category", categoryModel);

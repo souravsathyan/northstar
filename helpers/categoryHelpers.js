@@ -1,44 +1,69 @@
 const categoryDB = require('../model/categoryModel')
 
 module.exports = {
-    addCategory: (prodDatas)=>{
+    //adding category
+    addCategory: (prodDatas) => {
         try {
             return new Promise(async (resolve, reject) => {
                 await categoryDB.create({
                     name: prodDatas.catName,
-                    description:prodDatas.catDescription,
+                    description: prodDatas.catDescription,
                 })
-                .then((category)=>{
-                    resolve(category)
-                })
-                .catch((error)=>{
-                    console.log(error);
-                })
+                    .then((category) => {
+                        resolve(category)
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
             })
         } catch (error) {
             console.log(error);
         }
     },
-    getAllCategory:()=>{
+    //getting all category & displaying in table
+    getAllCategory: () => {
         let catList = []
         return new Promise(async (resolve, reject) => {
             try {
                 await categoryDB.find()
-                .then((result)=>{
-                    catList = result
-                    resolve(catList)
-                })
+                    .then((result) => {
+                        catList = result
+                        resolve(catList)
+                    })
             } catch (error) {
                 console.log(error);
             }
         })
     },
-    deleteCategory:(cat_id)=>{
+    //deleting the category from DB
+    deleteCategory: (cat_id) => {
         return new Promise(async (resolve, reject) => {
-            await categoryDB.deleteOne({_id:cat_id})
-            .then((response)=>{
-                resolve(response)
-            })
+            await categoryDB.deleteOne({ _id: cat_id })
+                .then((response) => {
+                    resolve(response)
+                })
+        })
+    },
+    //updating the category and passing the category with id
+    getEditCategory: async (catId) => {
+        try {
+            let findResult = await categoryDB.findById({ _id: catId })
+            return findResult
+        } catch (error) {
+            console.log(error);
+        }
+
+    },
+    postEditCategory: (catId, catBody) => {
+        return new Promise(async (resolve, reject) => {
+            await categoryDB.findByIdAndUpdate(
+                { _id: catId },
+                {
+                    name: catBody.catName,
+                    description: catBody.catDescription
+                }).then((response)=>{
+                    resolve()
+                })
         })
     }
 }

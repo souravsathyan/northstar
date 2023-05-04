@@ -99,14 +99,14 @@
                                         <% if (users.blocked) { %>
 
                                             <button class="btn btn-warning rounded font-sm mt-15"
-                                                id="statusBtn <%= users._id %>" onclick="unblockUser('<%=users._id%>')"
+                                                 onclick="unblockUser('<%=users._id%>')"
                                                 type="button">
                                                 Unblock
                                             </button>
 
                                             <% } else { %>
 
-                                                <button id="statusBtn <%= users._id %>"
+                                                <button 
                                                     class="btn btn-danger rounded font-sm mt-15"
                                                     onclick="blockUser('<%=users._id%>')" type="button">
                                                     Block
@@ -150,10 +150,6 @@
                         swal('successsfull', `${res.message}`, 'success').then(() => {
                             location.reload();
                         })
-                    }).fail((err) => {
-                        swal('error', `${err.responseJSON.message}`, 'error').then(() => {
-                            location.reload()
-                        })
                     })
                 } else {
                     swal('Canceleld', 'the user was not blocked', 'info')
@@ -177,10 +173,6 @@
                     }).done(res => {
                         swal('successsfull', `done`, 'success').then(() => {
                             location.reload();
-                        })
-                    }).fail((err) => {
-                        swal('error', `done`, 'error').then(() => {
-                            location.reload()
                         })
                     })
                 } else {
