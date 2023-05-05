@@ -27,7 +27,7 @@ router.get('/deleteCategory/:id',isAdminLoggedIn,adminController.getDeleteCatego
 router.get('/editCategory/:id',isAdminLoggedIn,adminController.getEditCategory)//editing category
 router.post('/postEditCategory/:id',isAdminLoggedIn,adminController.postEditCategory)//posting updated details
 
-//*****PRODUCT MANAGEMENT */
+//*****PRODUCT MANAGEMENT *******/
 router.get('/getProducts',isAdminLoggedIn,adminController.getProductList)//getting product page
 router.get('/addProduct',isAdminLoggedIn,adminController.getAddProduct)//getting adding product
 router.post('/addProduct',multer.upload,adminController.postAddProduct)//post adding product

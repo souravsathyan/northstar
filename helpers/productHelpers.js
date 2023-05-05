@@ -30,7 +30,7 @@ module.exports = {
   //adding the prodct to dataBase
   addProduct: (productData, image) => {
     return new Promise(async (resolve, reject) => {
-      //ceating product
+      //ceating producte
       await products
         .create({
           prodName: productData.prodName,
@@ -99,19 +99,6 @@ module.exports = {
           resolve(response)
         })
       })  
-    // let filteredProducts = []
-      // filteredProducts =  await products.aggregate([{ $match: { prodCategory: new ObjectId(catId) } }])
-      // console.log(filteredProducts+'ooooooooooooooooooo');
-      // return filteredProducts 
-}
-
-  // //deleteing the product from list
-  // deleteProduct:(prodId)=>{
-  //     return new Promise(async (resolve, reject) => {
-  //         await products.deleteOne({_id:prodId})
-  //         .then((result)=>{
-  //             resolve(result)
-  //         })
-  //     })
-  // }
+    
+  }
 };

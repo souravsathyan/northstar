@@ -10,20 +10,25 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + path.extname(file.originalname));
     },
 });
-console.log("in multer");
 
 const upload = multer({
     storage: storage,
-    // fileFilter:(req,file,cb)=>{
-    //     if(file.mimetype=='image/png' || file.mimetype=='image/jpg' || file.mimetype=='image/jpeg'){
-    //         cb(null,true);
-    //     }else{
-    //         cb(null,false);
-    //         return cb(new Error('Only .png , .jpg , .jpeg format is allowed'))
-    //     }
-    // }
-}).single("image");
+}).single('image')
+
 
 module.exports = {
-    upload,
+    upload
 };
+
+
+// fileFilter:(req,file,cb)=>{
+    // if(file.mimetype=='image/png' || file.mimetype=='image/jpg' || file.mimetype=='image/jpeg'){
+        // cb(null,true);
+    // }else{
+        // console.log('only jpg jpeg png files are allowed');
+        // cb(null,false);           
+    // }
+// },
+// limits:{
+    // fileSize:1024*2
+// }

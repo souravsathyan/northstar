@@ -68,15 +68,12 @@ module.exports = {
         .blockUser(req.params.id)
         .then((response) => {
           res.redirect("/admin/usersList");
-          // res.status(200).json({ message: 'User has been blocked' });
         })
         .catch((error) => {
           console.error(error);
-          // res.status(500).json({ error: 'An error occurred while blocking the user' });
         });
     } catch (error) {
       console.error(error);
-      // res.status(500).json({ error: 'An error occurred while blocking the user' });
     }
   },
   getUnblockUser: (req, res) => {
@@ -199,7 +196,6 @@ module.exports = {
     }
   },
   postEditProduct: (req, res) => {
-
     const body = req.body;
     const prodId = req.params.id;
     const file = req.file;

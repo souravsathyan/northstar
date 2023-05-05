@@ -50,18 +50,17 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
         <div class=" row pt-5">
             <div class="col-md-6 m-auto bg-light border rounded myFormBody">
                 <div class="container mt-5 pl-5  ">
-                        <h2 class="text-center">OTP LOGIN</h2>
-                    <form action="/otpLogin" method="post" id="otpForm">
+                        <h2 class="text-center">Forget Password? </h2>
+                    <form action="/postForgetPwd" method="post" id="myForm" onsubmit="return validateForm()">
                         <% var msg %>
                         <% if (msg) { %>
                             <span class="text-danger"><%= msg %></span>
                             <% } %>
                         <div class="form-outline mb-2 text-center">
-                            <label for="" class="py-2">Enter your Mobile Number</label>
+                            <label for="" class="py-2">Enter your Mobile Number,<br> we will sent you an One Time Password</label>
                             <span id="mobError" class="text-danger"></span>
                             <input type="text" id="mobile" class="form-control form-control-lg " name="phone" >
                         </div>
-
                         <div class="mt-3 mb-4 text-center ">
                             <a href="" class="p-5">
                                 <button type="submit" class="btn btn-primary px-4 validate">
@@ -108,61 +107,14 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
         </script>
         <!--===============================================================================================-->
         <script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
-        <script>
-            $('.gallery-lb').each(function () { // the containers for all your galleries
-                $(this).magnificPopup({
-                    delegate: 'a', // the selector for gallery item
-                    type: 'image',
-                    gallery: {
-                        enabled: true
-                    },
-                    mainClass: 'mfp-fade'
-                });
-            });
-        </script>
+        
         <!--===============================================================================================-->
         <script src="vendor/isotope/isotope.pkgd.min.js"></script>
         <!--===============================================================================================-->
         <script src="
         https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js
         "></script>
-        <script>
-            $('.js-addwish-b2').on('click', function (e) {
-                e.preventDefault();
-            });
-    
-            $('.js-addwish-b2').each(function () {
-                var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
-                $(this).on('click', function () {
-                    swal(nameProduct, "is added to wishlist !", "success");
-    
-                    $(this).addClass('js-addedwish-b2');
-                    $(this).off('click');
-                });
-            });
-    
-            $('.js-addwish-detail').each(function () {
-                var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
-    
-                $(this).on('click', function () {
-                    swal(nameProduct, "is added to wishlist !", "success");
-    
-                    $(this).addClass('js-addedwish-detail');
-                    $(this).off('click');
-                });
-            });
-    
-            /*---------------------------------------------*/
-    
-            $('.js-addcart-detail').each(function () {
-                var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
-                $(this).on('click', function () {
-                    swal(nameProduct, "is added to cart !", "success");
-                });
-            });
-    
-        </script>
-        <!--===============================================================================================-->
+              <!--===============================================================================================-->
         <script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
         <script>
             $('.js-pscroll').each(function () {
@@ -183,25 +135,15 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
         <script src="javascripts/main.js"></script>
 
         <script>
-            const form = document.getElementById('otpForm')
-            form.addEventListener('submit',(event)=>{
-                event.preventDefault()
-
-                validateForm()
-                const mobError = document.getElementById('mobError')
-
-                if(mobError.innerHTML !== ""){
-                    return false
+            function validateForm(){
+                let mobValue = document.getElementById('mobile').value
+                let mobError = document.getElementById('mobError')
+                if(mobValue.trim()==""){
+                    mobError.innerHTML='enter a mobile number'
+                    return false;
                 }else{
-                    form.submit()
-                }
-            })
-            
-            function validateForm() {
-                const mobValue = document.getElementById('mobile').value
-                const mobError = document.getElementById('mobError')
-                if(mobValue.trim() == ""){
-                    mobError.innerHTML='enter  mobile number'
+                    document.getElementById('myForm').submit()
+                    
                 }
             }
         </script>

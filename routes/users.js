@@ -22,11 +22,21 @@ router.get('/userLogout',userController.userLogout);
 //<otp>
 router.get('/otpLogin',userController.getOtpLogin);//getting the otpLogin page
 router.post('/otpLogin',userController.postOtpMob);//posting The mobile number
-router.post('/verifyOtp',userController.otpVerify)
+router.post('/verifyOtp',userController.otpVerify)//verifying and login
+
+//forget password
+router.get('/forgetPassword',userController.getForgetPassword)//getting the otp page
+router.post('/postForgetPwd',userController.postForgetPassword)//entering the mobile
+router.post('/verifyForgetPwd',userController.postVerifyPassword)//entering the otp and verifying 
+router.post('/postNewPassword/:id',userController.postNewPassword)//updating the password
+
 
 //filter products by category
 router.get('/getShopProducts',isUserLogin,userController.getShopProducts)
 router.get('/getProductById/:id',isUserLogin,userController.getProductByCategory)
+
+//VIEW PRODUCT
+router.get('/viewProduct',userController.getViewProduct)
 
 
 
