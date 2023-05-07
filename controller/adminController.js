@@ -148,7 +148,6 @@ module.exports = {
   getProductList: (req, res) => {
     // console.log('inprod**********');
     productHelpers.getProducts().then((products) => {
-      console.log(products.category);
       res.render("admin/productsList", {
         products: products,
       });
@@ -164,8 +163,9 @@ module.exports = {
   },
   //creating product
   postAddProduct: (req, res) => {
-    console.log(req.body);
-    productHelpers.addProduct(req.body, req.file).then((response) => {
+    let image = req.files
+    console.log(image+'in controoooooooooler');
+    productHelpers.addProduct(req.body, image).then((response) => {
       res.redirect("/admin/addProduct");
     });
   },

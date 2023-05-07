@@ -31,6 +31,7 @@ module.exports = {
   addProduct: (productData, image) => {
     return new Promise(async (resolve, reject) => {
       //ceating producte
+      console.log(image+'-----------------');
       await products
         .create({
           prodName: productData.prodName,
@@ -41,10 +42,11 @@ module.exports = {
           prodQuantity: productData.prodQty,
           prodColor: productData.prodColor,
           prodSize: productData.prodSize,
-          prodImage: image.filename,
+          prodImage: image.map(file => file.filename),
           prodCategory: productData.prodCategory,
         })
         .then((response) => {
+          
           resolve(response);
         })
         .catch((error) => {
@@ -55,6 +57,7 @@ module.exports = {
   //updating the product
   postEditProduct: async (prodBody, prodId, newImg) => {
     let updatedProduct;
+    console.log(newImg+'neeeeeeeeeeeeeeeeeeeeeeeeeeeewIMageeeeee');
     if (newImg) {
       updatedProduct = await products.findByIdAndUpdate(
         { _id: prodId },
@@ -67,7 +70,7 @@ module.exports = {
           prodQuantity: prodBody.prodQty,
           prodColor: prodBody.prodColor,
           prodSize: prodBody.prodSize,
-          prodImage: newImg.filename,
+          prodImage: [newImg.filename],
           prodCategory: prodBody.prodCategory,
         }
       );
@@ -89,13 +92,11 @@ module.exports = {
       );
     }
     return updatedProduct
-  },
-  
+  }, 
   getProductByCategory:  (catId) => {  
       return new Promise(async(resolve, reject) => {
         await products.aggregate([{ $match: { prodCategory: new ObjectId(catId) } }])
         .then((response)=>{
-          console.log(response);
           resolve(response)
         })
       })  

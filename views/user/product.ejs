@@ -246,12 +246,13 @@
 						<% var product %>
 							<% if (filtered) { %>
 								<% product.forEach(products=> { %>
+									<% console.log(products); %>
 									<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
 										<!-- Block2 -->
 										<div class="block2">
 											<div class="block2-pic hov-img0">
 												<a href="/viewProduct">
-													<img src="/<%= products.prodImage %> " width="320" height="400"
+													<img src="/<%= products.prodImage[0] %> " width="320" height="400"
 														alt="IMG-PRODUCT">
 
 												</a>
@@ -290,7 +291,7 @@
 													<div class="block2">
 														<div class="block2-pic hov-img0">
 															<a href="/viewProduct">
-																<img src="/<%= products.prodImage %> " width="320"
+																<img src="/<%= products.prodImage[0] %> " width="320"
 																	height="400" alt="IMG-PRODUCT">
 
 															</a>

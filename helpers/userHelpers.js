@@ -11,12 +11,10 @@ module.exports = {
     doSignUp: (userData) => {
         return new Promise(async (resolve, reject) => {
             console.log(userData);
-            const isUserExists = await usersData.findOne({ $or: [{ email: userData.Email }, { phone: userData.Mobile }, { name: userData.name }] })
-            console.log(isUserExists + '-------------');
+            const isUserExists = await usersData.findOne({ $or: [{ email: userData.Email }, { phone: userData.Mobile }, { name: userData.name }] })            
             try {
                 if (!isUserExists) {
-                    userData.Password = await bcrypt.hash(userData.Password, 10)
-                    console.log('jiiiii');
+                    userData.Password = await bcrypt.hash(userData.Password, 10)  
                     console.log(userData);
                     usersData.create({
                         name: userData.Name,

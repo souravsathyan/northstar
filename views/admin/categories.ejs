@@ -3,7 +3,6 @@
         <div class="content-header">
             <div>
                 <h2 class="content-title card-title">Categories </h2>
-
             </div>
 
         </div>
@@ -11,10 +10,12 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3">
+                        <% var editCat %><!--the category that selected for editing-->
+                            <% var category %><!--all category-->
+                                <% var updated %><!--boolean if edit selected then cat values are shown in the form inputs-->
 
-                        <% var editCat %>
-                            <% var category %>
-                                <% var updated %>
+                       
+
                                     <% if (updated) { %>
                                         <h5 class="text-dark">EDIT CATEGORY</h5>
                                         <form action="/admin/postEditCategory/<%= editCat._id %>" method="post" onsubmit="return validateForm()"
@@ -36,7 +37,6 @@
                                                     category</button>
                                             </div>
                                         </form>
-
                                         <% } else {%>
                                             <form action="/admin/addCategory" method="post"
                                                 onsubmit="return validateForm()" id="catForm">

@@ -8,13 +8,9 @@ module.exports = {
                 await categoryDB.create({
                     name: prodDatas.catName,
                     description: prodDatas.catDescription,
+                }).then((category) => {
+                    resolve(category)
                 })
-                    .then((category) => {
-                        resolve(category)
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    })
             })
         } catch (error) {
             console.log(error);
@@ -44,7 +40,7 @@ module.exports = {
                 })
         })
     },
-    //updating the category and passing the category with id
+    //getting the edit product page
     getEditCategory: async (catId) => {
         try {
             let findResult = await categoryDB.findById({ _id: catId })
@@ -54,6 +50,7 @@ module.exports = {
         }
 
     },
+    //updating the category and passing the category with id
     postEditCategory: (catId, catBody) => {
         return new Promise(async (resolve, reject) => {
             await categoryDB.findByIdAndUpdate(
@@ -61,7 +58,7 @@ module.exports = {
                 {
                     name: catBody.catName,
                     description: catBody.catDescription
-                }).then((response)=>{
+                }).then((response) => {
                     resolve()
                 })
         })

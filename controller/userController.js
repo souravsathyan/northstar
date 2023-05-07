@@ -210,12 +210,14 @@ module.exports = {
         let category = await categoryDB.find()
         productList = await products.find()
         let user = req.session.user.name;
+        //if filtered / user clicked view by category
         if (req.session.filtered) {
             req.session.filtered = false
             const product = req.session.product
+            console.log(product);
             res.render('user/product', {
                 filtered: true,
-                product,
+                product:product,
                 category,
                 user
             })
