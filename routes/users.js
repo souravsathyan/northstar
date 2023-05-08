@@ -36,8 +36,7 @@ router.get('/getShopProducts',isUserLogin,userController.getShopProducts)
 router.get('/getProductById/:id',isUserLogin,userController.getProductByCategory)
 
 //VIEW PRODUCT
-router.get('/viewProduct',userController.getViewProduct)
-
+router.get('/viewProduct/:id',userController.getViewProduct)
 
 
 

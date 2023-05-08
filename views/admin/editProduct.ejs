@@ -113,17 +113,15 @@
             <div class="col-lg-3">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <img src="/<%=product.prodImage%>" alt="" srcset="">
+                        <img src="/<%=product.prodImage[0]%>" alt="" srcset="" id="imgView" >
                     </div>
                     <div class="card-body">
 
                         <div class="input-upload">
                             <!-- <img src="assets/imgs/theme/upload.svg" alt=""> -->
-                            <label for="" class="form-label">
-                                Image
-                            </label>
+                            
                             <span id="imgError" class="text-danger"></span>
-                            <input class="form-control" type="file" multiple name="image" id="imgValue">
+                            <input class="form-control" type="file" multiple onchange="viewImage(event)" name="image" >
 
                         </div>
 
@@ -167,5 +165,11 @@
             </form>
         </div>
     </section>
+
+    <script>
+        function viewImage(event){
+            document.getElementById('imgView').src=URL.createObjectURL(event.target.files[0])
+        }
+    </script>
 
     <%- include('../partials/adminFooter') %>

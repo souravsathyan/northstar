@@ -146,7 +146,6 @@ module.exports = {
   //**********PRODUCT MANAGEMENT ******/
   //getting product listing page
   getProductList: (req, res) => {
-    // console.log('inprod**********');
     productHelpers.getProducts().then((products) => {
       res.render("admin/productsList", {
         products: products,

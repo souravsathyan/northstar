@@ -3,7 +3,8 @@ const bcrypt = require('bcrypt');
 const usersData = require('../model/userModel');
 const twilio = require('../api/twilio');
 const { response } = require('../app');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const productData = require('../model/productModel');
 const ObjectId = mongoose.Types.ObjectId;
 
 module.exports = {
@@ -144,6 +145,20 @@ module.exports = {
             } catch (error) {
                 console.log(error);
             }
+        })
+    },
+    //getting the product
+    getProductView:(prodId)=>{
+        return new Promise(async (resolve, reject) => {
+            await productData.findById({_id:prodId})
+            .then((response)=>{
+                console.log(response+'got product');
+                resolve(response)
+            })
+            .catch((error)=>{
+                console.log(error);
+            })
+            
         })
     }
 }

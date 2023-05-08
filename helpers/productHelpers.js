@@ -93,13 +93,14 @@ module.exports = {
     }
     return updatedProduct
   }, 
+  
   getProductByCategory:  (catId) => {  
       return new Promise(async(resolve, reject) => {
         await products.aggregate([{ $match: { prodCategory: new ObjectId(catId) } }])
         .then((response)=>{
           resolve(response)
         })
-      })  
-    
-  }
+      })
+  },
+  
 };

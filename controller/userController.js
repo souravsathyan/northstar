@@ -146,7 +146,7 @@ module.exports = {
         //assigining the phone no to session inorder to retreive it when verifying the otp
         req.session.phone = phone
         userHelpers.sendOtp(phone).then((response) => {
-            
+
             if (response.status) {
                 console.log(response.user);
                 req.session.tempUser = response.user
@@ -203,26 +203,26 @@ module.exports = {
 
         }
     },
+
     //-------------------------------------------------------------------------------------------
-    //:::::getting the shop page::://
+    //:::getting the shop page::://
     getShopProducts: async (req, res) => {
         let productList = []
         let category = await categoryDB.find()
         productList = await products.find()
+        console.log('##got productList and caategory');
         let user = req.session.user.name;
         //if filtered / user clicked view by category
         if (req.session.filtered) {
             req.session.filtered = false
             const product = req.session.product
-            console.log(product);
             res.render('user/product', {
                 filtered: true,
-                product:product,
+                product: product,
                 category,
                 user
             })
         } else {
-            console.log(category);
             res.render('user/product', {
                 category,
                 user,
@@ -234,17 +234,30 @@ module.exports = {
     //filtering products based on category
     getProductByCategory: (req, res) => {
         let catId = req.params.id
-        console.log(catId);
         productHelpers.getProductByCategory(catId).then((result) => {
             req.session.product = result
             req.session.filtered = true
+            console.log('##filtered product by category');
             res.redirect('/getShopProducts')
         })
     },
     //view product when clicking
     getViewProduct: (req, res) => {
-        res.render('user/viewProduct')
-    }
+        let prodId = req.params.id
+        console.log(prodId);
+        userHelpers.getProductView(prodId)
+        .then((response) => {
+            let user = req.session.user.name
+            let product = response
+            console.log(product+'product in resolve');
+            res.render('user/viewProduct', {
+                user: user,
+                product: product
+            })
+        })
+    },
+
+
 
 
 }

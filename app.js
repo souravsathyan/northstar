@@ -4,15 +4,15 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const expressLayouts = require('express-ejs-layouts')
-const bodyParser = require('body-parser')
+// const expressLayouts = require('express-ejs-layouts')
+// const bodyParser = require('body-parser')
 const connectDB = require('./config/connection')
-const {check, validationResult} = require('express-validator')
+// const {check, validationResult} = require('express-validator')
 const session  = require('express-session')
 const morgan = require('morgan')
-const swal = require('sweetalert')
+// const swal = require('sweetalert')
 const flash = require('connect-flash');
-const multer = require('multer')
+// const multer = require('multer')
 const nocache = require('nocache')
 
 
