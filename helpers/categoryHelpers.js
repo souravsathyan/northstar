@@ -1,20 +1,30 @@
+const { response } = require('../app')
 const categoryDB = require('../model/categoryModel')
 
 module.exports = {
     //adding category
-    addCategory: (prodDatas) => {
-        try {
-            return new Promise(async (resolve, reject) => {
+    addCategory: async (prodDatas) => {
+
+        return new Promise(async (resolve, reject) => {
+            let response = {}
+            let existingCat = await categoryDB.findOne({ name:prodDatas.catName })
+            console.log(existingCat+'iiiiiiiiiiiiiiiiiii');
+            if (existingCat) {
+                response.exists = true
+                resolve(response)
+            } else {
                 await categoryDB.create({
                     name: prodDatas.catName,
                     description: prodDatas.catDescription,
                 }).then((category) => {
                     resolve(category)
+                }).catch((error) => {
+                    console.log(error);
+                    reject(error)
                 })
-            })
-        } catch (error) {
-            console.log(error);
-        }
+            }
+        })
+
     },
     //getting all category & displaying in table
     getAllCategory: () => {

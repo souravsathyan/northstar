@@ -5,17 +5,19 @@ const twilio = require('../api/twilio');
 const { response } = require('../app');
 const mongoose = require('mongoose');
 const productData = require('../model/productModel');
-const ObjectId = mongoose.Types.ObjectId;
+const ObjectId = require("mongoose").Types.ObjectId;
+const cartDB = require('../model/cartModel');
+const { resolveInclude } = require('ejs');
 
 module.exports = {
     //user sign up 
     doSignUp: (userData) => {
         return new Promise(async (resolve, reject) => {
             console.log(userData);
-            const isUserExists = await usersData.findOne({ $or: [{ email: userData.Email }, { phone: userData.Mobile }, { name: userData.name }] })            
+            const isUserExists = await usersData.findOne({ $or: [{ email: userData.Email }, { phone: userData.Mobile }, { name: userData.name }] })
             try {
                 if (!isUserExists) {
-                    userData.Password = await bcrypt.hash(userData.Password, 10)  
+                    userData.Password = await bcrypt.hash(userData.Password, 10)
                     console.log(userData);
                     usersData.create({
                         name: userData.Name,
@@ -36,7 +38,6 @@ module.exports = {
 
         })
     },
-
     //user login
     doLogin: (userData) => {
         console.log(userData);
@@ -79,7 +80,6 @@ module.exports = {
 
         })
     },
-
     //sending Otp
     sendOtp: (phoneNo) => {
         return new Promise(async (resolve, reject) => {
@@ -106,7 +106,6 @@ module.exports = {
             }
         })
     },
-
     //verifying otp
     otpVerification: (phoneNo, otpValues) => {
         try {
@@ -125,7 +124,6 @@ module.exports = {
             console.log(error);
         }
     },
-
     //updating password
     newPassword: (newPwd, userID) => {
         return new Promise(async (resolve, reject) => {
@@ -133,11 +131,11 @@ module.exports = {
                 // const objectId = new ObjectId(userID);
                 //bycrypting the new password
                 let hashedPassword = await bcrypt.hash(newPwd, 10)
-                console.log(hashedPassword+'   ------pwd hashed');
+                console.log(hashedPassword + '   ------pwd hashed');
                 //updating the user password
                 await usersData.updateOne(
-                    {_id:userID},
-                    {$set : { password: hashedPassword }})
+                    { _id: userID },
+                    { $set: { password: hashedPassword } })
                     .then((response) => {
                         resolve()
                     })
@@ -148,18 +146,163 @@ module.exports = {
         })
     },
     //getting the product
-    getProductView:(prodId)=>{
+    getProductView: (prodId) => {
         return new Promise(async (resolve, reject) => {
-            await productData.findById({_id:prodId})
-            .then((response)=>{
-                console.log(response+'got product');
-                resolve(response)
-            })
-            .catch((error)=>{
-                console.log(error);
-            })
-            
+            await productData.findById({ _id: prodId })
+                .then((response) => {
+                    console.log(response + 'got product');
+                    resolve(response)
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+
         })
+    },
+    //******CART MANAGEMENT ******/
+    //ADDING TO CART
+    addToCart: (prodId, userId) => {
+        //creating a new doc. in cart collection
+        //with userId and ProdId[]
+        //if the user had a cart then -> push prod ID to prodID[]
+        //if no cart then create a NEW ONE
+        return new Promise(async (resolve, reject) => {
+            try {
+                let existingCart = await cartDB.findOne({ userId: new ObjectId(userId) })
+                if (existingCart) {
+                    console.log('exisiting cart');
+                    let exisitingProd = existingCart.products.findIndex(product => product.productId == prodId)
+                    if (exisitingProd !== -1) {
+                        await cartDB.updateOne(
+                            { userId: new ObjectId(userId), 'products.productId': new ObjectId(prodId) },
+                            {
+                                $inc: { "products.$.quantity": 1 }
+                            }
+                        )
+                        console.log('quantity increased');
+                    } else {
+                        await cartDB.updateOne(
+                            { userId: new ObjectId(userId) },
+                            {
+                                $push: { products: { productId: new ObjectId(prodId) } }
+                            }
+                        )
+                    }
+                    resolve()
+                } else {
+                    await cartDB.create({
+                        userId: new ObjectId(userId),
+                        products: [{ productId: new ObjectId(prodId) }]
+                    })
+                    console.log('product created');
+                    resolve()
+                }
+            } catch (error) {
+                console.log(error);
+                reject(error)
+            }
+        })
+    },
+    //GETTING THE CART COUNT
+    getCartCount: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            let cart = await cartDB.findOne({ userId: new ObjectId(userId) })
+            let count = 0
+            console.log(cart);
+            if (cart) {
+                count = cart.prodId.length
+                console.log('cart count is ' + count);
+            }
+            console.log('resolved cart count');
+            resolve(count)
+        })
+    },
+    //GETTING THE CART PAGE
+    getCart: (userID) => {
+        return new Promise((resolve, reject) => {
+            cartDB.findOne({ userId: userID }).populate({
+                path: 'products.productId',
+                model: productData,
+                select: 'prodName prodDescription prodBrand prodPrice prodQuantity prodColor prodSize prodImage'
+            }).then((cart) => {
+                console.log(cart, 'its the cart page');
+                resolve(cart)
+            }).catch((error) => {
+                reject()
+            })
+
+        })
+    },
+    //CHANGING THE CART QTY WHEN BTN CLICKED
+    changeQtyByButton: (cartId, prodId, count, quantity) => {
+        count = parseInt(count)
+        quantity = parseInt(quantity)
+        return new Promise(async (resolve, reject) => {
+            if (count == -1 && quantity == 1) {
+                cartDB.updateOne(
+                    { _id: new ObjectId(cartId) },
+                    {
+                        $pull: { products: { productId: new ObjectId(prodId) } }
+                    }).then((response) => {
+                        resolve({ removeProduct: true })
+                    })
+            } else {
+                cartDB.updateOne(
+                    {
+                        _id: new ObjectId(cartId),
+                        'products.productId': new ObjectId(prodId)
+                    },
+                    {
+                        $inc: { 'products.$.quantity': count }
+                    }
+                ).then((response) => {
+                    resolve({ qtyChanged: true })
+                }).catch((error) => {
+                    reject(error)
+                })
+            }
+        })
+    },
+
+    //FINDING THE TOTAL AMT
+    getTotalAmt: async (userId) => {
+        try {
+            let total = await cartDB.aggregate([
+                {
+                    $match: { userId: new ObjectId(userId) }
+                },
+                {
+                    $unwind: '$products'
+                },
+                {
+                    $lookup: {
+                        from: "products",
+                        localField: "products.productId",
+                        foreignField: "_id",
+                        as: "product"
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        'product.prodName': 1,
+                        'product.prodPrice': 1,
+                        quantity: '$products.quantity',
+                        totalPrice: { $multiply: ['$products.quantity', { $arrayElemAt: ['$product.prodPrice', 0] }] }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$totalPrice' }
+                    }
+                }
+            ])
+            return total[0].total
+        } catch (error) {
+            console.log(error);
+        }
+
     }
 }
 

@@ -28,32 +28,32 @@ module.exports = {
     }
   },
   //adding the prodct to dataBase
-  addProduct: (productData, image) => {
-    return new Promise(async (resolve, reject) => {
-      //ceating producte
-      console.log(image+'-----------------');
-      await products
-        .create({
-          prodName: productData.prodName,
-          prodDescription: productData.prodDescription,
-          prodBrand: productData.prodBrand,
-          prodPrice: productData.prodPrice,
-          prodPromoPrice: productData.proPromoPrice,
-          prodQuantity: productData.prodQty,
-          prodColor: productData.prodColor,
-          prodSize: productData.prodSize,
-          prodImage: image.map(file => file.filename),
-          prodCategory: productData.prodCategory,
-        })
-        .then((response) => {
-          
-          resolve(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    });
-  },
+    addProduct: (productData, image) => {
+      return new Promise(async (resolve, reject) => {
+        //ceating producte
+        console.log(image+'-----------------');
+        await products
+          .create({
+            prodName: productData.prodName,
+            prodDescription: productData.prodDescription,
+            prodBrand: productData.prodBrand,
+            prodPrice: productData.prodPrice,
+            prodPromoPrice: productData.proPromoPrice,
+            prodQuantity: productData.prodQty,
+            prodColor: productData.prodColor,
+            prodSize: productData.prodSize,
+            prodImage: image.map(file => file.filename),
+            prodCategory: productData.prodCategory,
+          })
+          .then((response) => {
+            
+            resolve(response);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+    },
   //updating the product
   postEditProduct: async (prodBody, prodId, newImg) => {
     let updatedProduct;
@@ -93,7 +93,7 @@ module.exports = {
     }
     return updatedProduct
   }, 
-  
+  //getting product by category
   getProductByCategory:  (catId) => {  
       return new Promise(async(resolve, reject) => {
         await products.aggregate([{ $match: { prodCategory: new ObjectId(catId) } }])

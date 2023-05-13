@@ -24,8 +24,7 @@ router.get('/unblockUser/:id',isAdminLoggedIn,adminController.getUnblockUser)//u
 router.get('/getCategories',isAdminLoggedIn,adminController.getCategory)//getting category
 router.post('/addCategory',isAdminLoggedIn,adminController.createCategory)//adding Category
 router.get('/deleteCategory/:id',isAdminLoggedIn,adminController.getDeleteCategory)//deleting category
-router.get('/editCategory/:id',isAdminLoggedIn,adminController.getEditCategory)//editing category
-router.post('/postEditCategory/:id',isAdminLoggedIn,adminController.postEditCategory)//posting updated details
+
 
 //*****PRODUCT MANAGEMENT *******/
 router.get('/getProducts',isAdminLoggedIn,adminController.getProductList)//getting product page

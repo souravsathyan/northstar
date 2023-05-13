@@ -36,7 +36,19 @@ router.get('/getShopProducts',isUserLogin,userController.getShopProducts)
 router.get('/getProductById/:id',isUserLogin,userController.getProductByCategory)
 
 //VIEW PRODUCT
-router.get('/viewProduct/:id',userController.getViewProduct)
+router.get('/viewProduct/:id',isUserLogin,userController.getViewProduct)
+
+//************CART MANAGEMENT**************//
+//adding to the cart
+router.get('/addToCart/:id',isUserLogin,userController.getAddToCart)
+//getting the cart page and passing the user id 
+router.get('/getShoppingCart/:id',isUserLogin,userController.getUserCart)
+//changing the qty when +/- button clicked
+router.post('/changeQuantity',isUserLogin,userController.postChangeQty)
+//deleting the product in cart
+router.get('/deleteCartProduct',isUserLogin,userController.deleteCartProduct)
+//placing the order
+router.get('/placeOrder',isUserLogin,userController.getPlaceOrder)
 
 
 

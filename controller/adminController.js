@@ -53,6 +53,8 @@ module.exports = {
 
 
   //*********USER MANAGEMENT */
+  //GETTING THE USER LIST
+  //getting the users data from the users collection and rendereing
   getUsersList: async (req, res) => {
     try {
       adminHelpers.getUsers().then((users) => {
@@ -62,6 +64,8 @@ module.exports = {
       console.error(error);
     }
   },
+  //BLOCKING USER
+  //updating the user document field of blocked status to true
   getBlockUser: (req, res) => {
     try {
       adminHelpers
@@ -76,6 +80,8 @@ module.exports = {
       console.error(error);
     }
   },
+  //UNBLOCKING THE USER
+  //updating the user document field of blocked status to true
   getUnblockUser: (req, res) => {
     try {
       adminHelpers.unblockUser(req.params.id).then((response) => {
@@ -86,20 +92,19 @@ module.exports = {
 
   //***********CATEGORY MANAGEMENT*****
   //getting category
+  //finding the all category from the category collection
+  //also asiging the to be edit prod.Details if edit button is clicked :> to the editCat inorder to view in the editform as values
   getCategory: (req, res) => {
     try {
       categoryHelpers.getAllCategory().then((category) => {
-        if (req.session.updated) {
-          let editCat = req.session.tempCat
-          res.render("admin/categories", {
-            category: category,
-            editCat: editCat,
-            updated: true
+        
+        res.render("admin/categories", {
+           category,
+           message: req.flash('message')
+          
           });
-        } else {
-          res.render("admin/categories", { category });
-        }
-      });
+      }
+      )
     } catch (error) {
       console.log(error);
     }
@@ -107,40 +112,22 @@ module.exports = {
   //creating category
   createCategory: (req, res) => {
     console.log(req.body);
-    try {
-      categoryHelpers.addCategory(req.body).then((response) => {
-        console.log(response);
-        res.redirect("/admin/getCategories");
-      });
-    } catch (error) {
+    categoryHelpers.addCategory(req.body).then((response) => {
+      if (response.exists) {
+        req.flash('message', 'It is an Exisiting Product')
+        res.redirect('/admin/getCategories')
+      } else {
+        res.redirect('/admin/getCategories')
+      }
+    }).catch((error) => {
       console.log(error);
-    }
+    })
   },
   //deleting category
   getDeleteCategory: (req, res) => {
     categoryHelpers.deleteCategory(req.params.id).then((response) => {
-      res.redirect("/admin/getCategories");
+      res.json({ status: true })
     });
-  },
-  //editing category
-  getEditCategory: async (req, res) => {
-    let catId = req.params.id;
-    let findResult = await categoryHelpers.getEditCategory(catId)
-    console.log(findResult);
-    req.session.tempCat = findResult;
-    req.session.updated = true
-    res.redirect('/admin/getCategories')
-
-  },
-  //Posting the updated details of category
-  postEditCategory: (req, res) => {
-    const catId = req.params.id
-    const catBody = req.body
-    categoryHelpers.postEditCategory(catId, catBody).then((response) => {
-      req.session.updated = false
-      res.redirect('/admin/getCategories')
-    })
-
   },
 
   //**********PRODUCT MANAGEMENT ******/
@@ -163,10 +150,11 @@ module.exports = {
   //creating product
   postAddProduct: (req, res) => {
     let image = req.files
-    console.log(image+'in controoooooooooler');
+    console.log(image + 'in controoooooooooler');
     productHelpers.addProduct(req.body, image).then((response) => {
       res.redirect("/admin/addProduct");
-    });
+      // res.json({ status: 'success', message: 'Your product has been added!' });
+    })
   },
   //deleteing the product from list
   DeleteProduct: async (req, res) => {
@@ -194,6 +182,7 @@ module.exports = {
       console.log(error);
     }
   },
+  //POSTING THE UPDATED PRODUCT
   postEditProduct: (req, res) => {
     const body = req.body;
     const prodId = req.params.id;
@@ -202,4 +191,4 @@ module.exports = {
     res.redirect("/admin/getProducts");
 
   },
-};
+}

@@ -1,62 +1,42 @@
 <%- include('../partials/adminHeader') %>
     <section class="content-main">
-        <div class="content-header">
-            <div>
-                <h2 class="content-title card-title">Categories </h2>
+        <% if (message.length>0) { %>
+            <div class="alert alert-danger text-center" id="flashMessage">
+                <i class="fa-solid fa-triangle-exclamation" style="color: #ff0000;"></i>
+                <%=message %>
             </div>
+            <% } %>
+        <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Categories </h2>
+                    </div>
 
         </div>
         <div class="card">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3">
-                        <% var editCat %><!--the category that selected for editing-->
-                            <% var category %><!--all category-->
-                                <% var updated %><!--boolean if edit selected then cat values are shown in the form inputs-->
 
-                       
+                        <% var category %><!--all category-->
 
-                                    <% if (updated) { %>
-                                        <h5 class="text-dark">EDIT CATEGORY</h5>
-                                        <form action="/admin/postEditCategory/<%= editCat._id %>" method="post" onsubmit="return validateForm()"
-                                            id="catForm">
-                                            <span id="catError" class="text-danger"></span>
-                                            <div class="mb-4">
-                                                <label for="product_name" class="form-label">Name</label>
-                                                <input type="text" value="<%= editCat.name %>" class="form-control"
-                                                    id="product_name" name="catName" />
-                                            </div>
-                                            <div class="mb-4">
-                                                <label class="form-label">Description</label>
-                                                <input type="text"  class="form-control"
-                                                    name="catDescription"
-                                                    value="<%= editCat.description %>" id="textField">
-                                            </div>
-                                            <div class="d-grid">
-                                                <button class="btn btn-primary" type="submit">Edit
-                                                    category</button>
-                                            </div>
-                                        </form>
-                                        <% } else {%>
-                                            <form action="/admin/addCategory" method="post"
-                                                onsubmit="return validateForm()" id="catForm">
-                                                <span id="catError" class="text-danger"></span>
-                                                <div class="mb-4">
-                                                    <label for="product_name" class="form-label">Name</label>
-                                                    <input type="text" placeholder="Type here" class="form-control"
-                                                        id="product_name" name="catName" />
-                                                </div>
-                                                <div class="mb-4">
-                                                    <label class="form-label">Description</label>
-                                                    <input type="text" placeholder="type here" class="form-control"
-                                                        name="catDescription" id="textField">
-                                                </div>
-                                                <div class="d-grid">
-                                                    <button class="btn btn-primary" type="submit">Create
-                                                        category</button>
-                                                </div>
-                                            </form>
-                                            <% } %>
+                            <form action="/admin/addCategory" method="post" onsubmit="return validateForm()"
+                                id="catForm">
+                                <span id="catError" class="text-danger"></span>
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Name</label>
+                                    <input type="text" placeholder="Type here" class="form-control" id="product_name"
+                                        name="catName" />
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <input type="text" placeholder="type here" class="form-control"
+                                        name="catDescription" id="textField">
+                                </div>
+                                <div class="d-grid">
+                                    <button class="btn btn-primary" type="submit">Create
+                                        category</button>
+                                </div>
+                            </form>
                     </div>
                     <!-- category displaying in tables -->
                     <div class="col-md-9">
@@ -86,12 +66,9 @@
                                                 <%= category.description %>
                                             </td>
                                             <td width="20%">
-                                                <a href="/admin/editCategory/<%= category._id %>">
-                                                    <button type="button"
-                                                        class="btn btn-sm rounded btn-warning">Edit</button>
-                                                </a>
+
                                                 <button class="btn btn-sm rounded btn-danger"
-                                                    onclick="deleteCategory('<%=category._id%>')">Delete</button>
+                                                    onclick="deleteCategory('<%= category._id %>')">Delete</button>
                                             </td>
                                         </tr>
                                         <% }) %>
@@ -115,36 +92,50 @@
                 error.innerHTML = 'please fill the details'
                 return false
             } else {
-                document.getElementById('catForm').submit()
+                createCategory(() => {
+                    document.getElementById('catForm').submit()
+                })
             }
 
         }
 
         // sweetAlert for deleting category
         function deleteCategory(catId) {
-            swal('are you sure you want to delete the category', {
+            console.log(catId);
+            Swal.fire({
                 title: "Are you sure?",
-                text: 'you are about to delete this',
-                icon: 'warning',
-                buttons: ["Cancel", "Delete"]
+                text: "You are about to delete this category",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Block",
+                cancelButtonText: "Cancel",
             }).then((confirmed) => {
                 if (confirmed) {
                     $.ajax({
                         url: '/admin/deleteCategory/' + catId,
                         type: 'get'
                     }).done(res => {
-                        swal('successsfull', `done`, 'success').then(() => {
+                        Swal.fire({
+                            title: "Success",
+                            text: res.message,
+                            icon: "success"
+                        }).then(() => {
                             location.reload();
-                        })
-                    })
+                        });
+                    });
                 } else {
-                    swal('Canceleld', 'the category is not deleted', 'info')
+                    Swal.fire({
+                        title: "Cancelled",
+                        text: "The user was not blocked",
+                        icon: "info"
+                    });
                 }
             })
-                .catch((error) => {
-                    swal('Error', `An error occured:${error}`, 'error')
-                })
         }
+
+
+
+
 
 
 

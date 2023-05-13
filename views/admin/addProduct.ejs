@@ -17,7 +17,7 @@
 
                         <!-- ////////////// -->
                         <!-- form starts -->
-                        <form action="/admin/addProduct" method="post" onsubmit="return myNewValidation()"
+                        <form action="/admin/addProduct" method="post" id="form" onsubmit="return myNewValidation()"
                             enctype="multipart/form-data" id="prodForm">
                             <div class="mb-4">
                                 <label for="product_name" class="form-label">Product title</label>
@@ -90,7 +90,8 @@
 
                             <div>
                                 <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> -->
-                                <button class="btn btn-md rounded font-sm hover-up" type="submit">Create</button>
+                                <button class="btn btn-md rounded font-sm hover-up" id="createButton"
+                                    type="submit">Create</button>
                             </div>
 
 
@@ -112,7 +113,7 @@
                                 Image
                             </label>
                             <span id="imgError" class="text-danger"></span>
-                            <input class="form-control" type="file"  name="images" id="imgValue" multiple>
+                            <input class="form-control" type="file" name="images" id="imgValue" multiple>
                         </div>
 
                     </div>
@@ -261,14 +262,8 @@
         }
     </script> -->
     <script>
-        // const form = document.getElementById('prodForm')
-        // form.addEventListener('submit', (event) => {
-        //     event.preventDefault()
-           
-        //     // form.submit()
-        // })
 
-        function myNewValidation () {
+        function myNewValidation() {
             validateForm()
             const nameError = document.getElementById('nameError')
             const descError = document.getElementById('descError')
@@ -291,7 +286,14 @@
                 return false
 
             } else {
-                form.submit()
+                Swal.fire({
+                    title: 'Product created successfully!',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    document.getElementById('form').submit();
+                });
+                // form.submit()
             }
         }
 

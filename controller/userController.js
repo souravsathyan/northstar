@@ -5,16 +5,21 @@ const categoryHelpers = require('../helpers/categoryHelpers');
 const categoryDB = require('../model/categoryModel')
 const mongoose = require('mongoose');
 const productHelpers = require('../helpers/productHelpers');
+const cartDB = require('../model/cartModel');
 const { ObjectId } = mongoose.Types;
 
 module.exports = {
     userHome: async (req, res, next) => {
         if (req.session.user) {
             let productList = []
+            let userID = req.session.user._id
             productList = await products.find()
-            let user = req.session.user.name
+            // let cartCount = await userHelpers.getCartCount(userID)
+            // req.session.cartCount = cartCount
+            let user = req.session.user
+            
             console.log(productList);
-            res.render('user/index', { user, productList })
+            res.render('user/index', { user, productList})
         } else {
             res.redirect('/landingPage')
         }
@@ -57,7 +62,7 @@ module.exports = {
             message: req.flash('message')
         })
     },
-    userLoginPost: (req, res) => {
+    userLoginPost:  (req, res) => {
         console.log(req.body);
         userHelpers.doLogin(req.body).then((response) => {
             console.log(response);
@@ -146,9 +151,8 @@ module.exports = {
         //assigining the phone no to session inorder to retreive it when verifying the otp
         req.session.phone = phone
         userHelpers.sendOtp(phone).then((response) => {
-
             if (response.status) {
-                console.log(response.user);
+                console.log('otp send - pwd change');
                 req.session.tempUser = response.user
                 const sendMsg = 'OTP has been Sent. Please check your Mobile'
                 res.render('user/otpPwdVerify', {
@@ -208,10 +212,11 @@ module.exports = {
     //:::getting the shop page::://
     getShopProducts: async (req, res) => {
         let productList = []
+        let cartCount = req.session.cartCount
         let category = await categoryDB.find()
         productList = await products.find()
         console.log('##got productList and caategory');
-        let user = req.session.user.name;
+        let user = req.session.user
         //if filtered / user clicked view by category
         if (req.session.filtered) {
             req.session.filtered = false
@@ -220,7 +225,8 @@ module.exports = {
                 filtered: true,
                 product: product,
                 category,
-                user
+                user,
+                cartCount
             })
         } else {
             res.render('user/product', {
@@ -244,18 +250,90 @@ module.exports = {
     //view product when clicking
     getViewProduct: (req, res) => {
         let prodId = req.params.id
+        let cartCount = req.session.cartCount
         console.log(prodId);
         userHelpers.getProductView(prodId)
-        .then((response) => {
-            let user = req.session.user.name
-            let product = response
-            console.log(product+'product in resolve');
-            res.render('user/viewProduct', {
-                user: user,
-                product: product
+            .then((response) => {
+                let user = req.session.user
+                let product = response
+                console.log(product + 'product in resolve');
+                res.render('user/viewProduct', {
+                    product: product,
+                    user,
+                    cartCount
+                })
             })
+    },
+
+    //*************CART MANAGEMENT************ */
+    //ADDING TO PRODUCT TO USERCART
+    getAddToCart: (req, res) => {
+        //getting teh prodId & getting the userID from session
+        //passing to userHelper
+        try {
+            let prodId = req.params.id
+            let userID = req.session.user._id
+            console.log('****product id : ' + prodId + " " + "user id : " + userID);
+            console.log('api called');
+            userHelpers.addToCart(prodId, userID)
+                .then((response) => {
+                    console.log('got the response for adding to  cart');
+                    res.json({status:true})
+                })
+        } catch (error) {
+            console.log(error);
+        }
+    },
+    //GETTING THE USER CART PAGE
+    getUserCart:  async (req, res) => {
+        let userID = req.params.id
+        let user = req.session.user
+        // let cartCount = req.session.cartCount
+        let totalPrice = await userHelpers.getTotalAmt(req.session.user._id)
+        userHelpers.getCart(userID)
+            .then((cartProduct) => {
+                res.render('user/shoping-cart',{
+                     user,
+                     cartProduct,
+                     totalPrice
+                    })
+            }).catch(()=>{
+                res.status(404).render('error')
+            })
+    },
+    //CHANGE CART PRODUCT QTY
+    postChangeQty:(req,res)=>{
+        const {cart,product,userId,count,quantity} = req.body
+        userHelpers.changeQtyByButton(cart,product,count,quantity)
+        .then(async(response)=>{
+            response.total = await userHelpers.getTotalAmt(userId)
+            res.json(response)
+        }).catch((error)=>{
+            console.log("error");
+            res.json({status:false})
         })
     },
+    //DELETING THE PRODUCT IN THE CART
+    deleteCartProduct:async(req,res)=>{
+        const {cartId,prodId,userId} = req.query
+        console.log(cartId,prodId);
+        await cartDB.updateOne(
+            {_id:new ObjectId(cartId)},
+            {
+                $pull:{products:{productId: new ObjectId(prodId)}}
+            }
+        )
+        let response={}
+        response.total = await userHelpers.getTotalAmt(userId)
+        response.status=true
+        res.json(response)
+    },
+    //PLACING THE ORDER
+    getPlaceOrder:async  (req,res)=>{
+        let totalPrice = await userHelpers.getTotalAmt(req.session.user._id)
+        console.log(totalPrice);
+        
+    }
 
 
 
