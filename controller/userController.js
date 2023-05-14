@@ -6,6 +6,8 @@ const categoryDB = require('../model/categoryModel')
 const mongoose = require('mongoose');
 const productHelpers = require('../helpers/productHelpers');
 const cartDB = require('../model/cartModel');
+const productData = require('../model/productModel');
+const addressData = require('../model/addressModel')
 const { ObjectId } = mongoose.Types;
 
 module.exports = {
@@ -17,9 +19,9 @@ module.exports = {
             // let cartCount = await userHelpers.getCartCount(userID)
             // req.session.cartCount = cartCount
             let user = req.session.user
-            
+
             console.log(productList);
-            res.render('user/index', { user, productList})
+            res.render('user/index', { user, productList })
         } else {
             res.redirect('/landingPage')
         }
@@ -62,7 +64,7 @@ module.exports = {
             message: req.flash('message')
         })
     },
-    userLoginPost:  (req, res) => {
+    userLoginPost: (req, res) => {
         console.log(req.body);
         userHelpers.doLogin(req.body).then((response) => {
             console.log(response);
@@ -278,64 +280,98 @@ module.exports = {
             userHelpers.addToCart(prodId, userID)
                 .then((response) => {
                     console.log('got the response for adding to  cart');
-                    res.json({status:true})
+                    res.json({ status: true })
                 })
         } catch (error) {
             console.log(error);
         }
     },
     //GETTING THE USER CART PAGE
-    getUserCart:  async (req, res) => {
+    getUserCart: async (req, res) => {
         let userID = req.params.id
         let user = req.session.user
         // let cartCount = req.session.cartCount
         let totalPrice = await userHelpers.getTotalAmt(req.session.user._id)
         userHelpers.getCart(userID)
             .then((cartProduct) => {
-                res.render('user/shoping-cart',{
-                     user,
-                     cartProduct,
-                     totalPrice
-                    })
-            }).catch(()=>{
+                res.render('user/shoping-cart', {
+                    user,
+                    cartProduct,
+                    totalPrice
+                })
+            }).catch(() => {
                 res.status(404).render('error')
             })
     },
     //CHANGE CART PRODUCT QTY
-    postChangeQty:(req,res)=>{
-        const {cart,product,userId,count,quantity} = req.body
-        userHelpers.changeQtyByButton(cart,product,count,quantity)
-        .then(async(response)=>{
-            response.total = await userHelpers.getTotalAmt(userId)
-            res.json(response)
-        }).catch((error)=>{
-            console.log("error");
-            res.json({status:false})
-        })
+    postChangeQty: (req, res) => {
+        const { cart, product, userId, count, quantity } = req.body
+        userHelpers.changeQtyByButton(cart, product, count, quantity)
+            .then(async (response) => {
+                response.total = await userHelpers.getTotalAmt(userId)
+                res.json(response)
+            }).catch((error) => {
+
+                console.log("error");
+                res.json({ status: false })
+            })
     },
     //DELETING THE PRODUCT IN THE CART
-    deleteCartProduct:async(req,res)=>{
-        const {cartId,prodId,userId} = req.query
-        console.log(cartId,prodId);
+    deleteCartProduct: async (req, res) => {
+        const { cartId, prodId, userId } = req.query
+        console.log(cartId, prodId);
         await cartDB.updateOne(
-            {_id:new ObjectId(cartId)},
+            { _id: new ObjectId(cartId) },
             {
-                $pull:{products:{productId: new ObjectId(prodId)}}
+                $pull: { products: { productId: new ObjectId(prodId) } }
             }
         )
-        let response={}
+        let response = {}
         response.total = await userHelpers.getTotalAmt(userId)
-        response.status=true
+        response.status = true
         res.json(response)
     },
     //PLACING THE ORDER
-    getPlaceOrder:async  (req,res)=>{
+    getPlaceOrder: async (req, res) => {
         let totalPrice = await userHelpers.getTotalAmt(req.session.user._id)
-        console.log(totalPrice);
-        
+        let user = req.session.user._id
+        res.render('user/orderCheckout', { user })
+    },
+
+    //USER ACCOUNT
+    getUserAccount: (req, res) => {
+        let user = req.session.user
+        res.render('user/userProfile', {
+            user,
+        })
+    },
+
+    //ADD ADDRESS
+    getUserAdAddress: (req, res) => {
+        let user = req.session.user
+        res.render('user/addAddress', { user })
+    },
+    //creating the address
+    postUserAdAddress: async (req, res) => {
+        console.log(req.body);
+        let userId = req.session.user._id
+        try {
+            await addressData.create({
+                firstName: req.body.fname,
+                lastName: req.body.lname,
+                mobile: req.body.phone,
+                emailId: req.body.email,
+                address: req.body.address,
+                city: req.body.city,
+                state: req.body.state,
+                country: req.body.country,
+                pincode: req.body.pincode,
+                userId: new ObjectId(userId)
+            })
+            res.status(200).json({ success: true });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ success: false });
+        }
     }
-
-
-
-
 }

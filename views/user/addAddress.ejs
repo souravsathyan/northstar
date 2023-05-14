@@ -1,0 +1,86 @@
+<%- include('../partials/userHeader') %>
+
+    <div class="row" style="padding: 50px 350px 350px 350px; ">
+        <div class="col-xl-12  d-flex justify-content-center flex-column">
+            <div class="mb-25 text-center">
+                <h3>Add Address</h3>
+            </div>
+            <form method="post" id="myForm">
+                <div class="form-group">
+                    <input type="text" required="" name="fname" placeholder="First name *">
+                </div>
+                <div class="form-group">
+                    <input type="text" required="" name="lname" placeholder="Last name *">
+                </div>
+                <div class="form-group">
+                    <input type="text" name="address" required="" placeholder="Address *">
+                </div>
+                <div class="form-group">
+                    <input required="" type="text" name="city" placeholder="City / Town *">
+                </div>
+                <div class="form-group">
+                    <input required="" type="text" name="state" placeholder="State*">
+                </div>
+                <div class="form-group">
+                    <input required="" type="text" name="country" placeholder="country">
+                </div>
+                <div class="form-group">
+                    <input required="" type="text" name="pincode" placeholder="Postcode / ZIP *">
+                </div>
+                <div class="form-group">
+                    <input required="" type="number" name="phone" placeholder="Phone *">
+                </div>
+                <div class="form-group">
+                    <input required="" type="text" name="email" placeholder="Email address *">
+                </div>
+                <input type="hidden" name="userId" value="<%= user._id %>">
+                <div>
+                    <button class="btn btn-primary d-block m-auto" type="submit" style="width:50%">Submit</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('myForm');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const url = '/postAddAddress';
+            const data = {};
+
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    Swal.fire({
+                        title: "Form submitted",
+                        text: "Your form has been submitted successfully.",
+                        icon: "success",
+                        confirmButton: {
+                            text: "OK",
+                            className: "btn btn-primary"
+                        }
+                    }).then(() => {
+                        window.location.href = "/userProfile";
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+
+
+    <%- include('../partials/userFooter') %>

@@ -49,6 +49,14 @@ router.post('/changeQuantity',isUserLogin,userController.postChangeQty)
 router.get('/deleteCartProduct',isUserLogin,userController.deleteCartProduct)
 //placing the order
 router.get('/placeOrder',isUserLogin,userController.getPlaceOrder)
+//user account
+router.get('/userProfile',isUserLogin,userController.getUserAccount)
+//add address
+router.get('/addAddress',isUserLogin,userController.getUserAdAddress)
+//post address
+router.post('/postAddAddress',isUserLogin,userController.postUserAdAddress)
+
+
 
 
 
