@@ -4376,3 +4376,8 @@ body.dark .dropdown-menu .dropdown-item.text-danger {
         display: none
     }
 }
+
+.order-status{
+    width: 110px;
+    height: 33px;
+  }

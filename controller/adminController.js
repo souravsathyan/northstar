@@ -4,9 +4,10 @@ const usersData = require("../model/userModel");
 const categoryHelpers = require("../helpers/categoryHelpers");
 const productHelpers = require("../helpers/productHelpers");
 const products = require("../model/productModel");
-const uploads = require("../middlewares/multer");
-const orderModel = require("../model/orderModel");
+const orderData = require("../model/orderModel");
 const userHelpers = require("../helpers/userHelpers");
+const ObjectId = require("mongoose").Types.ObjectId;
+
 
 const adminCredentials = {
   name: "Admin",
@@ -199,33 +200,51 @@ module.exports = {
   getOrderList: (req, res) => {
     adminHelpers.getAllOrder()
       .then((orderDetails) => {
-        res.render("admin/orderList",{
+        res.render("admin/orderList", {
           orderDetails
         })
-      }).catch((error)=>{
+      }).catch((error) => {
         console.log(error);
       })
   },
-  getOrderDetails: async(req,res)=>{
-    let orderId = req.params.id 
+  getOrderDetails: async (req, res) => {
+    let orderId = req.params.id
     let addressDetails = await adminHelpers.getOrderAddressDetails(orderId)
     let itemDetails = await adminHelpers.getOrderItemDetails(orderId)
     console.log(addressDetails[0].totalAmount);
-      res.render('admin/orderDetails',{
-        addressDetails, 
-        itemDetails,
-      })
+    res.render('admin/orderDetails', {
+      addressDetails,
+      itemDetails,
+    })
   },
-  getChangeStatus:(req,res)=>{
+  getChangeStatus: (req, res) => {
     console.log(req.body, req.params.id);
-     adminHelpers.getChangeStatus(req.body,req.params.id)
-     .then((response)=>{
-       res.json({status:true})
-     })
-     .catch((error)=>{
-      res.json({status:false})
-     })
-    
+    adminHelpers.getChangeStatus(req.body, req.params.id)
+      .then((response) => {
+        res.json({ status: true })
+      })
+      .catch((error) => {
+        res.json({ status: false })
+      })
+
+  },
+  getCancelOrder: async (req, res) => {
+    try {
+      console.log(req.params.id);
+      const orderId = req.params.id
+      await orderData.updateOne(
+        { _id: new ObjectId(orderId) },
+        {
+          $set: {
+            orderStatus: "cancelled"
+          }
+        }
+      )
+      res.json({ status: true })
+    } catch (error) {
+      console.log(error);
+      res.status(500).render('error', { error });
+    }
   }
 
 

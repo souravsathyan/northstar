@@ -4,7 +4,9 @@
         <div class="content-header">
             <div>
                 <h2 class="content-title card-title">Order detail</h2>
-                <p>Details for Order ID: <%= addressDetails[0]._id %>
+                <p>Details for Order ID:<span> <strong>
+                            <%= addressDetails[0]._id %>
+                        </strong><span>
                 </p>
             </div>
         </div>
@@ -14,7 +16,7 @@
                     <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
                         <span>
                             <i class="material-icons md-calendar_today"></i> <b>
-                                <%= addressDetails[0].orderDate %>
+                                <%= addressDetails[0].orderDate.toLocaleDateString('en-GB')%>
                             </b>
                         </span> <br>
                         <small class="text-muted">
@@ -24,12 +26,14 @@
                     <div class="col-lg-6 col-md-6 ms-auto text-md-end">
                         <select id="statusSelect" class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
                             <option>Change status</option>
-                            <option>Shipped</option>
-                            <option>Delivered</option>
-                            <option>pending</option>
+                            <option <%=addressDetails[0].orderStatus==='Shipped' ? 'selected' : '' %>>Shipped</option>
+                            <option <%=addressDetails[0].orderStatus==='Delivered' ? 'selected' : '' %>>Delivered
+                            </option>
+                            <option <%=addressDetails[0].orderStatus==='pending' ? 'selected' : '' %>>pending</option>
                         </select>
-                        <button class="btn btn-primary" id="saveBtn" onclick="changeStatus('<%= addressDetails[0]._id %>')">
-                        Save</button>
+                        <button class="btn btn-primary" id="saveBtn"
+                            onclick="changeStatus('<%= addressDetails[0]._id %>')">
+                            Save</button>
 
                     </div>
                 </div>
@@ -99,13 +103,13 @@
                                                         </div>
                                                     </a>
                                                 </td>
-                                                <td>$<%= itemDetails[i].orderProducts[j].prodPrice %>
+                                                <td>Rs.<%= itemDetails[i].orderProducts[j].prodPrice.toLocaleString() %>
                                                 </td>
                                                 <td>
                                                     <%= itemDetails[i].orderedItems[j].quantity %>
                                                 </td>
-                                                <td class="text-end">$<%= itemDetails[i].orderProducts[j].prodPrice *
-                                                        itemDetails[i].orderedItems[j].quantity %>
+                                                <td class="text-end">Rs.<%= itemDetails[i].orderProducts[j].prodPrice *
+                                                        itemDetails[i].orderedItems[j].quantity.toLocaleString() %>
                                                 </td>
                                             </tr>
                                             <% } %>
@@ -120,7 +124,7 @@
                                                                 </dl>
                                                                 <dl class="dlist">
                                                                     <dt>Shipping cost:</dt>
-                                                                    <dd>$10.00</dd>
+                                                                    <dd>free shipping</dd>
                                                                 </dl>
                                                                 <dl class="dlist">
                                                                     <dt>Grand total:</dt>
@@ -163,19 +167,51 @@
                                     </p>
                                 </div>
                                 <% } %>
-                                    <div class="h-25 pt-4">
-                                        <div class="mb-3">
-                                            <label>Notes</label>
-                                            <textarea class="form-control" name="notes" id="notes"
-                                                placeholder="Type some note"></textarea>
+                                    <div class="  h-25 pt-4">
+                                        <div class="mb-3 box shadow-sm bg-light d-flex align-items-center">
+                                            <h6 class="me-5">Order Status</h6>
+                                            <% if (itemDetails[0].orderStatus=='pending' ) { %>
+                                                <span class="badge rounded-pill bg-warning  ">
+                                                    <%= itemDetails[0].orderStatus %>
+                                                </span>
+                                                <% } else if (itemDetails[0].orderStatus=='placed' ) {%>
+                                                    <span class="badge rounded-pill bg-primary  ">
+                                                        <%= itemDetails[0].orderStatus %>
+                                                    </span>
+                                                    <% } else if (itemDetails[0].orderStatus=='Shipped' ) {%>
+                                                        <span class="badge rounded-pill bg-info  ">
+                                                            <%= itemDetails[0].orderStatus %>
+                                                        </span>
+                                                        <% } else if (itemDetails[0].orderStatus=='cancelled' ) { %>
+                                                            <span class="badge rounded-pill bg-danger ">
+                                                                <%= itemDetails[0].orderStatus %>
+                                                            </span>
+                                                            <% } else if (itemDetails[0].orderStatus=='Delivered' ) {%>
+                                                                <span class="badge rounded-pill bg-success ">
+                                                                    <%= itemDetails[0].orderStatus %>
+                                                                </span>
+                                                                <% } %>
                                         </div>
-                                        <button class="btn btn-primary">Save note</button>
+
                                     </div>
-                    </div> <!-- col// -->
+                                    <div class="h-25 pt-4 box shadow-sm bg-light d-flex align-items-center ">
+                                        <% if (itemDetails[0].orderStatus=='pending' ||
+                                            itemDetails[0].orderStatus=='Shipped' ||
+                                            itemDetails[0].orderStatus=='placed' ) { %>
+                                                
+                                            <h6 class="me-5">Action :</h6>
+                                            <button class="btn btn-danger"
+                                                onclick="cancelOrder('<%= itemDetails[0]._id%>')">
+                                                cancel Order</button>
+
+                                            <% } %>
+                                    </div>
+                    </div>
                 </div>
-            </div> <!-- card-body end// -->
-        </div> <!-- card end// -->
-    </section> <!-- content-main end// -->
+            </div>
+        </div>
+    </section>
+
 
 
     <script>
@@ -186,11 +222,12 @@
                 const selectElement = document.querySelector('#statusSelect');
                 const selectedValue = selectElement.value;
                 $.ajax({
-                    url: '/admin/changeStatus/'+orderId,
+                    url: '/admin/changeStatus/' + orderId,
                     method: 'POST',
                     data: { selectedValue: selectedValue },
                     success: function (response) {
                         alert('order status chagnged')
+                        location.reload()
                     },
                     error: function (error) {
                         // Handle any errors that occur during the request
@@ -199,5 +236,38 @@
             })
         }
     </script>
-
+    
+    <script>
+        function cancelOrder(orderId) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "you are going to cancel the order",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            }).then((confirmed) => {
+                if (confirmed.value) {
+                    $.ajax({
+                        url: '/admin/cancelOrder/' + orderId,
+                        method: 'get',
+                    }).done(res => {
+                        Swal.fire({
+                            title: "Success",
+                            text: res.message,
+                            icon: "success"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Cancelled",
+                        text: "Your action has been cancelled",
+                        icon: "info"
+                    });
+                }
+            });
+        }
+    </script>
     <%- include('../partials/adminFooter') %>

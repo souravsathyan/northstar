@@ -3685,3 +3685,8 @@ input.num-product::-webkit-inner-spin-button {
   border-radius: 20px;
 }
 
+.order-status{
+  /* font-size: 19px; */
+  width: 110px;
+  height: 33px;
+}

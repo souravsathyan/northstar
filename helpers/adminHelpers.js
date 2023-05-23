@@ -120,7 +120,7 @@ module.exports = {
             try {
                 let newStatus = changedStatus.selectedValue
             orderData.updateOne(
-                { _id: user_id },
+                { _id: new ObjectId (orderId) },
                 { $set: { orderStatus: newStatus } })
                 .then((response) => {
                     console.log(response);

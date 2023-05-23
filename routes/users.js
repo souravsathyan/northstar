@@ -75,6 +75,10 @@ router.post('/postSetUpProfile',isUserLogin,multer.upload.single('image'),userCo
 // router.post('/postEditProfile',isUserLogin,multer.upload.single('image'),userController.postEditProfile)
 //editing user image
 router.post('/postChangeImage',isUserLogin,multer.upload.single('image'),userController.postChangeUserImage)
+//cancel order by user
+router.post('/cancelOrder',isUserLogin,userController.getChangeStatusOrder)
+//return order
+router.post('/returnOrder',isUserLogin,userController.getChangeStatusOrder) 
 
 
 

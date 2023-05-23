@@ -396,7 +396,6 @@ module.exports = {
             let userAddress = await addressData.find({ userId: new ObjectId(userId) })
             let orderDetails = await userHelpers.getUserOrders(userId)
             let userDetails = await userHelpers.getUserDetails(userId)
-
             res.render('user/userProfile', {
                 user,
                 userAddress,
@@ -463,6 +462,18 @@ module.exports = {
         } catch (error) {
             res.status(500).render('error', { error });
         }
+    },
+    getChangeStatusOrder: async (req, res) => {
+        const { orderId, status } = req.body
+        await orderData.updateOne(
+            { _id: new ObjectId(orderId) },
+            {
+                $set: {
+                    orderStatus: status
+                }
+            }
+        )
+        res.json({ status: true })
     },
     //***********ORDER MANAGEMENT***** */
     //PLACING THE ORDER

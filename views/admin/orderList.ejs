@@ -32,8 +32,22 @@
                                     <td><%= order.users[0].email %></td>
                                     <td>$9.00</td>
 
-                                    <td><span class="badge rounded-pill bg-primary alert-warning "><%= order.orderStatus %></span></td>
-                                    <td><%= order.orderDate %></td>
+                                    <td>
+
+                                        <% if (order.orderStatus=='pending') { %>
+                                            <span class="badge rounded-pill bg-warning  "><%= order.orderStatus %></span>
+                                        <% } else if (order.orderStatus=='placed') {%>
+                                            <span class="badge rounded-pill bg-primary  "><%= order.orderStatus %></span>
+                                            <% } else if (order.orderStatus=='Shipped') {%>
+                                                <span class="badge rounded-pill bg-info  "><%= order.orderStatus %></span>
+                                                <% } else if (order.orderStatus == 'cancelled') { %>
+                                                    <span class="badge rounded-pill bg-danger "><%= order.orderStatus %></span>
+                                                <% } else if (order.orderStatus == 'Delivered') {%>
+                                                    <span class="badge rounded-pill bg-success "><%= order.orderStatus %></span>
+                                                    <% } %>
+
+                                        
+                                    <td><%= order.orderDate.toLocaleDateString('en-GB') %></td>
                                     <td class="text-end">
                                         <a href="/admin/getOrderDetails/<%= order._id %>" class="btn btn-md rounded font-sm">Detail</a>
                                        <!-- dropdown //end -->

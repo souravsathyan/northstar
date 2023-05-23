@@ -102,11 +102,12 @@
                                                             <table class="table">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th>Order</th>
+                                                                        <th>Order id</th>
                                                                         <th>Date</th>
                                                                         <th>Status</th>
                                                                         <th>Total</th>
-                                                                        <th>Payment method</th>
+                                                                        <th>Payment</th>
+                                                                        <th>Cancel/Return</th>
                                                                         <th>Actions</th>
                                                                     </tr>
                                                                 </thead>
@@ -114,30 +115,53 @@
                                                                     <% orderDetails.forEach(order=> { %>
                                                                         <tr>
                                                                             <td>
-                                                                                <%= order.orderDate.toLocaleDateString('en-GB')%>
+                                                                                <%= order._id%>
                                                                             </td>
                                                                             <td>
-                                                                                <%= order.address[0].fname %>
-                                                                                    <%= order.address[0].lname %><br>
-                                                                                        <%= order.address[0].address %>
-                                                                                            <br>
-                                                                                            <%= order.address[0].city %>
-                                                                                                <%= order.address[0].state
-                                                                                                    %>
-                                                                                                    <br>
-                                                                                                    <%= order.address[0].country
-                                                                                                        %>
-                                                                                                        <%= order.address[0].pincode
-                                                                                                            %>
+                                                                                <%=
+                                                                                    order.orderDate.toLocaleDateString('en-GB')%>
                                                                             </td>
                                                                             <td>
-                                                                                <%= order.orderStatus %>
+                                                                               <%= order.orderStatus %>
                                                                             </td>
                                                                             <td>
-                                                                                <%= order.totalAmount %>
+                                                                                Rs.<%=
+                                                                                    order.totalAmount.toLocaleString()%>
                                                                             </td>
                                                                             <td>
                                                                                 <%= order.paymentMethod %>
+                                                                            </td>
+                                                                            <td>
+                                                                                <% console.log(order.orderStatus); %>
+                                                                                    <% if (order.orderStatus=='placed'
+                                                                                        ||order.orderStatus=='pending'
+                                                                                        ||order.orderStatus=='Shipped' )
+                                                                                        { %>
+                                                                                        <button
+                                                                                            class="btn btn-danger btn-sm "
+                                                                                            onclick="cancelOrder('<%= order._id %>','cancelled')">
+                                                                                            cancel
+                                                                                        </button>
+                                                                                        <% } else if
+                                                                                            (order.orderStatus=='Delivered'
+                                                                                            ){%>
+                                                                                            <button
+                                                                                                class="btn btn-warning btn-sm"
+                                                                                                onclick="returnOrder('<%=order._id%>','return')">
+                                                                                                return
+                                                                                            </button>
+                                                                                            <% } else
+                                                                                                if(order.orderStatus=='cancelled'
+                                                                                                ) {%>
+                                                                                                <span
+                                                                                                    class="badge bg-danger">Cancelled</span>
+                                                                                                <% }else if
+                                                                                                    (order.orderStatus=='return'
+                                                                                                    ) {%>
+                                                                                                    <span
+                                                                                                        class="badge bg-warning">return</span>
+                                                                                                    <% }%>
+
                                                                             </td>
                                                                             <td><a href="/viewOrderSummary/<%= order._id %>"
                                                                                     class="btn-small d-block">View</a>
@@ -473,7 +497,8 @@
                                                 class=" mx-auto d-block" id="imgView" alt="...">
                                             <div class="d-flex justify-content-center">
                                                 <input type="file" name="image" accept=".jpg, .png, .jpeg"
-                                                    id="profilePic" value="<%= userDetails[0].profilePic %>" onchange="viewImage(event)">
+                                                    id="profilePic" value="<%= userDetails[0].profilePic %>"
+                                                    onchange="viewImage(event)">
                                             </div>
                                         </div>
                                     </div>
@@ -498,9 +523,85 @@
 
     <script>
 
-        function viewImage(event){
-        document.getElementById('imgView').src=URL.createObjectURL(event.target.files[0])
-    }
+        function viewImage(event) {
+            document.getElementById('imgView').src = URL.createObjectURL(event.target.files[0])
+        }
+    </script>
+    <script>
+
+        function cancelOrder(orderId, status) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "you are going to cancel the order",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            }).then((confirmed) => {
+                if (confirmed.value) {
+                    $.ajax({
+                        url: '/cancelOrder',
+                        method: 'post',
+                        data: {
+                            orderId: orderId,
+                            status: status
+                        }
+                    }).done(res => {
+                        Swal.fire({
+                            title: "Success",
+                            text: res.message,
+                            icon: "success"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Cancelled",
+                        text: "Your action has been cancelled",
+                        icon: "info"
+                    });
+                }
+            });
+        }
+
+
+        function returnOrder(orderId, status) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "you are going to reurn the order",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            }).then((confirmed) => {
+                if (confirmed.value) {
+                    $.ajax({
+                        url: '/returnOrder',
+                        method: 'post',
+                        data: {
+                            orderId: orderId,
+                            status: status
+                        }
+                    }).done(res => {
+                        Swal.fire({
+                            title: "Success",
+                            text: res.message,
+                            icon: "success"
+                        }).then(() => {
+                            location.reload();
+                        });
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Cancelled",
+                        text: "Your action has been cancelled",
+                        icon: "info"
+                    });
+                }
+            });
+        }
+
     </script>
 
     <%- include('../partials/userFooter') %>

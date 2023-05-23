@@ -38,7 +38,7 @@ router.get('/deleteProduct/:id',isAdminLoggedIn,adminController.DeleteProduct)//
 router.get('/orderList',isAdminLoggedIn,adminController.getOrderList)
 router.get('/getOrderDetails/:id',isAdminLoggedIn,adminController.getOrderDetails)
 router.post('/changeStatus/:id',isAdminLoggedIn,adminController.getChangeStatus)
-
+router.get('/cancelOrder/:id',isAdminLoggedIn,adminController.getCancelOrder)
 
 
 
