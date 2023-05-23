@@ -1,0 +1,221 @@
+<%- include('../partials/userHeader') %>
+
+
+    <main class="main">
+
+        <section class="mt-50 mb-50">
+            <div class="container" style="height: 100vh;">
+                <div class="row">
+                    <div class="col-12">
+                        <% if (cartProduct.products.length!=0) { %>
+                        <div class="table-responsive">
+                            <table class="table-shopping-cart">
+                                <tr class="table_head">
+                                    <th class="column-1 text-center">Product</th>
+                                    <th class="column-2 text-center">name</th>
+                                    <th class="column-3 text-center">Price</th>
+                                    <th class="column-4 text-center">Quantity</th>
+                                    <th class="column-5 text-center">Action</th>
+                                </tr>
+
+
+                                <% cartProduct.products.forEach(product=> { %>
+                                    <tr class="table_row">
+                                        <td class="column-1 text-center">
+                                            <div class="how-itemcart1">
+                                                <img src="/<%= product.productId.prodImage[0] %>" alt="IMG">
+                                            </div>
+                                        </td>
+                                        <td class="column-2 text-center ">
+                                            <%= product.productId.prodName %>
+                                        </td>
+                                        <td class="column-3 text-center ">
+                                            Rs.<%= product.productId.prodPrice.toLocaleString() %>
+                                        </td>
+
+                                        <td class="column-4 text-center">
+
+                                            <button class="btn btn-primary"
+                                                onclick="changeQuantity('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id %>',-1)">-</button>
+                                            <span style="margin: 10px;" id="<%=product.productId._id%>">
+                                                <%= product.quantity %>
+                                            </span>
+                                            <button class="btn btn-primary"
+                                                onclick="changeQuantity('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id  %>',1)">+</button>
+                                        </td>
+                                        <!-- total field -->
+
+                                        <td class="column-5 text-center">
+                                            <button class="btn"
+                                                onclick="deleteProduct('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id  %>')"><i
+                                                    class="fa-solid fa-trash-can" style="color: #ff0000;"></i></button>
+                                        </td>
+
+                                    </tr>
+                                    <% }) %>
+
+                            </table>
+                        </div>
+                        <div class="cart-action text-end">
+                            <a class="btn  mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a>
+                            <a class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+                        </div>
+                        <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div>
+                        <div class="row mb-50">
+                            <div class="col-lg-6 col-md-12">
+                                <div class="mb-30 mt-50">
+                                    <div class="heading_s1 mb-3">
+                                        <h4>Apply Coupon</h4>
+                                    </div>
+                                    <div class="total-amount">
+                                        <div class="left">
+                                            <div class="coupon">
+                                                <form action="#" target="_blank">
+                                                    <div class="form-row row justify-content-center">
+                                                        <div class="form-group col-lg-6">
+                                                            <input class="font-medium" name="Coupon"
+                                                                placeholder="Enter Your Coupon">
+                                                        </div>
+                                                        <div class="form-group col-lg-6">
+                                                            <button class="btn  btn-sm"><i
+                                                                    class="fi-rs-label mr-10"></i>Apply</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <div class="border p-md-4 p-30 border-radius cart-totals">
+                                    <div class="heading_s1 mb-3" >
+                                        <h4>Cart Totals</h4>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="cart_total_label">Cart Subtotal</td>
+                                                    <td class="cart_total_amount  "><span
+                                                            class="font-lg fw-900 text-brand " id="subTotal">
+                                                            Rs. <%= totalPrice.toLocaleString() %>
+                                                        </span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="cart_total_label">Shipping</td>
+                                                    <td class="cart_total_amount "> <i class="ti-gift mr-5"></i> Free
+                                                        Shipping</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="cart_total_label">Total</td>
+                                                    <td class="cart_total_amount "><strong><span
+                                                                class="font-xl fw-900 text-brand " id="grandTotal">
+                                                                Rs.<%= totalPrice.toLocaleString() %>
+                                                            </span></strong>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <a href="/placeOrder" class="text-light" style="text-decoration: none; ">
+                                        <button class="btn" style="background-color: #717fe0;">
+                                            <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <% } else{%>
+                            <div class="col-12" style="margin-top:150px">
+                                <h1 class="text-center">Cart is Empty</h1>
+                            </div>
+                            <% } %>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        //btnChangeQty
+        function changeQuantity(cartId, prodId, userId, count) {
+            let quantity = parseInt(document.getElementById(prodId).innerHTML)
+            count = parseInt(count)
+            $.ajax({
+                url: '/changeQuantity',
+                data: {
+                    cart: cartId,
+                    product: prodId,
+                    userId: userId,
+                    count: count,
+                    quantity: quantity
+                },
+                type: 'post',
+                success: (response) => {
+                    if (response.removeProduct) {
+                        Swal.fire({
+                            title: 'Warning',
+                            text: 'product removed from the cart',
+                            icon: 'success'
+                        }).then(() => {
+                            document.getElementById(prodId).parentNode.parentNode.remove();
+                        })
+                    } else if (response.qtyChanged) {
+                        document.getElementById(prodId).innerHTML = quantity + count
+                        total = response.total;
+                        document.getElementById('subTotal').innerHTML=total;
+                        document.getElementById('grandTotal').innerHTML=total;
+                    }
+                }
+            })
+        }
+
+        //deleting the cart product
+        function deleteProduct(cartId, prodId, userId) {
+            let quantity = parseInt(document.getElementById(prodId).innerHTML)
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You are about to delete this product",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel",
+            }).then((confirmed) => {
+                if (confirmed) {
+                    $.ajax({
+                        url: '/deleteCartProduct',
+                        type: "get",
+                        data: {
+                            cartId: cartId,
+                            prodId: prodId,
+                            userId: userId
+                        },
+
+                        quantity: quantity,
+                        success: (response) => {
+                            Swal.fire({
+                                title: 'Warning',
+                                text: 'product removed from the cart',
+                                icon: 'success'
+                            }).then(() => {
+                                document.getElementById(prodId).parentNode.parentNode.remove();
+                                document.querySelector('.cart_total_amount.total').innerHTML = response.total;
+
+
+                            })
+                        }
+                    })
+                } else {
+                    Swal.fire({
+                        title: "Cancelled",
+                        text: "The user was not blocked",
+                        icon: "info"
+                    });
+                }
+            })
+        }
+
+
+    </script>
+
+    <%- include('../partials/userFooter') %>

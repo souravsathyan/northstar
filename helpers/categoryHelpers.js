@@ -6,22 +6,23 @@ module.exports = {
     addCategory: async (prodDatas) => {
 
         return new Promise(async (resolve, reject) => {
-            let response = {}
-            let existingCat = await categoryDB.findOne({ name:prodDatas.catName })
-            console.log(existingCat+'iiiiiiiiiiiiiiiiiii');
-            if (existingCat) {
-                response.exists = true
-                resolve(response)
-            } else {
-                await categoryDB.create({
-                    name: prodDatas.catName,
-                    description: prodDatas.catDescription,
-                }).then((category) => {
-                    resolve(category)
-                }).catch((error) => {
-                    console.log(error);
-                    reject(error)
-                })
+            try {
+                let response = {}
+                let existingCat = await categoryDB.findOne({ name: prodDatas.catName })
+                console.log(existingCat + 'iiiiiiiiiiiiiiiiiii');
+                if (existingCat) {
+                    response.exists = true
+                    resolve(response)
+                } else {
+                    await categoryDB.create({
+                        name: prodDatas.catName,
+                        description: prodDatas.catDescription,
+                    }).then((category) => {
+                        resolve(category)
+                    })
+                }
+            } catch (error) {
+                reject(error)
             }
         })
 
@@ -37,17 +38,21 @@ module.exports = {
                         resolve(catList)
                     })
             } catch (error) {
-                console.log(error);
+                reject(error)
             }
         })
     },
     //deleting the category from DB
     deleteCategory: (cat_id) => {
         return new Promise(async (resolve, reject) => {
+            try {  
             await categoryDB.deleteOne({ _id: cat_id })
-                .then((response) => {
-                    resolve(response)
-                })
+            .then((response) => {
+                resolve(response)
+            })
+            } catch (error) {
+                reject(error)
+            }
         })
     },
     //getting the edit product page
@@ -56,13 +61,15 @@ module.exports = {
             let findResult = await categoryDB.findById({ _id: catId })
             return findResult
         } catch (error) {
-            console.log(error);
+            throw new Error('Error getting order Address: ' + error);
         }
 
     },
     //updating the category and passing the category with id
     postEditCategory: (catId, catBody) => {
         return new Promise(async (resolve, reject) => {
+            try {
+                
             await categoryDB.findByIdAndUpdate(
                 { _id: catId },
                 {
@@ -71,6 +78,9 @@ module.exports = {
                 }).then((response) => {
                     resolve()
                 })
+            } catch (error) {
+                reject(error)
+            }
         })
     }
 }

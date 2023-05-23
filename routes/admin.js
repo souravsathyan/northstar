@@ -29,11 +29,15 @@ router.get('/deleteCategory/:id',isAdminLoggedIn,adminController.getDeleteCatego
 //*****PRODUCT MANAGEMENT *******/
 router.get('/getProducts',isAdminLoggedIn,adminController.getProductList)//getting product page
 router.get('/addProduct',isAdminLoggedIn,adminController.getAddProduct)//getting adding product
-router.post('/addProduct',multer.upload,adminController.postAddProduct)//post adding product
+router.post('/addProduct',multer.upload.array('images',4),adminController.postAddProduct)//post adding product
 router.get('/editProduct/:id',isAdminLoggedIn,adminController.getEditProduct)//getting edit product page
-router.post('/editProduct/:id',isAdminLoggedIn,multer.upload,adminController.postEditProduct)//posting prodcut edit details 
+router.post('/editProduct/:id',isAdminLoggedIn,multer.upload.array('images',4),adminController.postEditProduct)//posting prodcut edit details 
 router.get('/deleteProduct/:id',isAdminLoggedIn,adminController.DeleteProduct)//deleting the product page
 
+//*****ORDER LIST******* */
+router.get('/orderList',isAdminLoggedIn,adminController.getOrderList)
+router.get('/getOrderDetails/:id',isAdminLoggedIn,adminController.getOrderDetails)
+router.post('/changeStatus/:id',isAdminLoggedIn,adminController.getChangeStatus)
 
 
 

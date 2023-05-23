@@ -54,216 +54,453 @@
                                 </div>
                             </div>
                             <div class="col-md-8">
-                                <div class="tab-content dashboard-content">
-                                    <!-- dashboard content -->
-                                    <div class="tab-pane fade active show" id="dashboard" role="tabpanel"
-                                        aria-labelledby="dashboard-tab">
-                                        <div class="card">
-                                            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                                                style="    width: 100px;
+
+                                <% if (!userDetails[0].setAccount) { %>
+                                    <div class="d-flex justify-content-center">
+                                        <div>
+                                            <button type="button"
+                                                class="cl0  pb-5 bg1 bor1 hov-btn1 p-lr-15 trans-04  btn-lg"
+                                                data-bs-toggle="modal" data-bs-target="#enterProfileDetails">
+                                                Set up your profile
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <% } else {%>
+                                        <div class="tab-content dashboard-content">
+                                            <!-- dashboard content -->
+                                            <div class="tab-pane fade active show" id="dashboard" role="tabpanel"
+                                                aria-labelledby="dashboard-tab">
+                                                <div class="card">
+                                                    <img src="/<%= userDetails[0].profilePic %>"
+                                                        alt="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                                                        style="    width: 150px;
                                                         margin: 10px;
                                                         border-radius: 50px;" class=" mx-auto d-block" alt="...">
-                                            <div class="d-flex justify-content-center"">
-                                         <button class=" btn btn-light btn-sm pb-1">
-                                                <i class="fa-regular fa-pen-to-square"></i>
-                                                </button>
-                                            </div>
-                                            <div class="card-header">
-                                                <h5 class="text-center fs-1">Hello <%= user.name %>! </h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <p>From your account dashboard. you can easily check &amp; view your <a
-                                                        href="#">recent orders</a>, manage your <a href="#">shipping and
-                                                        billing addresses</a> and <a href="#">edit your password and
-                                                        account details.</a></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- orders -->
-                                    <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5 class="mb-0">Your Orders</h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="table-responsive">
-                                                    <table class="table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Order</th>
-                                                                <th>Date</th>
-                                                                <th>Status</th>
-                                                                <th>Total</th>
-                                                                <th>Actions</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>#1357</td>
-                                                                <td>March 45, 2020</td>
-                                                                <td>Processing</td>
-                                                                <td>$125.00 for 2 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>#2468</td>
-                                                                <td>June 29, 2020</td>
-                                                                <td>Completed</td>
-                                                                <td>$364.00 for 5 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>#2366</td>
-                                                                <td>August 02, 2020</td>
-                                                                <td>Completed</td>
-                                                                <td>$280.00 for 3 item</td>
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+
+                                                    <div class=" card-header">
+                                                        <h5 class="text-center fs-1">Hello <%= user.name %>! </h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <p>From your account dashboard. you can easily check &amp; view
+                                                            your <a href="#">recent orders</a>, manage your <a
+                                                                href="#">shipping and
+                                                                billing addresses</a> and <a href="#">edit your password
+                                                                and
+                                                                account details.</a></p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <!-- track your order -->
-                                    <div class="tab-pane fade" id="track-orders" role="tabpanel"
-                                        aria-labelledby="track-orders-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5 class="mb-0">Orders tracking</h5>
+                                            <!-- ORDERS -->
+                                            <div class="tab-pane fade" id="orders" role="tabpanel"
+                                                aria-labelledby="orders-tab">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h5 class="mb-0">Your Orders</h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="table-responsive">
+                                                            <table class="table">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Order</th>
+                                                                        <th>Date</th>
+                                                                        <th>Status</th>
+                                                                        <th>Total</th>
+                                                                        <th>Payment method</th>
+                                                                        <th>Actions</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <% orderDetails.forEach(order=> { %>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <%= order.orderDate.toLocaleDateString('en-GB')%>
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= order.address[0].fname %>
+                                                                                    <%= order.address[0].lname %><br>
+                                                                                        <%= order.address[0].address %>
+                                                                                            <br>
+                                                                                            <%= order.address[0].city %>
+                                                                                                <%= order.address[0].state
+                                                                                                    %>
+                                                                                                    <br>
+                                                                                                    <%= order.address[0].country
+                                                                                                        %>
+                                                                                                        <%= order.address[0].pincode
+                                                                                                            %>
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= order.orderStatus %>
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= order.totalAmount %>
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= order.paymentMethod %>
+                                                                            </td>
+                                                                            <td><a href="/viewOrderSummary/<%= order._id %>"
+                                                                                    class="btn-small d-block">View</a>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <% }) %>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="card-body contact-from-area">
-                                                <p>To track your order please enter your OrderID in the box below and
-                                                    press "Track" button. This was given to you on your receipt and in
-                                                    the confirmation email you should have received.</p>
+                                            <!-- track your order -->
+                                            <div class="tab-pane fade" id="track-orders" role="tabpanel"
+                                                aria-labelledby="track-orders-tab">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h5 class="mb-0">Orders tracking</h5>
+                                                    </div>
+                                                    <div class="card-body contact-from-area">
+                                                        <p>To track your order please enter your OrderID in the box
+                                                            below and
+                                                            press "Track" button. This was given to you on your receipt
+                                                            and in
+                                                            the confirmation email you should have received.</p>
+                                                        <div class="row">
+                                                            <div class="col-lg-8">
+                                                                <form class="contact-form-style mt-30 mb-50" action="#"
+                                                                    method="post">
+                                                                    <div class="input-style mb-20">
+                                                                        <label>Order ID</label>
+                                                                        <input name="order-id"
+                                                                            placeholder="Found in your order confirmation email"
+                                                                            type="text" class="square">
+                                                                    </div>
+                                                                    <div class="input-style mb-20">
+                                                                        <label>Billing email</label>
+                                                                        <input name="billing-email"
+                                                                            placeholder="Email you used during checkout"
+                                                                            type="email" class="square">
+                                                                    </div>
+                                                                    <button class="submit submit-auto-width"
+                                                                        type="submit">Track</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- add address -->
+                                            <div class="tab-pane fade" id="address" role="tabpanel"
+                                                aria-labelledby="address-tab">
                                                 <div class="row">
-                                                    <div class="col-lg-8">
-                                                        <form class="contact-form-style mt-30 mb-50" action="#"
-                                                            method="post">
-                                                            <div class="input-style mb-20">
-                                                                <label>Order ID</label>
-                                                                <input name="order-id"
-                                                                    placeholder="Found in your order confirmation email"
-                                                                    type="text" class="square">
+
+                                                    <% userAddress.forEach(userAddress=> { %>
+                                                        <div class="col-lg-6">
+                                                            <div class="card mb-3 mb-lg-0">
+                                                                <div class="card-header">
+                                                                    <h5 class="mb-0">Your Address</h5>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <address>
+                                                                        <%= userAddress.firstName %>
+                                                                            <%= userAddress.lastName %>
+                                                                                <br>
+                                                                                <%= userAddress.address %>
+                                                                                    <br>
+                                                                                    <%= userAddress.city %>,<%=
+                                                                                            userAddress.state %>
+                                                                                            <br>
+                                                                                            <%= userAddress.country %>
+                                                                                                <br>
+                                                                                                <%= userAddress.pincode
+                                                                                                    %>
+                                                                    </address>
+                                                                    <div class="d-flex justify-content-end">
+                                                                        <a href="/editAddress/<%= userAddress._id %>"
+                                                                            type="button"
+                                                                            class="cl0  pb-5 bg1 bor1 hov-btn1 p-lr-15 trans-04  btn-lg ">Edit</a>
+                                                                        </p>
+                                                                    </div>
+
+                                                                </div>
                                                             </div>
-                                                            <div class="input-style mb-20">
-                                                                <label>Billing email</label>
-                                                                <input name="billing-email"
-                                                                    placeholder="Email you used during checkout"
-                                                                    type="email" class="square">
+                                                        </div>
+                                                        <% }) %>
+
+                                                            <div class="mt-5">
+                                                                <a href="/addAddress">
+                                                                    <button
+                                                                        class="cl0  pb-5 bg1 bor1 hov-btn1 p-lr-15 trans-04  btn-lg ">
+                                                                        Add Address <i
+                                                                            class="fa-solid fa-circle-plus fa-lg"></i>
+                                                                    </button>
+                                                                </a>
                                                             </div>
-                                                            <button class="submit submit-auto-width"
-                                                                type="submit">Track</button>
+                                                </div>
+                                            </div>
+                                            <!-- account details -->
+                                            <div class="tab-pane fade" id="account-detail" role="tabpanel"
+                                                aria-labelledby="account-detail-tab">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h5>Account Details</h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <form method="post" name="enq">
+                                                            <div class="row">
+                                                                <!-- profile pic -->
+                                                                <div>
+                                                                    <img src="/<%= userDetails[0].profilePic %>"
+                                                                        alt="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                                                                        style="width: 150px;
+                                                                margin: 10px;
+                                                                border-radius: 50px;" class=" mx-auto d-block"
+                                                                        alt="...">
+                                                                    <div class="d-flex justify-content-center">
+
+                                                                        <button type="button" class=""
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#changeProPic" style="position: absolute;
+                                                                        top: 27%;">
+                                                                            <i class="fa-solid fa-pen-to-square"></i>
+                                                                        </button>
+
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group col-md-12">
+                                                                    <label>Display Name </label>
+                                                                    <input required="" class="form-control square"
+                                                                        name="dname" type="text"
+                                                                        value="<%= userDetails[0].userDetails[0].name %>"
+                                                                        style="background: #d2d2d4; border-radius: 20px;">
+
+                                                                </div>
+                                                                <div>
+                                                                    <label>Date of Birth</label>
+                                                                    <input type="text" name="DOB" id=""
+                                                                        value="<%= userDetails[0].DOB %>"
+                                                                        style="background: #d2d2d4; border-radius: 20px;">
+                                                                </div>
+                                                                <div class="form-group col-md-12">
+                                                                    <label>Email Address </label>
+                                                                    <input required="" class="form-control square"
+                                                                        name="email" type="email"
+                                                                        value="<%= userDetails[0].userDetails[0].email %>"
+                                                                        style="background: #d2d2d4; border-radius: 20px;">
+                                                                </div>
+
+                                                                <div class="form-group col-md-12">
+                                                                    <label>Mobile </label>
+                                                                    <input required="" class="form-control"
+                                                                        name="mobile" type="text"
+                                                                        value="<%= userDetails[0].userDetails[0].phone %>"
+                                                                        style="background: #d2d2d4; border-radius: 20px;">
+                                                                </div>
+
+                                                                <div class="col-md-12 mt-5 d-flex justify-content-end"
+                                                                    style="margin-top: 20px;">
+                                                                    <button type="button"
+                                                                        class="cl0  pb-5 bg1 bor1 hov-btn1 p-lr-15 trans-04  btn-lg"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#editDetails">
+                                                                        Edit
+                                                                    </button>
+                                                                </div>
+                                                            </div>
                                                         </form>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <!-- add address -->
-                                    <div class="tab-pane fade" id="address" role="tabpanel"
-                                        aria-labelledby="address-tab">
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div class="card mb-3 mb-lg-0">
-                                                    <div class="card-header">
-                                                        <h5 class="mb-0">Billing Address</h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <address>3522 Interstate<br> 75 Business Spur,<br> Sault Ste.
-                                                            <br>Marie, MI 49783
-                                                        </address>
-                                                        <p>New York</p>
-                                                        <a href="#" class="btn-small">Edit</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="card">
-                                                    <div class="card-header">
-                                                        <h5 class="mb-0">Shipping Address</h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <address>4299 Express Lane<br>
-                                                            Sarasota, <br>FL 34249 USA <br>Phone: 1.941.227.4444
-                                                        </address>
-                                                        <p>Sarasota</p>
-                                                        <a href="#" class="btn-small">Edit</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <a href="/addAddress">
-                                                    <button class="btn btn-primary"> Add Address <i
-                                                            class="fa-solid fa-circle-plus fa-lg"></i> </button>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- account details -->
-                                    <div class="tab-pane fade" id="account-detail" role="tabpanel"
-                                        aria-labelledby="account-detail-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5>Account Details</h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <p>Already have an account? <a href="page-login-register.html">Log in
-                                                        instead!</a></p>
-                                                <form method="post" name="enq">
-                                                    <div class="row">
-                                                        <div class="form-group col-md-6">
-                                                            <label>First Name <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="name"
-                                                                type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <label>Last Name <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="phone">
-                                                        </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>Display Name <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="dname"
-                                                                type="text">
-                                                        </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>Email Address <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="email"
-                                                                type="email">
-                                                        </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>Current Password <span
-                                                                    class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="password" type="password">
-                                                        </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>New Password <span class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="npassword" type="password">
-                                                        </div>
-                                                        <div class="form-group col-md-12">
-                                                            <label>Confirm Password <span
-                                                                    class="required">*</span></label>
-                                                            <input required="" class="form-control square"
-                                                                name="cpassword" type="password">
-                                                        </div>
-                                                        <div class="col-md-12">
-                                                            <button type="submit" class="btn btn-fill-out submit"
-                                                                name="submit" value="Submit">Save</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
+
+                                        <% } %>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Button trigger modal -->
+
+
+            <!-- Modal for new profile set up if not -->
+            <div class="modal fade" id="enterProfileDetails" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <form method="post" action="/postSetUpProfile" id="myForm" name="enq"
+                                    enctype="multipart/form-data">
+                                    <div class="row">
+                                        <!-- profile pic -->
+                                        <div>
+                                            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                                                style="    width: 100px;margin: 10px;border-radius: 50px;"
+                                                class=" mx-auto d-block" alt="...">
+                                            <div class="d-flex justify-content-center">
+                                                <input type="file" name="image" accept=".jpg, .png, .jpeg"
+                                                    id="profilePic">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-md-12">
+                                            <label>Display Name </label>
+                                            <input required="" class="form-control square" name="name" type="text"
+                                                value="" style="background: #d2d2d4; border-radius: 20px;">
+
+                                        </div>
+                                        <div>
+                                            <label>Date of Birth</label>
+                                            <input type="text" name="DOB" id=""
+                                                style="background: #d2d2d4; border-radius: 20px;">
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label>Email Address </label>
+                                            <input required="" class="form-control square" name="email" type="email"
+                                                value="" style="background: #d2d2d4; border-radius: 20px;">
+                                        </div>
+
+                                        <div class="form-group col-md-12">
+                                            <label>Mobile </label>
+                                            <input required="" class="form-control" name="mobile" type="text" value=""
+                                                style="background: #d2d2d4; border-radius: 20px;">
+                                        </div>
+
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for editing profile-->
+            <div class="modal fade" id="editDetails" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <form method="post" action="/postEditProfile" id="editProfile" name="enq"
+                                    enctype="multipart/form-data">
+                                    <div class="row">
+                                        <!-- profile pic -->
+                                        <div>
+                                            <img src="/<%= userDetails[0].profilePic %>"
+                                                style="    width: 100px;margin: 10px;border-radius: 50px;"
+                                                class=" mx-auto d-block" alt="...">
+                                            <div class="d-flex justify-content-center">
+                                                <input type="file" name="image" accept=".jpg, .png, .jpeg"
+                                                    id="profilePic" value="<%= userDetails[0].profilePic %>">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-md-12">
+                                            <label>Display Name </label>
+                                            <input required="" class="form-control square" name="name" type="text"
+                                                value="<%= userDetails[0].userDetails[0].name %>"
+                                                style="background: #d2d2d4; border-radius: 20px;">
+
+                                        </div>
+                                        <div>
+                                            <label>Date of Birth</label>
+                                            <input type="text" name="DOB" id="" value="<%= userDetails[0].DOB %>"
+                                                style="background: #d2d2d4; border-radius: 20px;">
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label>Email Address </label>
+                                            <input required="" class="form-control square" name="email" type="email"
+                                                value="<%= userDetails[0].userDetails[0].email %>"
+                                                style="background: #d2d2d4; border-radius: 20px;">
+                                        </div>
+
+                                        <div class="form-group col-md-12">
+                                            <label>Mobile </label>
+                                            <input required="" class="form-control" name="mobile" type="text"
+                                                value="<%= userDetails[0].userDetails[0].phone %>"
+                                                style="background: #d2d2d4; border-radius: 20px;">
+                                        </div>
+
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- modal for changing profile pic -->
+            <div class="modal fade" id="changeProPic" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">change profile picture</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <form method="post" action="/postChangeImage" id="changePic" name="enq"
+                                    enctype="multipart/form-data">
+                                    <div class="row">
+                                        <!-- profile pic -->
+                                        <div>
+                                            <img src="/<%= userDetails[0].profilePic %>"
+                                                style="    width: 100px;margin: 10px;border-radius: 50px;"
+                                                class=" mx-auto d-block" id="imgView" alt="...">
+                                            <div class="d-flex justify-content-center">
+                                                <input type="file" name="image" accept=".jpg, .png, .jpeg"
+                                                    id="profilePic" value="<%= userDetails[0].profilePic %>" onchange="viewImage(event)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
         </section>
     </main>
+
+    <script>
+
+        function viewImage(event){
+        document.getElementById('imgView').src=URL.createObjectURL(event.target.files[0])
+    }
+    </script>
 
     <%- include('../partials/userFooter') %>

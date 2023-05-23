@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const userController = require('../controller/userController')
 const {isUserLogin,userAuthenticationCheck} = require('../middlewares/userSession')
+const multer = require('../middlewares/multer')
 
 
 /* GET users listing. */
@@ -49,15 +50,31 @@ router.post('/changeQuantity',isUserLogin,userController.postChangeQty)
 router.get('/deleteCartProduct',isUserLogin,userController.deleteCartProduct)
 //placing the order
 router.get('/placeOrder',isUserLogin,userController.getPlaceOrder)
+router.post('/proceedToCheckout',isUserLogin,userController.postCheckout)
+//order placing success - final
+router.get('/placeOrderFinal',isUserLogin,userController.getPlaceOrderFinal)
+//view Order details
+router.get('/viewOrderSummary/:id',isUserLogin,userController.getOrderSummaryPage)
+
+
+
+//**USER PROFILE*/
 //user account
 router.get('/userProfile',isUserLogin,userController.getUserAccount)
 //add address
 router.get('/addAddress',isUserLogin,userController.getUserAdAddress)
 //post address
 router.post('/postAddAddress',isUserLogin,userController.postUserAdAddress)
-
-
-
+//proceed to checkout
+router.get('/editAddress/:id',isUserLogin,userController.getEditAddress)
+//post Edit Address
+router.post('/postEditAddress',isUserLogin,userController.postEditAddress)
+//set up account details
+router.post('/postSetUpProfile',isUserLogin,multer.upload.single('image'),userController.postUserProfile)
+//edit profile details
+// router.post('/postEditProfile',isUserLogin,multer.upload.single('image'),userController.postEditProfile)
+//editing user image
+router.post('/postChangeImage',isUserLogin,multer.upload.single('image'),userController.postChangeUserImage)
 
 
 

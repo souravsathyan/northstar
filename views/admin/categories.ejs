@@ -6,80 +6,103 @@
                 <%=message %>
             </div>
             <% } %>
-        <div class="content-header">
+                <div class="content-header">
                     <div>
                         <h2 class="content-title card-title">Categories </h2>
                     </div>
+                    <div>
 
-        </div>
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3">
+                        <a href="/admin/addProduct" class="btn btn-primary btn-sm rounded" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal">Create new</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
 
-                        <% var category %><!--all category-->
+                            <!-- category displaying in tables -->
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table " id="categoryTable">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Name</th>
+                                                <th>Description</th>
+                                                <!-- <th>Slug</th>
+                                            <th>Order</th> -->
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% category.forEach((category,index)=> { %>
 
-                            <form action="/admin/addCategory" method="post" onsubmit="return validateForm()"
-                                id="catForm">
-                                <span id="catError" class="text-danger"></span>
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Name</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_name"
-                                        name="catName" />
+                                                <tr>
+                                                    <td>
+                                                        <%= index+1 %>
+                                                    </td>
+                                                    <td><b>
+                                                            <%= category.name %>
+                                                        </b></td>
+                                                    <td class="fs-6">
+                                                        <%= category.description %>
+                                                    </td>
+                                                    <td width="20%">
+
+                                                        <button class="btn btn-sm rounded btn-danger"
+                                                            onclick="deleteCategory('<%= category._id %>')">Delete</button>
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Description</label>
-                                    <input type="text" placeholder="type here" class="form-control"
-                                        name="catDescription" id="textField">
-                                </div>
-                                <div class="d-grid">
-                                    <button class="btn btn-primary" type="submit">Create
-                                        category</button>
+                            </div> <!-- .col// -->
+                        </div> <!-- .row // -->
+                    </div> <!-- card body .// -->
+                </div> <!-- card .// -->
+    </section>
+    <!-- Button trigger modal -->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <% var category %><!--all category-->
+
+                        <form action="/admin/addCategory" method="post" onsubmit="return validateForm()" id="catForm">
+                            <span id="catError" class="text-danger"></span>
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Name</label>
+                                <input type="text" placeholder="Type here" class="form-control" id="product_name"
+                                    name="catName" />
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Description</label>
+                                <input type="text" placeholder="type here" class="form-control" name="catDescription"
+                                    id="textField">
+                            </div>
+                            <div class="d-grid">
+                                <button class="btn btn-primary" type="submit">Create
+                                    category</button>
                                 </div>
                             </form>
-                    </div>
-                    <!-- category displaying in tables -->
-                    <div class="col-md-9">
-                        <div class="table-responsive">
-                            <table class="table " id="categoryTable">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Name</th>
-                                        <th>Description</th>
-                                        <!-- <th>Slug</th>
-                                            <th>Order</th> -->
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% category.forEach((category,index)=> { %>
-
-                                        <tr>
-                                            <td>
-                                                <%= index+1 %>
-                                            </td>
-                                            <td><b>
-                                                    <%= category.name %>
-                                                </b></td>
-                                            <td class="fs-6">
-                                                <%= category.description %>
-                                            </td>
-                                            <td width="20%">
-
-                                                <button class="btn btn-sm rounded btn-danger"
-                                                    onclick="deleteCategory('<%= category._id %>')">Delete</button>
-                                            </td>
-                                        </tr>
-                                        <% }) %>
-                                </tbody>
-                            </table>
                         </div>
-                    </div> <!-- .col// -->
-                </div> <!-- .row // -->
-            </div> <!-- card body .// -->
-        </div> <!-- card .// -->
-    </section> <!-- content-main end// -->
+                        <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- content-main end// -->
 
     <script>
         // form validation

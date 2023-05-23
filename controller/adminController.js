@@ -5,6 +5,8 @@ const categoryHelpers = require("../helpers/categoryHelpers");
 const productHelpers = require("../helpers/productHelpers");
 const products = require("../model/productModel");
 const uploads = require("../middlewares/multer");
+const orderModel = require("../model/orderModel");
+const userHelpers = require("../helpers/userHelpers");
 
 const adminCredentials = {
   name: "Admin",
@@ -97,12 +99,12 @@ module.exports = {
   getCategory: (req, res) => {
     try {
       categoryHelpers.getAllCategory().then((category) => {
-        
+
         res.render("admin/categories", {
-           category,
-           message: req.flash('message')
-          
-          });
+          category,
+          message: req.flash('message')
+
+        });
       }
       )
     } catch (error) {
@@ -191,4 +193,40 @@ module.exports = {
     res.redirect("/admin/getProducts");
 
   },
+
+
+  //ORDERlIST
+  getOrderList: (req, res) => {
+    adminHelpers.getAllOrder()
+      .then((orderDetails) => {
+        res.render("admin/orderList",{
+          orderDetails
+        })
+      }).catch((error)=>{
+        console.log(error);
+      })
+  },
+  getOrderDetails: async(req,res)=>{
+    let orderId = req.params.id 
+    let addressDetails = await adminHelpers.getOrderAddressDetails(orderId)
+    let itemDetails = await adminHelpers.getOrderItemDetails(orderId)
+    console.log(addressDetails[0].totalAmount);
+      res.render('admin/orderDetails',{
+        addressDetails, 
+        itemDetails,
+      })
+  },
+  getChangeStatus:(req,res)=>{
+    console.log(req.body, req.params.id);
+     adminHelpers.getChangeStatus(req.body,req.params.id)
+     .then((response)=>{
+       res.json({status:true})
+     })
+     .catch((error)=>{
+      res.json({status:false})
+     })
+    
+  }
+
+
 }

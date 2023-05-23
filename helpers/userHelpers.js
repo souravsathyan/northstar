@@ -9,6 +9,8 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const addressData = require('../model/addressModel')
 const cartDB = require('../model/cartModel');
 const { resolveInclude } = require('ejs');
+const orderData = require('../model/orderModel')
+const userProfileData = require('../model/userDetailsModel');
 
 module.exports = {
     //user sign up 
@@ -35,17 +37,16 @@ module.exports = {
                 }
             } catch (error) {
                 console.error(error.message);
+                reject(error)
             }
 
         })
     },
     //user login
     doLogin: (userData) => {
-        console.log(userData);
         return new Promise(async (resolve, reject) => {
             //finds user by the email
             let user = await usersData.findOne({ email: userData.Email })
-            console.log(user);
             let response = {}
             try {
                 if (user) {
@@ -70,13 +71,15 @@ module.exports = {
                             console.log('login failure1');
                             resolve({ status: false })
                         }
+                    }).catch((error) => {
+                        reject(error)
                     })
                 } else {
                     console.log('login failure2');
                     resolve({ status: false })
                 }
             } catch (error) {
-                console.error(error);
+                reject(error)
             }
 
         })
@@ -122,12 +125,13 @@ module.exports = {
                 }
             })
         } catch (error) {
-            console.log(error);
+            reject(error)
         }
     },
     //updating password
     newPassword: (newPwd, userID) => {
         return new Promise(async (resolve, reject) => {
+
             try {
                 // const objectId = new ObjectId(userID);
                 //bycrypting the new password
@@ -142,22 +146,23 @@ module.exports = {
                     })
                 console.log('password updated');
             } catch (error) {
-                console.log(error);
+                reject(error)
             }
+
         })
     },
     //getting the product
     getProductView: (prodId) => {
         return new Promise(async (resolve, reject) => {
-            await productData.findById({ _id: prodId })
-                .then((response) => {
-                    console.log(response + 'got product');
-                    resolve(response)
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
-
+            try {
+                await productData.findById({ _id: prodId })
+                    .then((response) => {
+                        console.log(response + 'got product');
+                        resolve(response)
+                    })
+            } catch (error) {
+                reject(error)
+            }
         })
     },
     //******CART MANAGEMENT ******/
@@ -174,6 +179,7 @@ module.exports = {
                     console.log('exisiting cart');
                     let exisitingProd = existingCart.products.findIndex(product => product.productId == prodId)
                     if (exisitingProd !== -1) {
+                        //if existing prod inc qty by 1
                         await cartDB.updateOne(
                             { userId: new ObjectId(userId), 'products.productId': new ObjectId(prodId) },
                             {
@@ -182,6 +188,7 @@ module.exports = {
                         )
                         console.log('quantity increased');
                     } else {
+                        //if not existing then push the prodId to array
                         await cartDB.updateOne(
                             { userId: new ObjectId(userId) },
                             {
@@ -191,6 +198,7 @@ module.exports = {
                     }
                     resolve()
                 } else {
+                    //if no cart create the cart with userId and prodId
                     await cartDB.create({
                         userId: new ObjectId(userId),
                         products: [{ productId: new ObjectId(prodId) }]
@@ -205,68 +213,78 @@ module.exports = {
         })
     },
     //GETTING THE CART COUNT
-    getCartCount: (userId) => {
-        return new Promise(async (resolve, reject) => {
-            let cart = await cartDB.findOne({ userId: new ObjectId(userId) })
-            let count = 0
-            console.log(cart);
-            if (cart) {
-                count = cart.prodId.length
-                console.log('cart count is ' + count);
-            }
-            console.log('resolved cart count');
-            resolve(count)
-        })
+    getCartCount: async (userId) => {
+        //using the aggregation
+        //first matching the doc with user Id 
+        //then creating each doc for elems in products Array
+        //then grouping the sum of Quantity = gets the total qty
+        let cartCount = await cartDB.aggregate([
+            { $match: { userId: new ObjectId(userId) } },
+            { $unwind: '$products' },
+            { $group: { _id: null, totalQty: { $sum: '$products.quantity' } } }
+        ])
+        return cartCount
     },
+    //TODO cart count
     //GETTING THE CART PAGE
     getCart: (userID) => {
         return new Promise((resolve, reject) => {
-            cartDB.findOne({ userId: userID }).populate({
-                path: 'products.productId',
-                model: productData,
-                select: 'prodName prodDescription prodBrand prodPrice prodQuantity prodColor prodSize prodImage'
-            }).then((cart) => {
-                console.log(cart, 'its the cart page');
-                resolve(cart)
-            }).catch((error) => {
-                reject()
-            })
-
+            try {
+                cartDB.findOne({ userId: userID }).populate({
+                    path: 'products.productId',
+                    model: productData,
+                    select: 'prodName prodDescription prodBrand prodPrice prodQuantity prodColor prodSize prodImage'
+                }).then((cart) => {
+                    console.log(cart, 'its the cart page');
+                    resolve(cart)
+                })
+            } catch (error) {
+                reject(error)
+            }
         })
     },
     //CHANGING THE CART QTY WHEN BTN CLICKED
     changeQtyByButton: (cartId, prodId, count, quantity) => {
         count = parseInt(count)
         quantity = parseInt(quantity)
+        //if cart Qty is 1 and the count is -1 then we remove the product from the cart
         return new Promise(async (resolve, reject) => {
-            if (count == -1 && quantity == 1) {
-                cartDB.updateOne(
-                    { _id: new ObjectId(cartId) },
-                    {
-                        $pull: { products: { productId: new ObjectId(prodId) } }
-                    }).then((response) => {
-                        resolve({ removeProduct: true })
+            try {
+                if (count == -1 && quantity == 1) {
+                    cartDB.updateOne(
+                        { _id: new ObjectId(cartId) },
+                        {
+                            $pull: { products: { productId: new ObjectId(prodId) } }
+                        }).then((response) => {
+                            resolve({ removeProduct: true })
+                        })
+                } else {
+                    //else we update the cart qty by the count we get
+                    cartDB.updateOne(
+                        {
+                            _id: new ObjectId(cartId),
+                            'products.productId': new ObjectId(prodId)
+                        },
+                        {
+                            $inc: { 'products.$.quantity': count }
+                        }
+                    ).then((response) => {
+                        resolve({ qtyChanged: true })
                     })
-            } else {
-                cartDB.updateOne(
-                    {
-                        _id: new ObjectId(cartId),
-                        'products.productId': new ObjectId(prodId)
-                    },
-                    {
-                        $inc: { 'products.$.quantity': count }
-                    }
-                ).then((response) => {
-                    resolve({ qtyChanged: true })
-                }).catch((error) => {
-                    reject(error)
-                })
+                }
+            } catch (error) {
+                reject(error)
             }
         })
     },
 
     //FINDING THE TOTAL AMT
     getTotalAmt: async (userId) => {
+        //marching the docs with userID 
+        //creating seperate docs for products Array
+        //lookup with product collection -> retrieving the product details in 'product field'
+        //using project taking product price product Name and in totalPrice field we multiply the prodQty with the price for each doc
+        //by grouping we find the sum of totalPrice of all doc 
         try {
             let total = await cartDB.aggregate([
                 {
@@ -301,11 +319,167 @@ module.exports = {
             ])
             return total[0].total
         } catch (error) {
-            console.log(error);
+            reject(error)
         }
 
     },
+    addAddress: (data, userId) => {
+        return new Promise((resolve, reject) => {
+            try {
+                addressData.create({
+                    firstName: data.fname,
+                    lastName: data.lname,
+                    mobile: data.phone,
+                    emailId: data.email,
+                    address: data.address,
+                    city: data.city,
+                    state: data.state,
+                    country: data.country,
+                    pincode: data.pincode,
+                    userId: new ObjectId(userId)
+                }).then((response) => {
+                    resolve()
+                })
+            } catch (error) {
+                reject(error)
+            }
+        })
+    },
+    setupUserProfile:(userId,data,image)=>{
+        return new Promise(async (resolve, reject) => {
+          try {
+                const userProfile = await userProfileData.create({
+                    userId: userId,
+                    profilePic:image.filename,
+                    DOB:data.DOB,
+                    setAccount:true
+                })
+                resolve();
+            } catch (error) {
+                reject(error)
+          }  
+        })
+    },
+    //TODO edit full user profile 
+    // editProfile:(userId,data,newImage)=>{
+    //     return new Promise( async (resolve, reject) => {
+    //         if (newImg) {
+    //             updatedProduct = await products.findByIdAndUpdate(
+    //               { _id: userId },
+    //               {
+    //                DOB:data.DOB,
 
-    
+    //               }
+    //             );
+    //           } else {
+    //             //if no product image then update the project with no image
+    //             updatedProduct = await products.findByIdAndUpdate(
+    //               { _id: prodId },
+    //               {
+                    
+    //               }
+    //             );
+    //           }
+    //     })
+    // },
+
+    placeOrder: (order, products, total, userId) => {
+        console.log(order, products, total, userId);
+        return new Promise(async (resolve, reject) => {
+            try {
+                let status = order.paymentType === 'COD' ? 'placed' : 'pending'
+                const orderDetails = await orderData.create({
+                    address: order.address,
+                    orderedItems: products,
+                    user: userId,
+                    totalAmount: total,
+                    paymentMethod: order['paymentType'],
+                    orderStatus: status,
+                    orderDate: new Date()
+                })
+                await cartDB.findOneAndRemove({ userId: new ObjectId(userId) })
+                const response = {
+                    status: true,
+                    orderId: orderDetails._id
+                }
+                resolve(response)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    },
+    getCartProducts: async (userId) => {
+        let cart = await cartDB.findOne({ userId: new ObjectId(userId) })
+        return cart.products
+    },
+    getUserOrders: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let orderDetails = await orderData.aggregate([
+                    { $match: { user: new ObjectId(userId) } },
+                    {
+                        $lookup: {
+                            from: 'addresses',
+                            localField: 'address',
+                            foreignField: '_id',
+                            as: 'address'
+                        }
+                    },
+                    {
+                        $lookup: {
+                            from: 'products',
+                            localField: 'orderedItems.productId',
+                            foreignField: '_id',
+                            as: 'products'
+                        }
+                    }
+                ])
+                resolve(orderDetails)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    },
+    getUserDetails: async (userId) => {
+        let userDetails =await userProfileData.aggregate([
+            {$match:{userId: new ObjectId(userId)}},
+            {
+                $lookup:{
+                    from: 'myusers',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'userDetails'
+                }
+            }
+        ])
+        console.log(userDetails);
+        return userDetails
+    },
+    updateAddress: (newAddress) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                await addressData.findByIdAndUpdate(
+                    { _id: new ObjectId(newAddress.addressId) },
+                    {
+                        firstName: newAddress.fname,
+                        lastName: newAddress.lname,
+                        mobile: newAddress.phone,
+                        emailId: newAddress.email,
+                        address: newAddress.address,
+                        city: newAddress.city,
+                        state: newAddress.state,
+                        country: newAddress.country,
+                        pincode: newAddress.pincode,
+
+                    }).then((response) => {
+                        resolve()
+                    })
+            } catch (error) {
+                reject(error)
+            }
+        })
+    },
+
+
 }
 

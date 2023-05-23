@@ -128,12 +128,10 @@ input:focus::-moz-placeholder {
 }
 
 a {
-  color: #088178;
+  color: #717fe0;
 }
 
-a:hover {
-  color: #046963;
-}
+
 
 /*--- Common Classes---------------------*/
 ::-moz-selection {
@@ -279,7 +277,7 @@ input[type=number]:focus,
 }
 
 .text-brand {
-  color: #088178 !important;
+  color: #717fe0 !important;
 }
 
 .text-primary {
@@ -322,9 +320,7 @@ input[type=number]:focus,
   color: #a2a2a2 !important;
 }
 
-.bg-brand {
-  background-color: #088178 !important;
-}
+
 
 .bg-primary {
   background-color: #3f81eb !important;
@@ -2240,11 +2236,11 @@ label {
 
 .dashboard-menu ul li a.active {
   color: #fff;
-  background-color: #088178;
+  background-color: #717fe0;
 }
 
 .dashboard-menu ul li a.active i {
-  color: #fff;
+  color: #717fe0;
 }
 
 .dashboard-menu ul li:not(:last-child) {
@@ -9922,3 +9918,9 @@ span.fi-rs-apps {
 .zoomContainer{ z-index: 9999;}
 .zoomWindow{ z-index: 9999;}
 /*# sourceMappingURL=main.css.map */
+
+
+.formFields-background{
+  background: #d2d2d4; 
+  border-radius: 20px;
+}

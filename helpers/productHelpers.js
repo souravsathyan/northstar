@@ -24,14 +24,15 @@ module.exports = {
           });
       });
     } catch (error) {
-      console.log(error);
+      reject(error)
     }
   },
   //adding the prodct to dataBase
-    addProduct: (productData, image) => {
-      return new Promise(async (resolve, reject) => {
+  addProduct: (productData, image) => {
+    return new Promise(async (resolve, reject) => {
+      try {
         //ceating producte
-        console.log(image+'-----------------');
+        console.log(image + '-----------------');
         await products
           .create({
             prodName: productData.prodName,
@@ -46,61 +47,69 @@ module.exports = {
             prodCategory: productData.prodCategory,
           })
           .then((response) => {
-            
             resolve(response);
           })
-          .catch((error) => {
-            console.log(error);
-          });
-      });
-    },
+      } catch (error) {
+        reject(error)
+      }
+    });
+  },
   //updating the product
   postEditProduct: async (prodBody, prodId, newImg) => {
-    let updatedProduct;
-    console.log(newImg+'neeeeeeeeeeeeeeeeeeeeeeeeeeeewIMageeeeee');
-    if (newImg) {
-      updatedProduct = await products.findByIdAndUpdate(
-        { _id: prodId },
-        {
-          prodName: prodBody.prodName,
-          prodDescription: prodBody.prodDescription,
-          prodBrand: prodBody.prodBrand,
-          prodPrice: prodBody.prodPrice,
-          prodPromoPrice: prodBody.proPromoPrice,
-          prodQuantity: prodBody.prodQty,
-          prodColor: prodBody.prodColor,
-          prodSize: prodBody.prodSize,
-          prodImage: [newImg.filename],
-          prodCategory: prodBody.prodCategory,
-        }
-      );
-    } else {
-      //if no product image then update the project with no image
-      updatedProduct = await products.findByIdAndUpdate(
-        { _id: prodId },
-        {
-          prodName: prodBody.prodName,
-          prodDescription: prodBody.prodDescription,
-          prodBrand: prodBody.prodBrand,
-          prodPrice: prodBody.prodPrice,
-          prodPromoPrice: prodBody.proPromoPrice,
-          prodQuantity: prodBody.prodQty,
-          prodColor: prodBody.prodColor,
-          prodSize: prodBody.prodSize,
-          prodCategory: prodBody.prodCategory,
-        }
-      );
+    try {
+
+      let updatedProduct;
+      console.log(newImg + 'neeeeeeeeeeeeeeeeeeeeeeeeeeeewIMageeeeee');
+      if (newImg) {
+        updatedProduct = await products.findByIdAndUpdate(
+          { _id: prodId },
+          {
+            prodName: prodBody.prodName,
+            prodDescription: prodBody.prodDescription,
+            prodBrand: prodBody.prodBrand,
+            prodPrice: prodBody.prodPrice,
+            prodPromoPrice: prodBody.proPromoPrice,
+            prodQuantity: prodBody.prodQty,
+            prodColor: prodBody.prodColor,
+            prodSize: prodBody.prodSize,
+            prodImage: [newImg.filename],
+            prodCategory: prodBody.prodCategory,
+          }
+        );
+      } else {
+        //if no product image then update the project with no image
+        updatedProduct = await products.findByIdAndUpdate(
+          { _id: prodId },
+          {
+            prodName: prodBody.prodName,
+            prodDescription: prodBody.prodDescription,
+            prodBrand: prodBody.prodBrand,
+            prodPrice: prodBody.prodPrice,
+            prodPromoPrice: prodBody.proPromoPrice,
+            prodQuantity: prodBody.prodQty,
+            prodColor: prodBody.prodColor,
+            prodSize: prodBody.prodSize,
+            prodCategory: prodBody.prodCategory,
+          }
+        );
+      }
+      return updatedProduct
+    } catch (error) {
+      throw new Error('Error getting order Address: ' + error);
     }
-    return updatedProduct
-  }, 
-  //getting product by category
-  getProductByCategory:  (catId) => {  
-      return new Promise(async(resolve, reject) => {
-        await products.aggregate([{ $match: { prodCategory: new ObjectId(catId) } }])
-        .then((response)=>{
-          resolve(response)
-        })
-      })
   },
-  
+  //getting product by category
+  getProductByCategory: (catId) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await products.aggregate([{ $match: { prodCategory: new ObjectId(catId) } }])
+          .then((response) => {
+            resolve(response)
+          })
+      } catch (error) {
+        reject(error)
+      }
+    })
+  },
+
 };

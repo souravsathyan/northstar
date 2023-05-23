@@ -5,104 +5,366 @@
 
         <section class="mt-50 mb-50">
             <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h4 class="ps-4 mt-1 mb-3 dark-bg">Select Address.</h4>
-                        <div class="col ">
-                            <div class="card mb-4 mb-lg-1">
-                                <div class="card-header">
-                                    <h5 class="mb-0">Billing Address</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="billing-address"
-                                            id="address1"
-                                            value="3522 Interstate 75 Business Spur, Sault Ste. Marie, MI 49783"
-                                            checked>
-                                        <label class="form-check-label" for="address1">
-                                            <address>3522 Interstate<br> 75 Business Spur,<br> Sault Ste. <br>Marie, MI
-                                                49783</address>
-                                            <p>New York</p>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <button class="btn btn-primary"> Add Address <i
-                                        class="fa-solid fa-circle-plus fa-lg"></i> </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="order_review">
-                            <div class="mb-20">
-                                <h4 class="fs-3">Your Orders.</h4>
-                            </div>
-                            <div class="table-responsive order_table text-center">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th colspan="2">Product</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="image product-thumbnail"><img
-                                                    src="assets/imgs/shop/product-1-1.jpg" alt="#"></td>
-                                            <td>
-                                                <h5><a href="shop-product-full.html">Yidarton Women Summer Blue</a></h5>
-                                                <span class="product-qty">x 2</span>
-                                            </td>
-                                            <td>$180.00</td>
-                                        </tr>
 
-                                        <tr>
-                                            <th>SubTotal</th>
-                                            <td class="product-subtotal" colspan="2">$280.00</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Shipping</th>
-                                            <td colspan="2"><em>Free Shipping</em></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Total</th>
-                                            <td colspan="2" class="product-subtotal"><span
-                                                    class="font-xl text-brand fw-900">$280.00</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                            <div class="payment_method mb-5">
-                                <div class="mb-25">
-                                    <h5>Payment</h5>
-                                </div>
-                                <div class="payment_option">
-                                    <div class="form-check">
-                                        <input class="form-check-input " type="radio" name="flexRadioDefault"
-                                            id="flexRadioDefault1" checked>
-                                        <label class="form-check-label fw-bolder" for="flexRadioDefault1">
-                                            Online payment
-                                        </label>
+                <form action="" id="checkout-form">
+                    <div class="row">
+
+                        <!-- ADDRESS BODY -->
+                        <div class="col-md-6">
+                            <h4 class="ps-4 mt-1 mb-3 dark-bg">Select Address.</h4>
+                            <div class="col ">
+                                <div class="card mb-4 mb-lg-1">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Billing Address</h5>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                            id="flexRadioDefault2">
-                                        <label class="form-check-label fw-bolder" for="flexRadioDefault2">
-                                            Cash on Delivery
-                                        </label>
+                                    <div class="card-body">
+
+                                        <% userAddress.forEach(userAddress=> { %>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio"
+                                                    value="<%= userAddress._id %>" name="address" id="address1" checked>
+                                                <label class="form-check-label" for="address1">
+                                                    <address>
+                                                        <%= userAddress.firstName %>
+                                                            <%= userAddress.lastName %>
+                                                                <br>
+                                                                <%= userAddress.address %>
+                                                                    <br>
+                                                                    <%= userAddress.city %>,pin: <%= userAddress.pincode
+                                                                            %>
+                                                                            <br>
+                                                                            <%= userAddress.state %>,<%=
+                                                                                    userAddress.country %>
+                                                                                    <br>
+                                                                                    <%= userAddress.mobile %>
+                                                    </address>
+
+                                                </label>
+                                            </div>
+                                            <% }) %>
+
                                     </div>
                                 </div>
+                                <div>
+                                    <button class="cl0   bg1 bor1 hov-btn1  trans-04  btn-lg" type="button" data-bs-toggle="modal"
+                                        data-bs-target="#addAddressModal"> Add Address <i
+                                            class="fa-solid fa-circle-plus fa-lg"></i> </button>
+                                </div>
                             </div>
-                            <button class="btn btn-primary mt-5" style="width:100%">Proceed to Checkout</button>
+                        </div>
+
+                        <!-- ORDER DETAILS -->
+                        <div class="col-md-6">
+                            <div class="order_review">
+                                <div class="mb-20">
+                                    <h4 class="fs-3">Your Orders.</h4>
+                                </div>
+                                <div class="table-responsive order_table text-center">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">Product</th>
+                                                <th>Qty</th>
+                                                <th>Total</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                                <% cartProducts.products.forEach(product=> { %>
+                                                    <tr>
+                                                        <td class="image product-thumbnail"><img
+                                                                src="/<%= product.productId.prodImage[0] %>" alt="#"
+                                                                width="50px" height="50px"></td>
+                                                        <td>
+                                                            <h5>
+                                                                <%= product.productId.prodName %>
+                                                            </h5>
+
+                                                        </td>
+                                                        <td>
+                                                            <span class="product-qty">
+                                                                <%= product.quantity %>
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                           Rs.<%= product.quantity*product.productId.prodPrice %>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                                        <tr>
+                                                            <th>SubTotal</th>
+                                                            <td></td>
+                                                            <td class="product-subtotal text-right" colspan="2">Rs.<%= totalPrice.toLocaleString() %>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Shipping</th>
+                                                            <td></td>
+                                                            <td colspan="2" class="text-right"><em>Free Shipping</em>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Total</th>
+                                                            <td></td>
+                                                            <td colspan="2" class="product-subtotal text-right"><span
+                                                                    class="font-xl  text-brand fw-900">
+                                                                    Rs.<%= totalPrice.toLocaleString() %>
+                                                                </span></td>
+                                                        </tr>
+                                                        
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                                <div class="payment_method mb-5">
+                                    <div class="mb-25">
+                                        <h5>Payment</h5>
+                                    </div>
+                                    <div class="payment_option">
+                                        <div class="form-check">
+                                            <input class="form-check-input " type="radio" value="ONLINE"
+                                                name="paymentType" id="paymentType">
+                                            <label class="form-check-label fw-bolder" id="paymentType"
+                                                for="flexRadioDefault1">
+                                                Online payment
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" value="COD" name="paymentType">
+                                            <label class="form-check-label fw-bolder" for="flexRadioDefault2">
+                                                Cash on Delivery
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <button class="cl0   bg1 bor1 hov-btn1  trans-04  btn-lg " type="submit" style="width:100%">Proceed to
+                                    Checkout</button>
+
+                            </div>
                         </div>
                     </div>
-                </div>
+                </form>
 
             </div>
+            </div>
+            <!-- ADDRESS MODAL -->
+
+            <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" id="myForm">
+                                <div class="form-group">
+                                    <input type="text" name="fname" id="fname" placeholder="First name *">
+                                    <span id="fnameErr" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="lname" id="lname" placeholder="Last name *">
+                                    <span id="lnameErr" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="address" id="address" placeholder="Address *">
+                                    <span id="addErr" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="city" id="city" placeholder="City / Town *">
+                                    <span id="cityErr" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="state" id="state" placeholder="State*">
+                                    <span id="stateErr" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="country" id="country" placeholder="country">
+                                    <span id="countryErr" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="pincode" id="pincode" placeholder="Postcode / ZIP *">
+                                    <span id="pinErr" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" name="phone" id="phone" placeholder="Phone *">
+                                    <span id="phoneErr" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="email" id="email" placeholder="Email address *">
+                                    <span id="emailErr" class="text-danger"></span>
+                                </div>
+                                <input type="hidden" name="userId" value="<%= user._id %>">
+                                <div>
+
+                                </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
+
+    <script>
+        $('#myForm').submit((e) => {
+            e.preventDefault();
+            if (validateForm()) {
+                $.ajax({
+                    url: '/postAddAddress',
+                    method: 'post',
+                    data: $('#myForm').serialize(),
+                    success: (response) => {
+                        if (response) {
+                            $('#addAddressModal').modal('hide');
+                            Swal.fire({
+                                title: "Address created",
+                                text: "Your form has been submitted successfully.",
+                                icon: "success",
+                                confirmButton: {
+                                    text: "OK",
+                                    className: "btn btn-primary"
+                                }
+                            }).then(() => {
+                                location.reload()
+                            })
+                        }
+                    }
+                })
+            }
+        });
+
+        function validateForm() {
+
+            let isValid = true;
+            // Validate firstname and lastname
+            const fnameValue = $('#fname').val().trim();
+            const lnameValue = $('#lname').val().trim();
+
+            if (fnameValue === '' || lnameValue === '') {
+                $('#fnameErr').html('Enter first name');
+                $('#lnameErr').html('Enter last name');
+                isValid = false;
+            } else {
+                $('#fnameErr').html('');
+                $('#lnameErr').html('');
+            }
+
+            // Validate address
+            const addValue = $('#address').val().trim();
+            if (addValue === '') {
+                $('#addErr').html('Enter address');
+                isValid = false;
+            } else {
+                $('#addErr').html('');
+            }
+
+            // Validate city
+            const cityValue = $('#city').val().trim();
+            if (cityValue === '') {
+                $('#cityErr').html('Enter city');
+                isValid = false;
+            } else {
+                $('#cityErr').html('');
+            }
+
+            // Validate state
+            const stateValue = $('#state').val().trim();
+            if (stateValue === '') {
+                $('#stateErr').html('Enter state');
+                isValid = false;
+            } else {
+                $('#stateErr').html('');
+            }
+
+            // Validate email
+            const emailValue = $('#email').val().trim();
+            if (emailValue === '') {
+                $('#emailErr').html('Email id is required');
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+                $('#emailErr').html('Type a valid email id');
+                isValid = false;
+            } else {
+                $('#emailErr').html('');
+            }
+
+            // Validate pincode
+            const pinValue = $('#pincode').val().trim();
+            if (pinValue === '') {
+                $('#pinErr').html('Enter pincode');
+                isValid = false;
+            } else {
+                $('#pinErr').html('');
+            }
+
+            // Validate phone
+            const phoneValue = $('#phone').val().trim();
+            if (phoneValue === '') {
+                $('#phoneErr').html('Mobile number is required');
+                isValid = false;
+            } else if (!/^\d{10}$/.test(phoneValue)) {
+                $('#phoneErr').html('Type a valid mobile number');
+                isValid = false;
+            } else {
+                $('#phoneErr').html('');
+            }
+
+            return isValid;
+
+        }
+
+
+        //*****proceed to checkout********//
+        $("#checkout-form").submit((e) => {
+            e.preventDefault();
+            $.ajax({
+                url: '/proceedToCheckout',
+                method: 'post',
+                data: $('#checkout-form').serialize(),
+                success: function (response) {
+                    if (response.error) {
+                        Swal.fire({
+                            title: "Error",
+                            text: response.message,
+                            icon: "error"
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Placing Order",
+                            text: "You are about to place this order",
+                            icon: "info",
+                            showCancelButton: true,
+                            confirmButtonText: "OK",
+                            cancelButtonText: "Cancel",
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '/placeOrderFinal?orderId=' + response.orderId;
+                            } else {
+                                Swal.fire({
+                                    title: "Action Cancelled",
+                                    text: "Action cancelled.",
+                                    icon: "info",
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+
+
+
+
+
+    </script>
 
     <%- include('../partials/userFooter') %>

@@ -12,11 +12,14 @@ const addressModel=mongoose.Schema({
     state:String,
     country:String,
     pincode:Number,
-    userId:ObjectId
-
+    userId:ObjectId,
+    selectedAddress:{
+        type:Boolean,
+        default:false
+    }
 },{
     timestamps:true
 })
 
 
-module.exports=mongoose.model('address',addressModel)
+module.exports=mongoose.model('addresses',addressModel)

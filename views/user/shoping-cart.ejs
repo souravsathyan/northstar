@@ -19,57 +19,59 @@
 
 	<div class="container">
 		<div class="row">
-			<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
-				<div class="m-l-25 m-r--38 m-lr-0-xl">
+			<div class="mt-5 col-lg-10 col-xl-7 m-lr-auto m-b-50">
+				<div class="mt-5 mb-5">
+					<h4>Shopping Cart <i class="fa-solid fa-cart-shopping" style="color: #000000;"></i></h4>
+				</div>
+				<div class="m-l-25 m-r--38 mt-5  m-lr-0-xl">
 					<div class="wrap-table-shopping-cart">
-
-						<table class="table-shopping-cart">
-							<tr class="table_head">
-								<th class="column-1">Product</th>
-								<th class="column-2 text-center">name</th>
-								<th class="column-3">Price</th>
-								<th class="column-4">Quantity</th>
-								<th class="column-6">Action</th>
-							</tr>
-
-
-							<% cartProduct.products.forEach(product=> { %>
-								<tr class="table_row">
-									<td class="column-1">
-										<div class="how-itemcart1">
-											<img src="/<%= product.productId.prodImage[0] %>" alt="IMG">
-										</div>
-									</td>
-									<td class="column-2 text-center">
-										<%= product.productId.prodName %>
-									</td>
-									<td class="column-3">
-										<%= product.productId.prodPrice %>
-									</td>
-
-									<td class="column-4 ">
-
-										<button class="btn btn-primary"
-											onclick="changeQuantity('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id %>',-1)">-</button>
-										<span style="margin: 10px;" id="<%=product.productId._id%>">
-											<%= product.quantity %>
-										</span>
-										<button class="btn btn-primary"
-											onclick="changeQuantity('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id  %>',1)">+</button>
-									</td>
-									<!-- total field -->
-									
-									<td class="column-6 text-center">
-										<button class="btn"
-											onclick="deleteProduct('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id  %>')"><i
-												class="fa-solid fa-trash-can" style="color: #ff0000;"></i></button>
-									</td>
-
+						<% if (cartProduct) { %>
+							<table class="table-shopping-cart">
+								<tr class="table_head">
+									<th class="column-1">Product</th>
+									<th class="column-2 text-center">name</th>
+									<th class="column-3">Price</th>
+									<th class="column-4">Quantity</th>
+									<th class="column-5">Action</th>
 								</tr>
-								<% }) %>
 
 
-						</table>
+								<% cartProduct.products.forEach(product=> { %>
+									<tr class="table_row">
+										<td class="column-1">
+											<div class="how-itemcart1">
+												<img src="/<%= product.productId.prodImage[0] %>" alt="IMG">
+											</div>
+										</td>
+										<td class="column-2 text-center">
+											<%= product.productId.prodName %>
+										</td>
+										<td class="column-3">
+											<%= product.productId.prodPrice.toLocaleString() %>
+										</td>
+
+										<td class="column-4 ">
+
+											<button class="btn btn-primary"
+												onclick="changeQuantity('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id %>',-1)">-</button>
+											<span style="margin: 10px;" id="<%=product.productId._id%>">
+												<%= product.quantity %>
+											</span>
+											<button class="btn btn-primary"
+												onclick="changeQuantity('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id  %>',1)">+</button>
+										</td>
+										<!-- total field -->
+
+										<td class="column-5 text-center">
+											<button class="btn"
+												onclick="deleteProduct('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id  %>')"><i
+													class="fa-solid fa-trash-can" style="color: #ff0000;"></i></button>
+										</td>
+
+									</tr>
+									<% }) %>
+
+							</table>
 					</div>
 					<!-- COUPON -->
 					<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
@@ -102,7 +104,7 @@
 						</div>
 
 						<div class="size-209">
-							
+
 							<span class="mtext-110 cl2" id="total">
 								Rs. <%= totalPrice %>
 							</span>
@@ -111,17 +113,25 @@
 
 					<a href="/placeOrder" class="btn btn-success" style="width: 100%;"> Place Order
 					</a>
-					</form>
+
 				</div>
+				<% } else{%>
+					<div class="text-center" style="height: 70vh;">
+						<h1 class="pt-5">Cart is Empty</h1>
+						<a href="/getShopProducts">
+							<button class="btn btn-primary" style="margin-top: 50px;"> Shop products</button>
+						</a>
+					</div>
+					<% }%>
 			</div>
 		</div>
 	</div>
 
 	<script>
 		//btnChangeQty
-		function changeQuantity(cartId, prodId, userId,count) {
+		function changeQuantity(cartId, prodId, userId, count) {
 			let quantity = parseInt(document.getElementById(prodId).innerHTML)
-			 
+
 			count = parseInt(count)
 			$.ajax({
 				url: '/changeQuantity',
@@ -134,25 +144,29 @@
 				},
 				type: 'post',
 				success: (response) => {
-					if (response.removeProduct ) {
+					if (response.removeProduct) {
 						Swal.fire({
 							title: 'Warning',
 							text: 'product removed from the cart',
 							icon: 'success'
 						}).then(() => {
 							document.getElementById(prodId).parentNode.parentNode.remove();
+							document.getElementById('cartCount').dataset.notify = response.cartCount;
+
 						})
 					} else if (response.qtyChanged) {
 						document.getElementById(prodId).innerHTML = quantity + count
 						document.getElementById('total').innerHTML = response.total
-						
+						document.getElementById('cartCount').dataset.notify = response.cartCount;
+
+
 					}
 				}
 			})
 		}
 
 		//deleting the cart product
-		function deleteProduct(cartId, prodId,userId) {
+		function deleteProduct(cartId, prodId, userId) {
 			let quantity = parseInt(document.getElementById(prodId).innerHTML)
 			Swal.fire({
 				title: "Are you sure?",
@@ -169,10 +183,10 @@
 						data: {
 							cartId: cartId,
 							prodId: prodId,
-							userId:userId
+							userId: userId
 						},
-						
-						quantity:quantity,
+
+						quantity: quantity,
 						success: (response) => {
 							Swal.fire({
 								title: 'Warning',
@@ -181,6 +195,8 @@
 							}).then(() => {
 								document.getElementById('total').innerHTML = response.total
 								document.getElementById(prodId).parentNode.parentNode.remove();
+								document.getElementById('cartCount').dataset.notify = response.cartCount;
+
 							})
 						}
 					})
@@ -197,38 +213,3 @@
 
 	</script>
 	<%- include('../partials/userFooter') %>
-
-
-		<!-- 
-		Swal.fire({
-		title: "Are you sure?",
-		text: "You are about to unblock this user",
-		icon: "warning",
-		showCancelButton: true,
-		confirmButtonText: "Un-Block",
-		cancelButtonText: "Cancel",
-		}).then((confirmed) => {
-		if (confirmed) {
-		$.ajax({
-		url: '/admin/unblockUser/' + userId,
-		type: 'get'
-		}).done(res => {
-		Swal.fire({
-		title: "Success",
-		text: res.message,
-		icon: "success"
-		}).then(() => {
-		location.reload();
-		});
-		});
-		} else {
-		Swal.fire({
-		title: "Cancelled",
-		text: "The user was not blocked",
-		icon: "info"
-		});
-		}
-		})
-		.catch((error) => {
-		swal('Error', `An error occured:${error}`, 'error')
-		}) -->

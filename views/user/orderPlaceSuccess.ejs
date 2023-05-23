@@ -1,0 +1,36 @@
+<%- include('../partials/userHeader') %>
+
+  <div class="container" style="height:100vh">
+    <div class="row  justify-content-center">
+      <div class="col-auto ">
+        <div class="card" style="margin-top: 10vh;">
+          <div class="card-body d-flex justify-content-center  flex-column d-flex align-items-center"
+            style="height:50vh">
+            <img src="/icons/96673-success.gif" alt="" srcset="" width="150px" height="150px">
+            <h1 class="card-title text-center">Order placed successfully!</h1>
+            <p class="card-text fs-4 text-center">Your order has been placed successfully. <br> You can view your order
+              details by clicking
+              the button below.</p>
+
+            <div class="d-flex justify-content-between" style="margin-top: 25px;">
+              <div class="me-3">
+                <a href="/viewOrderSummary/<%= orderId %>">
+                  <button class="cl0   bg1 bor1 hov-btn1  trans-04  btn-lg">View Order Summary</button>
+                </a>
+              </div>
+              <div class="ms-3">
+                <a href="/">
+                  <button class="cl0   bg1 bor1 hov-btn1  trans-04  btn-lg"> Continue Shopping</button>
+                </a>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <%- include('../partials/userFooter') %>

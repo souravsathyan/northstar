@@ -1,0 +1,54 @@
+<%- include('../partials/userHeader') %>
+    <div class="container" style="height: 100vh;">
+        <div class="row justify-content-center">
+            <div class="col " style="width: 90%; margin-top: 50px;">
+                <h2>Order Details.</h2>
+                <table class="table table-responsive table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Address</th>
+                            <th>Mobile</th>
+                            <th>Pincode</th>
+                            <th>Amount</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                            <th>View</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% orderDetails.forEach(order=> { %>
+                            <tr>
+                                <td>
+                                    <%= order.orderDate %>
+                                </td>
+                                <td>
+                                    <%= order.address[0].fname %> <%= order.address[0].lname %><br>
+                                    <%= order.address[0].address %><br>
+                                    <%= order.address[0].city %> <%= order.address[0].state %><br>
+                                    <%= order.address[0].country %> <%= order.address[0].pincode %>
+                                  </td>
+                                  <td><%= order.address[0].mobile %></td>
+                                <td>
+                                    <%= order.address.pincode %>
+                                </td>
+                                <td>
+                                    <%= order.totalAmount %>
+                                </td>
+                                <td>
+                                    <%= order.paymentMethod %>
+                                </td>
+                                <td>
+                                    <%= order.orderStatus %>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary">View Product</button>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/userFooter') %>

@@ -7,33 +7,41 @@
             </div>
             <form method="post" id="myForm">
                 <div class="form-group">
-                    <input type="text" required="" name="fname" placeholder="First name *">
+                    <input type="text" name="fname" id="fname" placeholder="First name *">
+                    <span id="fnameErr" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="text" required="" name="lname" placeholder="Last name *">
+                    <input type="text" name="lname" id="lname" placeholder="Last name *">
+                    <span id="lnameErr" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="text" name="address" required="" placeholder="Address *">
+                    <input type="text" name="address" id="address" placeholder="Address *">
+                    <span id="addErr" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input required="" type="text" name="city" placeholder="City / Town *">
+                    <input type="text" name="city" id="city" placeholder="City / Town *">
+                    <span id="cityErr" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input required="" type="text" name="state" placeholder="State*">
+                    <input type="text" name="state" id="state" placeholder="State*">
+                    <span id="stateErr" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input required="" type="text" name="country" placeholder="country">
+                    <input type="text" name="country" id="country" placeholder="country">
+                    <span id="countryErr" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input required="" type="text" name="pincode" placeholder="Postcode / ZIP *">
+                    <input type="text" name="pincode" id="pincode" placeholder="Postcode / ZIP *">
+                    <span id="pinErr" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input required="" type="number" name="phone" placeholder="Phone *">
+                    <input type="number" name="phone" id="phone" placeholder="Phone *">
+                    <span id="phoneErr" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input required="" type="text" name="email" placeholder="Email address *">
+                    <input type="text" name="email" id="email" placeholder="Email address *">
+                    <span id="emailErr" class="text-danger"></span>
                 </div>
-                <input type="hidden" name="userId" value="<%= user._id %>">
                 <div>
                     <button class="btn btn-primary d-block m-auto" type="submit" style="width:50%">Submit</button>
                 </div>
@@ -42,45 +50,118 @@
         </div>
     </div>
 
+
     <script>
-        const form = document.getElementById('myForm');
-        form.addEventListener('submit', (e) => {
+        $('#myForm').submit((e) => {
             e.preventDefault();
+            if (validateForm()) {
+                $.ajax({
+                    url: '/postAddAddress',
+                    method: 'post',
+                    data: $('#myForm').serialize(),
+                    success: (response) => {
+                        if (response) {
+                            Swal.fire({
+                                title: "Address created",
+                                text: "Your form has been submitted successfully.",
+                                icon: "success",
+                                confirmButton: {
+                                    text: "OK",
+                                    className: "btn btn-primary"
+                                }
+                            }).then(() => {
+                                window.location.href = "/userProfile";
+                            });
+                        }
+                    }
+                })
+            }
+        });
 
-            const formData = new FormData(form);
-            const url = '/postAddAddress';
-            const data = {};
+        function validateForm() {
 
-            for (let [key, value] of formData.entries()) {
-                data[key] = value;
+            let isValid = true;
+            // Validate firstname and lastname
+            const fnameValue = $('#fname').val().trim();
+            const lnameValue = $('#lname').val().trim();
+
+            if (fnameValue === '' || lnameValue === '') {
+                $('#fnameErr').html('Enter first name');
+                $('#lnameErr').html('Enter last name');
+                isValid = false;
+            } else {
+                $('#fnameErr').html('');
+                $('#lnameErr').html('');
             }
 
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    Swal.fire({
-                        title: "Form submitted",
-                        text: "Your form has been submitted successfully.",
-                        icon: "success",
-                        confirmButton: {
-                            text: "OK",
-                            className: "btn btn-primary"
-                        }
-                    }).then(() => {
-                        window.location.href = "/userProfile";
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        });
+            // Validate address
+            const addValue = $('#address').val().trim();
+            if (addValue === '') {
+                $('#addErr').html('Enter address');
+                isValid = false;
+            } else {
+                $('#addErr').html('');
+            }
+
+            // Validate city
+            const cityValue = $('#city').val().trim();
+            if (cityValue === '') {
+                $('#cityErr').html('Enter city');
+                isValid = false;
+            } else {
+                $('#cityErr').html('');
+            }
+
+            // Validate state
+            const stateValue = $('#state').val().trim();
+            if (stateValue === '') {
+                $('#stateErr').html('Enter state');
+                isValid = false;
+            } else {
+                $('#stateErr').html('');
+            }
+
+            // Validate email
+            const emailValue = $('#email').val().trim();
+            if (emailValue === '') {
+                $('#emailErr').html('Email id is required');
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+                $('#emailErr').html('Type a valid email id');
+                isValid = false;
+            } else {
+                $('#emailErr').html('');
+            }
+
+            // Validate pincode
+            const pinValue = $('#pincode').val().trim();
+            if (pinValue === '') {
+                $('#pinErr').html('Enter pincode');
+                isValid = false;
+            } else {
+                $('#pinErr').html('');
+            }
+
+            // Validate phone
+            const phoneValue = $('#phone').val().trim();
+            if (phoneValue === '') {
+                $('#phoneErr').html('Mobile number is required');
+                isValid = false;
+            } else if (!/^\d{10}$/.test(phoneValue)) {
+                $('#phoneErr').html('Type a valid mobile number');
+                isValid = false;
+            } else {
+                $('#phoneErr').html('');
+            }
+
+            return isValid;
+
+        }
+
+
     </script>
 
 
+
+    
     <%- include('../partials/userFooter') %>
