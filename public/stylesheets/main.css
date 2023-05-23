@@ -3690,3 +3690,26 @@ input.num-product::-webkit-inner-spin-button {
   width: 110px;
   height: 33px;
 }
+
+/* .img-container:hover img{
+  transform: scale(1.9)
+}
+
+.img-container{
+  overflow: hidden;
+}
+
+.img-container img{
+  transition:transform 2s
+} */
+
+.img-container{
+  overflow:hidden;
+}
+
+.img-container img{
+  transform-origin: center;
+  object-fit: cover;
+  
+}
+
