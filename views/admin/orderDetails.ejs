@@ -34,7 +34,6 @@
                         <button class="btn btn-primary" id="saveBtn"
                             onclick="changeStatus('<%= addressDetails[0]._id %>')">
                             Save</button>
-
                     </div>
                 </div>
             </header> <!-- card-header end// -->
@@ -119,10 +118,6 @@
                                                         <td colspan="4">
                                                             <article class="float-end">
                                                                 <dl class="dlist">
-                                                                    <dt>Subtotal:</dt>
-                                                                    <dd></dd>
-                                                                </dl>
-                                                                <dl class="dlist">
                                                                     <dt>Shipping cost:</dt>
                                                                     <dd>free shipping</dd>
                                                                 </dl>
@@ -171,45 +166,49 @@
                                         <div class="mb-3 box shadow-sm bg-light d-flex align-items-center">
                                             <h6 class="me-5">Order Status</h6>
                                             <% if (itemDetails[0].orderStatus=='pending' ) { %>
-                                                <span class="badge rounded-pill bg-warning  ">
+                                                <span class="badge rounded-pill bg-warning order-status fs-5 ">
                                                     <%= itemDetails[0].orderStatus %>
                                                 </span>
                                                 <% } else if (itemDetails[0].orderStatus=='placed' ) {%>
-                                                    <span class="badge rounded-pill bg-primary  ">
+                                                    <span class="badge rounded-pill bg-primary order-status fs-5  ">
                                                         <%= itemDetails[0].orderStatus %>
                                                     </span>
                                                     <% } else if (itemDetails[0].orderStatus=='Shipped' ) {%>
-                                                        <span class="badge rounded-pill bg-info  ">
+                                                        <span class="badge rounded-pill bg-info order-status fs-5 ">
                                                             <%= itemDetails[0].orderStatus %>
                                                         </span>
                                                         <% } else if (itemDetails[0].orderStatus=='cancelled' ) { %>
-                                                            <span class="badge rounded-pill bg-danger ">
+                                                            <span class="badge rounded-pill bg-danger order-status fs-5 ">
                                                                 <%= itemDetails[0].orderStatus %>
                                                             </span>
                                                             <% } else if (itemDetails[0].orderStatus=='Delivered' ) {%>
-                                                                <span class="badge rounded-pill bg-success ">
+                                                                <span class="badge rounded-pill bg-success order-status fs-5">
                                                                     <%= itemDetails[0].orderStatus %>
                                                                 </span>
-                                                                <% } %>
+                                                                <% }else if(itemDetails[0].orderStatus=='return' ) {%>
+                                                                    <span class="badge rounded-pill bg-warning order-status fs-5 ">
+                                                                        <%= itemDetails[0].orderStatus %>
+                                                                    </span>
+                                                                    <% } %>
                                         </div>
 
                                     </div>
                                     <div class="h-25 pt-4 box shadow-sm bg-light d-flex align-items-center ">
-                                        <% if (itemDetails[0].orderStatus=='pending' ||
-                                            itemDetails[0].orderStatus=='Shipped' ||
-                                            itemDetails[0].orderStatus=='placed' ) { %>
-                                                
-                                            <h6 class="me-5">Action :</h6>
-                                            <button class="btn btn-danger"
-                                                onclick="cancelOrder('<%= itemDetails[0]._id%>')">
-                                                cancel Order</button>
+                                        <% if (itemDetails[0].orderStatus==' pending' ||
+                                                                    itemDetails[0].orderStatus=='Shipped' ||
+                                                                    itemDetails[0].orderStatus=='placed' ) { %>
 
-                                            <% } %>
+                                                                    <h6 class="me-5">Action :</h6>
+                                                                    <button class="btn btn-danger"
+                                                                        onclick="cancelOrder('<%= itemDetails[0]._id%>')">
+                                                                        cancel Order</button>
+
+                                                                    <% } %>
+                                        </div>
                                     </div>
                     </div>
                 </div>
             </div>
-        </div>
     </section>
 
 
@@ -236,7 +235,7 @@
             })
         }
     </script>
-    
+
     <script>
         function cancelOrder(orderId) {
             Swal.fire({

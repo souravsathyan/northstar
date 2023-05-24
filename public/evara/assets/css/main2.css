@@ -9924,3 +9924,9 @@ span.fi-rs-apps {
   background: #d2d2d4; 
   border-radius: 20px;
 }
+
+.order-status{
+  /* font-size: 19px; */
+  width: 110px;
+  height: 33px;
+}

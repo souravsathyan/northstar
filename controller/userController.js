@@ -509,7 +509,14 @@ module.exports = {
             userHelpers.placeOrder(req.body, products, totalPrice, userId)
                 .then((response) => {
                     const orderId = response.orderId
-                    res.json({ status: true, orderId: orderId });
+                    if(req.body['paymentType']=='COD'){
+                        res.json({ codSucess: true, orderId: orderId });
+                    }else{
+                        userHelpers.generateRazorpay(orderId,totalPrice).then((response)=>{
+                            console.log(response,'its in the controller post chekout');
+                            res.json({orders:response.orders,status:true,orderId:response.orderId})
+                        })
+                    }
                 })
                 .catch((error) => {
                     res.json({ error: true, message: "There was an error placing your order. Please try again later." });
@@ -538,6 +545,7 @@ module.exports = {
             const orderId = req.params.id
             const user = req.session.user
             const userId = req.session.user._id
+            console.log(orderId,'its the order id');
             const addressDetails = await adminHelpers.getOrderAddressDetails(orderId)
             const itemDetails = await adminHelpers.getOrderItemDetails(orderId)
             //getting the orderDetails by matching the userID and Lookup ing the product and address collection to order Collection
@@ -573,6 +581,22 @@ module.exports = {
             .catch((error) => {
                 res.status(500).render('error', { error });
             })
+    },
+    //******PAYMENT */
+    getVerifyPayment:async (req,res)=>{
+        console.log(req.body);
+        let orderId = req.body['order[receipt]']
+        console.log(orderId,'iiiiiiiiiiiiiiii');
+        await userHelpers.verifyPayment(req.body)
+        .then(()=>{
+            userHelpers.changePaymentStatus(orderId)
+            .then(()=>{
+                console.log(orderId);
+                res.json({status:true,orderId:orderId})
+            })
+        }).catch((err)=>{
+            console.log(err);
+            res.json({status:false,errMsg:'payment failed'})
+        })
     }
-
 }

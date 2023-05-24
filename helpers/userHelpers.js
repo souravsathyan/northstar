@@ -11,6 +11,11 @@ const cartDB = require('../model/cartModel');
 const { resolveInclude } = require('ejs');
 const orderData = require('../model/orderModel')
 const userProfileData = require('../model/userDetailsModel');
+const Razorpay = require('razorpay');
+var instance = new Razorpay({
+    key_id: process.env.RAZ_KEY_ID,
+    key_secret: process.env.RAZ_SECRET_KEY,
+});
 
 module.exports = {
     //user sign up 
@@ -317,9 +322,13 @@ module.exports = {
                     }
                 }
             ])
-            return total[0].total
+            if (total.length > 0) {
+                return total[0].total;
+            } else {
+                // Cart is empty, return 0
+            }
         } catch (error) {
-            reject(error)
+            throw new Error('Error getting order Address: ' + error);
         }
 
     },
@@ -345,19 +354,19 @@ module.exports = {
             }
         })
     },
-    setupUserProfile:(userId,data,image)=>{
+    setupUserProfile: (userId, data, image) => {
         return new Promise(async (resolve, reject) => {
-          try {
+            try {
                 const userProfile = await userProfileData.create({
                     userId: userId,
-                    profilePic:image.filename,
-                    DOB:data.DOB,
-                    setAccount:true
+                    profilePic: image.filename,
+                    DOB: data.DOB,
+                    setAccount: true
                 })
                 resolve();
             } catch (error) {
                 reject(error)
-          }  
+            }
         })
     },
     //TODO edit full user profile 
@@ -376,7 +385,7 @@ module.exports = {
     //             updatedProduct = await products.findByIdAndUpdate(
     //               { _id: prodId },
     //               {
-                    
+
     //               }
     //             );
     //           }
@@ -397,7 +406,7 @@ module.exports = {
                     orderStatus: status,
                     orderDate: new Date()
                 })
-                await cartDB.findOneAndRemove({ userId: new ObjectId(userId) })
+                // await cartDB.findOneAndRemove({ userId: new ObjectId(userId) })
                 const response = {
                     status: true,
                     orderId: orderDetails._id
@@ -441,10 +450,10 @@ module.exports = {
         })
     },
     getUserDetails: async (userId) => {
-        let userDetails =await userProfileData.aggregate([
-            {$match:{userId: new ObjectId(userId)}},
+        let userDetails = await userProfileData.aggregate([
+            { $match: { userId: new ObjectId(userId) } },
             {
-                $lookup:{
+                $lookup: {
                     from: 'myusers',
                     localField: 'userId',
                     foreignField: '_id',
@@ -479,6 +488,71 @@ module.exports = {
             }
         })
     },
+
+
+    generateRazorpay: (orderid, totalPrice) => {
+        return new Promise((resolve, reject) => {
+            var options = {
+                amount: totalPrice,  // amount in the smallest currency unit
+                currency: "INR",
+                receipt: orderid.toString()
+            };
+            instance.orders.create(options, function (err, order) {
+                console.log(order);
+                const response = {
+                    orderId: orderid,
+                    orders: order
+                }
+                resolve(response)
+            });
+        })
+    },
+    // verifyPayment:(details)=>{
+    //     return new Promise((resolve, reject) => {
+    //         const crypto = require('crypto')
+    //         let hmac = crypto.createHmac('sha256',`${process.env.RAZ_SECRET_KEY}`)
+    //         hmac.update(details['payment[razorpay_order_id]']+'|' + details['payment[razorpay_payment_id]']);
+    //         hmac=hmac.digest('hex')
+    //         if(hmac==['payment[razorpay_signature']){
+    //             console.log('its success');
+    //             resolve()
+    //         }else{
+    //             console.log('its rejected');
+    //             reject()
+    //         }
+    //     })
+    // },
+    verifyPayment: (details) => {
+        return new Promise((resolve, reject) => {
+            let body =details['payment[razorpay_order_id]']+'|' + details['payment[razorpay_payment_id]'];
+            var crypto = require("crypto");
+            var expectedSignature = crypto.createHmac('sha256', `${process.env.RAZ_SECRET_KEY}`)
+                .update(body.toString())
+                .digest('hex');
+            // var response = { "signatureIsValid": "false" }
+            if (expectedSignature === details['payment[razorpay_signature]']){
+                console.log('its success');
+                resolve()
+            }else{
+                console.log('its failure');
+                reject()
+            }
+        });
+    },
+    changePaymentStatus: (orderId) => {
+        return new Promise(async (resolve, reject) => {
+            console.log(orderId, 'int he change status');
+            await orderData.updateOne(
+                { _id: new ObjectId(orderId) },
+                {
+                    $set: { orderStatus: 'placed' }
+                }
+            ).then(() => {
+                console.log("status changed");
+                resolve()
+            })
+        })
+    }
 
 
 }

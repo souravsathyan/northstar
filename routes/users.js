@@ -80,8 +80,8 @@ router.post('/cancelOrder',isUserLogin,userController.getChangeStatusOrder)
 //return order
 router.post('/returnOrder',isUserLogin,userController.getChangeStatusOrder) 
 
-
-
+//verify payment
+router.post('/verifyPayment',isUserLogin,userController.getVerifyPayment)
 
 
 

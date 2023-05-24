@@ -7,7 +7,7 @@
             <div class="container" style="height: 100vh;">
                 <div class="row">
                     <div class="col-12">
-                        <% if (cartProduct.products.length!=0) { %>
+                        <% if (cartProduct && cartProduct.products && cartProduct.products.length > 0) { %>
                         <div class="table-responsive">
                             <table class="table-shopping-cart">
                                 <tr class="table_head">

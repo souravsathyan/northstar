@@ -46,8 +46,8 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <button class="cl0   bg1 bor1 hov-btn1  trans-04  btn-lg" type="button" data-bs-toggle="modal"
-                                        data-bs-target="#addAddressModal"> Add Address <i
+                                    <button class="cl0   bg1 bor1 hov-btn1  trans-04  btn-lg" type="button"
+                                        data-bs-toggle="modal" data-bs-target="#addAddressModal"> Add Address <i
                                             class="fa-solid fa-circle-plus fa-lg"></i> </button>
                                 </div>
                             </div>
@@ -71,48 +71,49 @@
                                         </thead>
                                         <tbody>
 
-                                                <% cartProducts.products.forEach(product=> { %>
-                                                    <tr>
-                                                        <td class="image product-thumbnail"><img
-                                                                src="/<%= product.productId.prodImage[0] %>" alt="#"
-                                                                width="50px" height="50px"></td>
-                                                        <td>
-                                                            <h5>
-                                                                <%= product.productId.prodName %>
-                                                            </h5>
+                                            <% cartProducts.products.forEach(product=> { %>
+                                                <tr>
+                                                    <td class="image product-thumbnail"><img
+                                                            src="/<%= product.productId.prodImage[0] %>" alt="#"
+                                                            width="50px" height="50px"></td>
+                                                    <td>
+                                                        <h5>
+                                                            <%= product.productId.prodName %>
+                                                        </h5>
 
-                                                        </td>
-                                                        <td>
-                                                            <span class="product-qty">
-                                                                <%= product.quantity %>
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                           Rs.<%= product.quantity*product.productId.prodPrice %>
+                                                    </td>
+                                                    <td>
+                                                        <span class="product-qty">
+                                                            <%= product.quantity %>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        Rs.<%= product.quantity*product.productId.prodPrice %>
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                                    <tr>
+                                                        <th>SubTotal</th>
+                                                        <td></td>
+                                                        <td class="product-subtotal text-right" colspan="2">Rs.<%=
+                                                                totalPrice.toLocaleString() %>
                                                         </td>
                                                     </tr>
-                                                    <% }) %>
-                                                        <tr>
-                                                            <th>SubTotal</th>
-                                                            <td></td>
-                                                            <td class="product-subtotal text-right" colspan="2">Rs.<%= totalPrice.toLocaleString() %>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Shipping</th>
-                                                            <td></td>
-                                                            <td colspan="2" class="text-right"><em>Free Shipping</em>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Total</th>
-                                                            <td></td>
-                                                            <td colspan="2" class="product-subtotal text-right"><span
-                                                                    class="font-xl  text-brand fw-900">
-                                                                    Rs.<%= totalPrice.toLocaleString() %>
-                                                                </span></td>
-                                                        </tr>
-                                                        
+                                                    <tr>
+                                                        <th>Shipping</th>
+                                                        <td></td>
+                                                        <td colspan="2" class="text-right"><em>Free Shipping</em>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Total</th>
+                                                        <td></td>
+                                                        <td colspan="2" class="product-subtotal text-right"><span
+                                                                class="font-xl  text-brand fw-900">
+                                                                Rs.<%= totalPrice.toLocaleString() %>
+                                                            </span></td>
+                                                    </tr>
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -139,7 +140,8 @@
                                     </div>
 
                                 </div>
-                                <button class="cl0   bg1 bor1 hov-btn1  trans-04  btn-lg " type="submit" style="width:100%">Proceed to
+                                <button class="cl0   bg1 bor1 hov-btn1  trans-04  btn-lg " type="submit"
+                                    style="width:100%">Proceed to
                                     Checkout</button>
 
                             </div>
@@ -330,37 +332,72 @@
                 method: 'post',
                 data: $('#checkout-form').serialize(),
                 success: function (response) {
-                    if (response.error) {
-                        Swal.fire({
-                            title: "Error",
-                            text: response.message,
-                            icon: "error"
-                        });
-                    } else {
-                        Swal.fire({
-                            title: "Placing Order",
-                            text: "You are about to place this order",
-                            icon: "info",
-                            showCancelButton: true,
-                            confirmButtonText: "OK",
-                            cancelButtonText: "Cancel",
-                        }).then((result) => {
-                            if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Are you sure you want to place this order?",
+                        text: "Once you place the order, it cannot be cancelled.",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, place order",
+                        cancelButtonText: "No",
+                    }).then((result) => {
+                        if (result.value) {
+                            if (response.codSuccess) {
                                 window.location.href = '/placeOrderFinal?orderId=' + response.orderId;
                             } else {
-                                Swal.fire({
-                                    title: "Action Cancelled",
-                                    text: "Action cancelled.",
-                                    icon: "info",
-                                });
+                                console.log(response);
+                                razorpayPayment(response.orders)
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             });
         });
 
+        function razorpayPayment(order) {
+            console.log(order);
+            var options = {
+                "key": "rzp_test_2rwfLpHauGDdMi", // Enter the Key ID generated from the Dashboard
+                "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "currency": "INR",
+                "name": "NorthStar",
+                "description": "Test Transaction",
+                "image": "https://example.com/your_logo",
+                "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                "handler": function (response) {
+                    verifyPayment(response, order)
+                },
+                "prefill": {
+                    "name": "Gaurav Kumar",
+                    "email": "gaurav.kumar@example.com",
+                    "contact": "9000090000"
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
 
+            var rzpl = new Razorpay(options)
+            rzpl.open();
+        }
+
+        function verifyPayment(payment, order) {
+            $.ajax({
+                url: '/verifyPayment',
+                data: {
+                    payment,
+                    order
+                },
+                method: 'post',
+                success: (response) => {
+                    if (response.status) {
+                        window.location.href = '/placeOrderFinal?orderId=' + response.orderId;
+                    }
+                }
+            })
+        }
 
 
 
