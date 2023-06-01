@@ -1,7 +1,7 @@
 const { response } = require("../app");
 const products = require("../model/productModel");
 const ObjectId = require("mongoose").Types.ObjectId;
-// const fs = require('fs')
+const slugify = require('slugify')
 
 module.exports = {
   getProducts: () => {
@@ -31,8 +31,9 @@ module.exports = {
   addProduct: (productData, image) => {
     return new Promise(async (resolve, reject) => {
       try {
-        //ceating producte
-        console.log(image + '-----------------');
+        const slug = slugify(productData.prodName)
+        console.log(slug);
+        //ceating product
         await products
           .create({
             prodName: productData.prodName,
@@ -45,6 +46,7 @@ module.exports = {
             prodSize: productData.prodSize,
             prodImage: image.map(file => file.filename),
             prodCategory: productData.prodCategory,
+            slug:slug
           })
           .then((response) => {
             resolve(response);
@@ -57,7 +59,8 @@ module.exports = {
   //updating the product
   postEditProduct: async (prodBody, prodId, newImg) => {
     try {
-
+       const slug = slugify(prodBody.prodName)
+       console.log(prodBody,prodId,newImg);
       let updatedProduct;
       console.log(newImg + 'neeeeeeeeeeeeeeeeeeeeeeeeeeeewIMageeeeee');
       if (newImg) {
@@ -72,8 +75,9 @@ module.exports = {
             prodQuantity: prodBody.prodQty,
             prodColor: prodBody.prodColor,
             prodSize: prodBody.prodSize,
-            prodImage: [newImg.filename],
+            prodImage: newImg.map(file => file.filename),
             prodCategory: prodBody.prodCategory,
+            slug:slug
           }
         );
       } else {
@@ -90,12 +94,14 @@ module.exports = {
             prodColor: prodBody.prodColor,
             prodSize: prodBody.prodSize,
             prodCategory: prodBody.prodCategory,
+            slug:slug
           }
         );
       }
       return updatedProduct
     } catch (error) {
-      throw new Error('Error getting order Address: ' + error);
+      console.log(error);
+      throw new Error('Error: ' + error);
     }
   },
   //getting product by category

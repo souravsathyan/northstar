@@ -7,7 +7,7 @@ const products = require("../model/productModel");
 const orderData = require("../model/orderModel");
 const userHelpers = require("../helpers/userHelpers");
 const ObjectId = require("mongoose").Types.ObjectId;
-
+const excelJs = require('exceljs')
 
 const adminCredentials = {
   name: "Admin",
@@ -28,8 +28,19 @@ module.exports = {
     }
   },
 
-  getAdminDashboard: (req, res, next) => {
-    res.render("admin/index");
+  getAdminDashboard: async (req, res, next) => {
+    const orderDetails = await adminHelpers.getAllOrder()
+    const totalRevenue = await adminHelpers.totalSales()
+    const productCount = await adminHelpers.productCount()
+    const orderCount = await adminHelpers.orderCount()
+    const chartDetails = await adminHelpers.getSalesDEtails()
+    res.render("admin/index", {
+      totalRevenue,
+      orderDetails,
+      productCount,
+      orderCount,
+      chartDetails
+    });
   },
 
   postAdminLogin: (req, res) => {
@@ -127,10 +138,18 @@ module.exports = {
     })
   },
   //deleting category
-  getDeleteCategory: (req, res) => {
-    categoryHelpers.deleteCategory(req.params.id).then((response) => {
-      res.json({ status: true })
-    });
+  getDeleteCategory: async (req, res) => {
+    const isCatExists = await products.aggregate([
+      { $match: { prodCategory: req.params.id } }
+    ])
+    console.log(isCatExists);
+    if (isCatExists.length > 0) {
+      res.json({ status: false })
+    } else {
+      categoryHelpers.deleteCategory(req.params.id).then((response) => {
+        res.json({ status: true })
+      });
+    }
   },
 
   //**********PRODUCT MANAGEMENT ******/
@@ -156,7 +175,8 @@ module.exports = {
     console.log(image + 'in controoooooooooler');
     productHelpers.addProduct(req.body, image).then((response) => {
       res.redirect("/admin/addProduct");
-      // res.json({ status: 'success', message: 'Your product has been added!' });
+    }).catch((error) => {
+      res.status(500).render('error', { error });
     })
   },
   //deleteing the product from list
@@ -186,12 +206,19 @@ module.exports = {
     }
   },
   //POSTING THE UPDATED PRODUCT
-  postEditProduct: (req, res) => {
-    const body = req.body;
-    const prodId = req.params.id;
-    const file = req.file;
-    const updatedProduct = productHelpers.postEditProduct(body, prodId, file);
-    res.redirect("/admin/getProducts");
+  postEditProduct: async (req, res) => {
+    try {
+      const body = req.body;
+      const prodId = req.params.id;
+      const files = req.files;
+      console.log(body, prodId, files, "iiiiiiiiiiiiiiiiiiiiiiiiii")
+      const updatedProduct = await productHelpers.postEditProduct(body, prodId, files);
+      res.redirect("/admin/getProducts");
+    } catch (error) {
+      console.log(error);
+      res.status(500).render('error', { error });
+
+    }
 
   },
 
@@ -245,6 +272,24 @@ module.exports = {
       console.log(error);
       res.status(500).render('error', { error });
     }
+  },
+
+  getSalesData: async (req, res) => {
+    const sales = await adminHelpers.getAllDeliveredOrder()
+    console.log(sales)
+    res.render('admin/salesReport',{
+      sales
+    })
+  },
+  //getting orders by date
+  postSalesData:async (req,res)=>{
+    let {startDate,endDate} = req.body;
+    console.log(startDate,endDate);
+    startDate = new Date(startDate)
+    endDate = new Date(endDate)
+    const salesReport = await adminHelpers.getDeliveredOrders(startDate,endDate)
+    console.log(salesReport,'its sales report...............')
+    res.json({sales:salesReport})
   }
 
 

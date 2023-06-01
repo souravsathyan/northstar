@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    profilePic:{
+        type:String
+    },
+
 })
 
 const usersData = mongoose.model('myusers', userSchema);

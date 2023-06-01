@@ -17,12 +17,13 @@ var instance = new Razorpay({
     key_secret: process.env.RAZ_SECRET_KEY,
 });
 
+
 module.exports = {
     //user sign up 
     doSignUp: (userData) => {
         return new Promise(async (resolve, reject) => {
             console.log(userData);
-            const isUserExists = await usersData.findOne({ $or: [{ email: userData.Email }, { phone: userData.Mobile }, { name: userData.name }] })
+            const isUserExists = await usersData.findOne({ $or: [{ email: userData.Email }, { phone: userData.Mobile },] })
             try {
                 if (!isUserExists) {
                     userData.Password = await bcrypt.hash(userData.Password, 10)
@@ -160,7 +161,7 @@ module.exports = {
     getProductView: (prodId) => {
         return new Promise(async (resolve, reject) => {
             try {
-                await productData.findById({ _id: prodId })
+                await productData.findOne({ slug: prodId })
                     .then((response) => {
                         console.log(response + 'got product');
                         resolve(response)
@@ -354,43 +355,48 @@ module.exports = {
             }
         })
     },
-    setupUserProfile: (userId, data, image) => {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const userProfile = await userProfileData.create({
-                    userId: userId,
-                    profilePic: image.filename,
-                    DOB: data.DOB,
-                    setAccount: true
-                })
-                resolve();
-            } catch (error) {
-                reject(error)
-            }
-        })
-    },
-    //TODO edit full user profile 
-    // editProfile:(userId,data,newImage)=>{
-    //     return new Promise( async (resolve, reject) => {
-    //         if (newImg) {
-    //             updatedProduct = await products.findByIdAndUpdate(
-    //               { _id: userId },
-    //               {
-    //                DOB:data.DOB,
-
-    //               }
-    //             );
-    //           } else {
-    //             //if no product image then update the project with no image
-    //             updatedProduct = await products.findByIdAndUpdate(
-    //               { _id: prodId },
-    //               {
-
-    //               }
-    //             );
-    //           }
+    // setupUserProfile: (userId, data, image) => {
+    //     return new Promise(async (resolve, reject) => {
+    //         try {
+    //               await usersData.create({
+    //                 userId: userId,
+    //                 profilePic: image.filename,
+    //                 DOB: data.DOB,
+    //                 setAccount: true
+    //             })
+    //             resolve();
+    //         } catch (error) {
+    //             reject(error)
+    //         }
     //     })
     // },
+    //TODO edit full user profile 
+    editProfile: (userId, data, newImage) => {
+        return new Promise(async (resolve, reject) => {
+            if (newImage) {
+                await usersData.findByIdAndUpdate(
+                    { _id: userId },
+                    {
+                        name: data.name,
+                        email: data.email,
+                        phone: data.phone,
+                        profilePic: newImage.filename
+                    }
+                );
+            } else {
+                //if no product image then update the project with no image
+                updatedProduct = await products.findByIdAndUpdate(
+                    { _id: userId },
+                    {
+                        name: data.name,
+                        email: data.email,
+                        phone: data.phone,
+                    }
+                );
+            }
+            resolve()
+        })
+    },
 
     placeOrder: (order, products, total, userId) => {
         console.log(order, products, total, userId);
@@ -406,7 +412,8 @@ module.exports = {
                     orderStatus: status,
                     orderDate: new Date()
                 })
-                // await cartDB.findOneAndRemove({ userId: new ObjectId(userId) })
+
+                await cartDB.findOneAndRemove({ userId: new ObjectId(userId) })
                 const response = {
                     status: true,
                     orderId: orderDetails._id
@@ -450,20 +457,11 @@ module.exports = {
         })
     },
     getUserDetails: async (userId) => {
-        let userDetails = await userProfileData.aggregate([
-            { $match: { userId: new ObjectId(userId) } },
-            {
-                $lookup: {
-                    from: 'myusers',
-                    localField: 'userId',
-                    foreignField: '_id',
-                    as: 'userDetails'
-                }
-            }
-        ])
+        let userDetails = await usersData.findOne({ _id: new ObjectId(userId) })
         console.log(userDetails);
         return userDetails
     },
+
     updateAddress: (newAddress) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -524,16 +522,16 @@ module.exports = {
     // },
     verifyPayment: (details) => {
         return new Promise((resolve, reject) => {
-            let body =details['payment[razorpay_order_id]']+'|' + details['payment[razorpay_payment_id]'];
+            let body = details['payment[razorpay_order_id]'] + '|' + details['payment[razorpay_payment_id]'];
             var crypto = require("crypto");
             var expectedSignature = crypto.createHmac('sha256', `${process.env.RAZ_SECRET_KEY}`)
                 .update(body.toString())
                 .digest('hex');
             // var response = { "signatureIsValid": "false" }
-            if (expectedSignature === details['payment[razorpay_signature]']){
+            if (expectedSignature === details['payment[razorpay_signature]']) {
                 console.log('its success');
                 resolve()
-            }else{
+            } else {
                 console.log('its failure');
                 reject()
             }
@@ -552,6 +550,19 @@ module.exports = {
                 resolve()
             })
         })
+    },
+    getProdColors: () => {
+        return new Promise((resolve, reject) => {
+            productData.aggregate([
+                { $group: { _id: '$prodColor' } },
+                { $project: { _id: 0, color: '$_id' } }
+            ])
+                .then(result => {
+                    const distColors = result.map(item => item.color);
+                    resolve(distColors)
+                })
+        })
+
     }
 
 

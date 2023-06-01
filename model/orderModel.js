@@ -31,6 +31,9 @@ const orderModel=mongoose.Schema({
     orderStatus:{
         type:String
     },
+    returnReason:{
+        type:String
+    }
 },{
     timestamps:true
 })

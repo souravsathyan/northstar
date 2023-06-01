@@ -113,7 +113,7 @@
                                 Image
                             </label>
                             <span id="imgError" class="text-danger"></span>
-                            <input class="form-control" accept=".jpg, .png, .jpeg" type="file" name="images" id="imgValue" multiple>
+                            <input class="form-control" accept=".jpg, .png, .jpeg .webp" type="file" name="images" id="imgValue" multiple>
                         </div>
 
                     </div>
@@ -330,7 +330,10 @@
             const priceError = document.getElementById('priceError')
             if (priceValue.trim() == "") {
                 priceError.innerHTML = 'enter the price'
-            } else {
+            }else if(priceValue.trim()<0){
+                priceError.innerHTML='price cant be a negative'
+            } 
+            else {
                 priceError.innerHTML = ""
             }
 
@@ -339,7 +342,10 @@
             const qtyError = document.getElementById('qtyError')
             if (qtyValue.trim() == "") {
                 qtyError.innerHTML = 'enter quantity'
-            } else {
+            }else if(qtyValue.trim()<0){
+                qtyError.innerHTML = 'qantity cant be negative'
+            }  
+            else {
                 qtyError.innerHTML = ""
             }
 

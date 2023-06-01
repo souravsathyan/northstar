@@ -40,6 +40,10 @@ router.get('/getOrderDetails/:id',isAdminLoggedIn,adminController.getOrderDetail
 router.post('/changeStatus/:id',isAdminLoggedIn,adminController.getChangeStatus)
 router.get('/cancelOrder/:id',isAdminLoggedIn,adminController.getCancelOrder)
 
+// ***sales report*****/
+router.get('/salesReport',isAdminLoggedIn,adminController.getSalesData)
+router.post('/sales-report',isAdminLoggedIn,adminController.postSalesData)
+
 
 
 

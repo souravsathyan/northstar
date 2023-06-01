@@ -191,6 +191,11 @@
                                                                     </span>
                                                                     <% } %>
                                         </div>
+                                        <% if (itemDetails[0].orderStatus=='return') { %>
+                                            <div class="p-2 align-items-center">
+                                                Return reason : <span class="rounded-pill bg-danger p-2 fs-6"> <%= itemDetails[0].returnReason %></span>
+                                            </div>
+                                        <% } %>
 
                                     </div>
                                     <div class="h-25 pt-4 box shadow-sm bg-light d-flex align-items-center ">

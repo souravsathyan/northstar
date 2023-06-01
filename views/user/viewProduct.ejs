@@ -13,7 +13,7 @@
                             <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
                             <% var product%>
                                 <div class="slick3 gallery-lb">
-                                    <div class="item-slick3 " data-thumb="/<%= product.prodImage[0] %>">
+                                    <div class="item-slick3" data-thumb="/<%= product.prodImage[0] %>">
                                         <div class="wrap-pic-w pos-relative ">
                                             <a href="/<%= product.prodImage[0] %>" class="MagicZoom"
                                                 data-options="zoomMode: 'zoom'">
@@ -60,7 +60,7 @@
                         </h4>
 
                         <span class="mtext-106 cl2">
-                            <%= product.prodPrice %>
+                            Rs. <%= product.prodPrice.toLocaleString() %>
                         </span>
 
                         <p class="stext-102 cl3 p-t-23">
@@ -123,7 +123,8 @@
                                     </div>
 
                                     <button
-                                        class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+                                        class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail"  
+                                        onclick="addToCart('<%= product._id %>')">
                                         Add to cart
                                     </button>
                                 </div>

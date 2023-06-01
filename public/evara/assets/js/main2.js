@@ -56,162 +56,162 @@
     }  
 
     /*------ Hero slider 1 ----*/
-    $('.hero-slider-1').slick({
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        fade: true,
-        loop: true,
-        dots: true,
-        arrows: true,
-        prevArrow: '<span class="slider-btn slider-prev"><i class="fi-rs-angle-left"></i></span>',
-        nextArrow: '<span class="slider-btn slider-next"><i class="fi-rs-angle-right"></i></span>',
-        appendArrows: '.hero-slider-1-arrow',
-        autoplay: true,
-    });
+    // $('.hero-slider-1').slick({
+    //     slidesToShow: 1,
+    //     slidesToScroll: 1,
+    //     fade: true,
+    //     loop: true,
+    //     dots: true,
+    //     arrows: true,
+    //     prevArrow: '<span class="slider-btn slider-prev"><i class="fi-rs-angle-left"></i></span>',
+    //     nextArrow: '<span class="slider-btn slider-next"><i class="fi-rs-angle-right"></i></span>',
+    //     appendArrows: '.hero-slider-1-arrow',
+    //     autoplay: true,
+    // });
 
-    /*Carausel 6 columns*/
-    $(".carausel-6-columns").each(function(key, item) {
-        var id=$(this).attr("id");
-        var sliderID='#'+id;
-        var appendArrowsClassName = '#'+id+'-arrows'
+    // /*Carausel 6 columns*/
+    // $(".carausel-6-columns").each(function(key, item) {
+    //     var id=$(this).attr("id");
+    //     var sliderID='#'+id;
+    //     var appendArrowsClassName = '#'+id+'-arrows'
 
-        $(sliderID).slick({
-            dots: false,
-            infinite: true,
-            speed: 1000,
-            arrows: true,
-            autoplay: true,
-            slidesToShow: 6,
-            slidesToScroll: 1,
-            loop: true,
-            adaptiveHeight: true,
-            responsive: [
-                {
-                    breakpoint: 1025,
-                    settings: {
-                        slidesToShow: 4,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 768,
-                    settings: {
-                        slidesToShow: 3,
-                        slidesToScroll: 1,
-                    }
-                },
-                {
-                    breakpoint: 480,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1
-                    }
-                }
-            ],
-            prevArrow: '<span class="slider-btn slider-prev"><i class="fi-rs-angle-left"></i></span>',
-            nextArrow: '<span class="slider-btn slider-next"><i class="fi-rs-angle-right"></i></span>',
-            appendArrows:  (appendArrowsClassName),
-        });
-    });
+    //     $(sliderID).slick({
+    //         dots: false,
+    //         infinite: true,
+    //         speed: 1000,
+    //         arrows: true,
+    //         autoplay: true,
+    //         slidesToShow: 6,
+    //         slidesToScroll: 1,
+    //         loop: true,
+    //         adaptiveHeight: true,
+    //         responsive: [
+    //             {
+    //                 breakpoint: 1025,
+    //                 settings: {
+    //                     slidesToShow: 4,
+    //                     slidesToScroll: 1,
+    //                 }
+    //             },
+    //             {
+    //                 breakpoint: 768,
+    //                 settings: {
+    //                     slidesToShow: 3,
+    //                     slidesToScroll: 1,
+    //                 }
+    //             },
+    //             {
+    //                 breakpoint: 480,
+    //                 settings: {
+    //                     slidesToShow: 1,
+    //                     slidesToScroll: 1
+    //                 }
+    //             }
+    //         ],
+    //         prevArrow: '<span class="slider-btn slider-prev"><i class="fi-rs-angle-left"></i></span>',
+    //         nextArrow: '<span class="slider-btn slider-next"><i class="fi-rs-angle-right"></i></span>',
+    //         appendArrows:  (appendArrowsClassName),
+    //     });
+    // });
 
-    /*Carausel 4 columns*/
-    $(".carausel-4-columns").each(function(key, item) {
-        var id=$(this).attr("id");
-        var sliderID='#'+id;
-        var appendArrowsClassName = '#'+id+'-arrows'
+    // /*Carausel 4 columns*/
+    // $(".carausel-4-columns").each(function(key, item) {
+    //     var id=$(this).attr("id");
+    //     var sliderID='#'+id;
+    //     var appendArrowsClassName = '#'+id+'-arrows'
 
-        $(sliderID).slick({
-            dots: false,
-            infinite: true,
-            speed: 1000,
-            arrows: true,
-            autoplay: true,
-            slidesToShow: 4,
-            slidesToScroll: 1,
-            loop: true,
-            adaptiveHeight: true,
-            responsive: [
-                {
-                    breakpoint: 1025,
-                    settings: {
-                        slidesToShow: 3,
-                        slidesToScroll: 3,
-                    }
-                },
-                {
-                    breakpoint: 480,
-                    settings: {
-                        slidesToShow: 1,
-                        slidesToScroll: 1
-                    }
-                }
-            ],
-            prevArrow: '<span class="slider-btn slider-prev"><i class="fi-rs-angle-left"></i></span>',
-            nextArrow: '<span class="slider-btn slider-next"><i class="fi-rs-angle-right"></i></span>',
-            appendArrows:  (appendArrowsClassName),
-        });
-    });
+    //     $(sliderID).slick({
+    //         dots: false,
+    //         infinite: true,
+    //         speed: 1000,
+    //         arrows: true,
+    //         autoplay: true,
+    //         slidesToShow: 4,
+    //         slidesToScroll: 1,
+    //         loop: true,
+    //         adaptiveHeight: true,
+    //         responsive: [
+    //             {
+    //                 breakpoint: 1025,
+    //                 settings: {
+    //                     slidesToShow: 3,
+    //                     slidesToScroll: 3,
+    //                 }
+    //             },
+    //             {
+    //                 breakpoint: 480,
+    //                 settings: {
+    //                     slidesToShow: 1,
+    //                     slidesToScroll: 1
+    //                 }
+    //             }
+    //         ],
+    //         prevArrow: '<span class="slider-btn slider-prev"><i class="fi-rs-angle-left"></i></span>',
+    //         nextArrow: '<span class="slider-btn slider-next"><i class="fi-rs-angle-right"></i></span>',
+    //         appendArrows:  (appendArrowsClassName),
+    //     });
+    // });
 
-    /*Fix Bootstrap 5 tab & slick slider*/
+    // /*Fix Bootstrap 5 tab & slick slider*/
 
-    $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-		$('.carausel-4-columns').slick('setPosition');
-	});
+    // $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+	// 	$('.carausel-4-columns').slick('setPosition');
+	// });
 
-     /*------ Timer Countdown ----*/
+    //  /*------ Timer Countdown ----*/
 
-    $('[data-countdown]').each(function() {
-        var $this = $(this), finalDate = $(this).data('countdown');
-        $this.countdown(finalDate, function(event) {
-            $(this).html(      
-                event.strftime(''      
-                    + '<span class="countdown-section"><span class="countdown-amount hover-up">%d</span><span class="countdown-period"> days </span></span>'
-                    + '<span class="countdown-section"><span class="countdown-amount hover-up">%H</span><span class="countdown-period"> hours </span></span>'
-                    + '<span class="countdown-section"><span class="countdown-amount hover-up">%M</span><span class="countdown-period"> mins </span></span>'
-                    + '<span class="countdown-section"><span class="countdown-amount hover-up">%S</span><span class="countdown-period"> sec </span></span>'
-                )
-            );           
-        });
-    });
+    // $('[data-countdown]').each(function() {
+    //     var $this = $(this), finalDate = $(this).data('countdown');
+    //     $this.countdown(finalDate, function(event) {
+    //         $(this).html(      
+    //             event.strftime(''      
+    //                 + '<span class="countdown-section"><span class="countdown-amount hover-up">%d</span><span class="countdown-period"> days </span></span>'
+    //                 + '<span class="countdown-section"><span class="countdown-amount hover-up">%H</span><span class="countdown-period"> hours </span></span>'
+    //                 + '<span class="countdown-section"><span class="countdown-amount hover-up">%M</span><span class="countdown-period"> mins </span></span>'
+    //                 + '<span class="countdown-section"><span class="countdown-amount hover-up">%S</span><span class="countdown-period"> sec </span></span>'
+    //             )
+    //         );           
+    //     });
+    // });
 
-    /*------ Product slider active 1 ----*/
-    $('.product-slider-active-1').slick({
-        slidesToShow: 5,
-        slidesToScroll: 1,
-        autoplay: true,
-        fade: false,
-        loop: true,
-        dots: false,
-        arrows: true,
-        prevArrow: '<span class="pro-icon-1-prev"><i class="fi-rs-angle-small-left"></i></span>',
-        nextArrow: '<span class="pro-icon-1-next"><i class="fi-rs-angle-small-right"></i></span>',
-        responsive: [
-            {
-                breakpoint: 1199,
-                settings: {
-                    slidesToShow: 3, 
-                }
-            },
-            {
-                breakpoint: 991,
-                settings: {
-                    slidesToShow: 2,
-                }
-            },
-            {
-                breakpoint: 767,
-                settings: {
-                    slidesToShow: 2,
-                }
-            },
-            {
-                breakpoint: 575,
-                settings: {
-                    slidesToShow: 1,
-                }
-            }
-        ]
-    });
+    // /*------ Product slider active 1 ----*/
+    // $('.product-slider-active-1').slick({
+    //     slidesToShow: 5,
+    //     slidesToScroll: 1,
+    //     autoplay: true,
+    //     fade: false,
+    //     loop: true,
+    //     dots: false,
+    //     arrows: true,
+    //     prevArrow: '<span class="pro-icon-1-prev"><i class="fi-rs-angle-small-left"></i></span>',
+    //     nextArrow: '<span class="pro-icon-1-next"><i class="fi-rs-angle-small-right"></i></span>',
+    //     responsive: [
+    //         {
+    //             breakpoint: 1199,
+    //             settings: {
+    //                 slidesToShow: 3, 
+    //             }
+    //         },
+    //         {
+    //             breakpoint: 991,
+    //             settings: {
+    //                 slidesToShow: 2,
+    //             }
+    //         },
+    //         {
+    //             breakpoint: 767,
+    //             settings: {
+    //                 slidesToShow: 2,
+    //             }
+    //         },
+    //         {
+    //             breakpoint: 575,
+    //             settings: {
+    //                 slidesToShow: 1,
+    //             }
+    //         }
+    //     ]
+    // });
     
     /*------ Testimonial active 1 ----*/
     $('.testimonial-active-1').slick({

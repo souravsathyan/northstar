@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+
 const productSchema = new mongoose.Schema({
    prodName:{
     type:String,
@@ -42,7 +43,12 @@ const productSchema = new mongoose.Schema({
    prodImage:[
       {type:String,
       required:true}
-   ]
+   ],
+   slug:{
+      type:String,
+      required:true,
+      unique:true
+  }
 
 })
 

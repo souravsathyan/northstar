@@ -5,6 +5,7 @@
 @import url(vendors/select2.min.css);
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,300;1,400;1,700;1,900&amp;display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Spartan:wght@300;400;500;600;700&amp;display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
 
 html,
 body,
@@ -3736,9 +3737,9 @@ body.offcanvas-active {
 }
 
 .navbar-aside .aside-top .logo {
-    max-width: 120px;
+    max-width: 80px;
     margin-top: 5px;
-    min-width: 200px
+    min-width: 79px
 }
 
 .main-header {

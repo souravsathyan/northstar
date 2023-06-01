@@ -65,7 +65,7 @@
 
 </head>
 
-<body class="animsition ">
+<body class="animsition " >
 
    
         <!-- Header -->
@@ -187,33 +187,33 @@
         
                                 <form action="/userLoginPost" method="post" id="form">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">Email address</label>
+                                        <label for="exampleInputEmail1" class="form-label font-weight-bold fs-6">Email address</label>
                                         <input type="text" class="form-control" name="Email" placeholder="Enter email"
-                                            id="email">
+                                            id="email" style="background: #d2d2d4; border-radius: 20px;">
                                         <span class=" text-danger" id="email-error"></span>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="exampleInputPassword1" class="form-label">Password</label>
-                                        <input type="password" class="form-control" name="Password" id="password">
+                                        <label for="exampleInputPassword1" class="form-label font-weight-bold fs-6">Password</label>
+                                        <input type="password" class="form-control font-weight-bold" name="Password" id="password" style="background: #d2d2d4; border-radius: 20px;" placeholder="Password">
                                         <div id="password-error" class="text-danger"></div>
                                     </div>
         
                                     <div class="d-flex justify-content-center align-items-center">
-                                        <button class="cl0  pb-5 bg1 bor1 hov-btn1 p-lr-15 trans-04  btn-lg  ">
+                                        <button class="cl0  pb-5 bg1 bor1 hov-btn1 p-lr-15 trans-04  btn-lg  me-5 ">
                                             <a href="/otpLogin" class="text-light" style="text-decoration: none;">
                                                 Login with OTP
                                             </a>
                                         </button>
                                         <div class="d-flex justify-content-center align-items-center">
-                                            <button type="submit" class="cl0  pb-5 bg1 bor1 hov-btn1 p-lr-15 trans-04  btn-lg   ">Submit</button>
+                                            <button type="submit" class="cl0  pb-5 bg1 bor1 hov-btn1 p-lr-15 trans-04  btn-lg   ">Login</button>
                                         </div>
                                     </div>
         
                                     <div class="mt-3" style="display: flex;
                                     justify-content: space-between;">
-                                        <a class="d=block" href="/userSignup">Create New Account</a>
+                                        <a class="d=block fs-6" style="padding: 5px;" href="/userSignup"><span class="font-weight-bold">Create New Account</span></a>
         
-                                        <a class="text-right d-block" href="/forgetPassword">forget Password?</a>
+                                        <a class="text-right fs-6 d-block" style="padding: 5px;" href="/forgetPassword"><span class="font-weight-bold">Forget password</span></a>
         
         
                                     </div>

@@ -70,19 +70,25 @@ router.get('/editAddress/:id',isUserLogin,userController.getEditAddress)
 //post Edit Address
 router.post('/postEditAddress',isUserLogin,userController.postEditAddress)
 //set up account details
-router.post('/postSetUpProfile',isUserLogin,multer.upload.single('image'),userController.postUserProfile)
+// router.post('/postSetUpProfile',isUserLogin,multer.upload.single('image'),userController.postUserProfile)
 //edit profile details
-// router.post('/postEditProfile',isUserLogin,multer.upload.single('image'),userController.postEditProfile)
+router.post('/postEditProfile',isUserLogin,multer.upload.single('image'),userController.postEditProfile)
 //editing user image
 router.post('/postChangeImage',isUserLogin,multer.upload.single('image'),userController.postChangeUserImage)
 //cancel order by user
 router.post('/cancelOrder',isUserLogin,userController.getChangeStatusOrder)
 //return order
-router.post('/returnOrder',isUserLogin,userController.getChangeStatusOrder) 
+router.post('/returnOrder/:id',isUserLogin,userController.getReturnOrder) 
+//change password
+router.get('/changePassword',isUserLogin,userController.getChangePwd)
 
+
+//****PAYMENT */
 //verify payment
 router.post('/verifyPayment',isUserLogin,userController.getVerifyPayment)
 
-
-
+//***filtereing the products */
+router.post("/filterProducts",isUserLogin,userController.getFilterProducts)
+//** SEARCHING**/
+router.get('/searchProducts',isUserLogin,userController.getSearchProducts)
 module.exports = router;

@@ -49,7 +49,7 @@ app.use(nocache())
 app.use(
   session({
     secret:'key',
-    cookie:{maxAge:300000},
+    cookie:{maxAge:600000},
     saveUninitialized:false,
     resave:false
   })

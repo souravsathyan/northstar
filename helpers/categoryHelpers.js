@@ -8,8 +8,7 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             try {
                 let response = {}
-                let existingCat = await categoryDB.findOne({ name: prodDatas.catName })
-                console.log(existingCat + 'iiiiiiiiiiiiiiiiiii');
+                let existingCat = await categoryDB.findOne({ name: { $regex: new RegExp('^' + prodDatas.catName + '$', 'i') } })
                 if (existingCat) {
                     response.exists = true
                     resolve(response)

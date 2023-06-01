@@ -15,6 +15,7 @@
                                     <th class="column-2 text-center">name</th>
                                     <th class="column-3 text-center">Price</th>
                                     <th class="column-4 text-center">Quantity</th>
+                                    <th class="text-center">Total</th>
                                     <th class="column-5 text-center">Action</th>
                                 </tr>
 
@@ -36,14 +37,17 @@
                                         <td class="column-4 text-center">
 
                                             <button class="btn btn-primary"
-                                                onclick="changeQuantity('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id %>',-1)">-</button>
+                                                onclick="changeQuantity('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id %>',-1,'<%=product.productId.prodPrice%>')">-</button>
                                             <span style="margin: 10px;" id="<%=product.productId._id%>">
                                                 <%= product.quantity %>
                                             </span>
                                             <button class="btn btn-primary"
-                                                onclick="changeQuantity('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id  %>',1)">+</button>
+                                                onclick="changeQuantity('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id  %>',1,'<%=product.productId.prodPrice%>')">+</button>
                                         </td>
                                         <!-- total field -->
+                                        <td class="text-center" id="indTotal">
+                                            Rs.<%= product.productId.prodPrice *  product.quantity.toLocaleString() %>
+                                        </td>
 
                                         <td class="column-5 text-center">
                                             <button class="btn"
@@ -138,7 +142,7 @@
 
     <script>
         //btnChangeQty
-        function changeQuantity(cartId, prodId, userId, count) {
+        function changeQuantity(cartId, prodId, userId, count,prodPrice) {
             let quantity = parseInt(document.getElementById(prodId).innerHTML)
             count = parseInt(count)
             $.ajax({

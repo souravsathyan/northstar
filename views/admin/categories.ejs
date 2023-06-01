@@ -91,12 +91,12 @@
                             <div class="d-grid">
                                 <button class="btn btn-primary" type="submit">Create
                                     category</button>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
+                            </div>
+                        </form>
+                </div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                   
+
                 </div>
             </div>
         </div>
@@ -130,32 +130,44 @@
                 text: "You are about to delete this category",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "Block",
+                confirmButtonText: "Delete",
                 cancelButtonText: "Cancel",
             }).then((confirmed) => {
-                if (confirmed) {
+                if (confirmed.dismiss === "cancel") {
+                    Swal.fire({
+                        title: "Cancelled",
+                        text: "The action cancelled",
+                        icon: "info"
+                    });
+                } else {
                     $.ajax({
                         url: '/admin/deleteCategory/' + catId,
                         type: 'get'
                     }).done(res => {
-                        Swal.fire({
-                            title: "Success",
-                            text: res.message,
-                            icon: "success"
-                        }).then(() => {
-                            location.reload();
-                        });
-                    });
-                } else {
-                    Swal.fire({
-                        title: "Cancelled",
-                        text: "The user was not blocked",
-                        icon: "info"
+                        if (res.status) {
+                            Swal.fire({
+                                title: "Success",
+                                text: res.message,
+                                icon: "success"
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Cancelled",
+                                text: "The category is not deleted because this category is being used",
+                                icon: "info"
+                            });
+                        }
                     });
                 }
-            })
+            });
         }
 
+
+        setTimeout(function () {
+            document.getElementById('flashMessage').style.display = 'none';
+        }, 3000)
 
 
 

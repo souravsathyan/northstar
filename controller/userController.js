@@ -12,6 +12,7 @@ const orderData = require('../model/orderModel');
 const adminHelpers = require('../helpers/adminHelpers');
 const { ObjectId } = mongoose.Types;
 const userProfileData = require('../model/userDetailsModel');
+const slug = require('slugify')
 
 module.exports = {
     userHome: async (req, res, next) => {
@@ -21,11 +22,14 @@ module.exports = {
                 let userID = req.session.user._id
                 let cartCount = await userHelpers.getCartCount(userID)
                 productList = await products.find()
+                colorList = await userHelpers.getProdColors()
+                console.log(colorList);
                 let user = req.session.user
                 res.render('user/index', {
                     user,
                     productList,
-                    cartCount
+                    cartCount,
+                    colorList
                 })
             } else {
                 res.redirect('/landingPage')
@@ -174,7 +178,8 @@ module.exports = {
     //::::::forget password::::://
     getForgetPassword: (req, res) => {
         try {
-            res.render('user/forgetPwd')
+            let changePwd = req.session.changed = false
+            res.render('user/forgetPwd', { changePwd })
         } catch (error) {
             res.status(500).render('error', { error });
         }
@@ -290,6 +295,7 @@ module.exports = {
     },
     //view product when clicking
     getViewProduct: async (req, res) => {
+        console.log(req.params.id);
         let prodId = req.params.id
         let userID = req.session.user._id
         let cartCount = await userHelpers.getCartCount(userID)
@@ -303,6 +309,7 @@ module.exports = {
                     // cartCount
                 })
             }).catch((error) => {
+                console.log(error);
                 res.status(500).render('error', { error });
             })
     },
@@ -390,12 +397,13 @@ module.exports = {
     //USER ACCOUNT
     getUserAccount: async (req, res) => {
         try {
-            let user = req.session.user
-            let userId = req.session.user._id
-            let cartCount = await userHelpers.getCartCount(userId)
-            let userAddress = await addressData.find({ userId: new ObjectId(userId) })
-            let orderDetails = await userHelpers.getUserOrders(userId)
-            let userDetails = await userHelpers.getUserDetails(userId)
+            const user = req.session.user
+            const userId = req.session.user._id
+            const cartCount = await userHelpers.getCartCount(userId)
+            const userAddress = await addressData.find({ userId: new ObjectId(userId) })
+            const orderDetails = await userHelpers.getUserOrders(userId)
+            const userDetails = await userHelpers.getUserDetails(userId)
+            console.log(userDetails)
             res.render('user/userProfile', {
                 user,
                 userAddress,
@@ -430,30 +438,31 @@ module.exports = {
 
     },
     //profile Details
-    postUserProfile: (req, res) => {
+    // postUserProfile: (req, res) => {
+    //     let userId = req.session.user._id
+    //     console.log(req.body, req.file)
+    //     userHelpers.setupUserProfile(userId, req.body, req.file)
+    //         .then(() => {
+    //             res.redirect('/userProfile')
+    //         })
+    //         .catch((error) => {
+    //             res.status(500).render('error', { error });
+    //         })
+    // },
+    postEditProfile: (req, res) => {
+        console.log('edited', req.body);
         let userId = req.session.user._id
-        console.log(req.body, req.file)
-        userHelpers.setupUserProfile(userId, req.body, req.file)
+        userHelpers.editProfile(userId, req.body, req.file)
             .then(() => {
                 res.redirect('/userProfile')
             })
-            .catch((error) => {
-                res.status(500).render('error', { error });
-            })
     },
-    //TODO editing the user profile
-    // postEditProfile:(req,res)=>{
-    //    let userId = req.session.user._id
-    //    userHelpers.editProfile(userId,req.body,req.file)
-    //    .then((response)=>{
-    //     red.redirect('/userProfile')
-    //    })
-    // },
     postChangeUserImage: async (req, res) => {
+        console.log(req.file);
         try {
             let userId = req.session.user._id
-            await userProfileData.updateOne(
-                { userId: new ObjectId(userId) },
+            await usersData.updateOne(
+                { _id: new ObjectId(userId) },
                 {
                     $set: { profilePic: req.file.filename }
                 }
@@ -470,6 +479,21 @@ module.exports = {
             {
                 $set: {
                     orderStatus: status
+                }
+            }
+        )
+        res.json({ status: true })
+    },
+    getReturnOrder: async (req, res) => {
+        console.log(req.body, 'iiiiiiiiiiiiiiiiiiiiii');
+        const orderId = req.params.id
+        const reason = req.body.selectedValue
+        await orderData.updateOne(
+            { _id: orderId },
+            {
+                $set: {
+                    returnReason: reason,
+                    orderStatus: 'return'
                 }
             }
         )
@@ -509,12 +533,12 @@ module.exports = {
             userHelpers.placeOrder(req.body, products, totalPrice, userId)
                 .then((response) => {
                     const orderId = response.orderId
-                    if(req.body['paymentType']=='COD'){
+                    if (req.body['paymentType'] == 'COD') {
                         res.json({ codSucess: true, orderId: orderId });
-                    }else{
-                        userHelpers.generateRazorpay(orderId,totalPrice).then((response)=>{
-                            console.log(response,'its in the controller post chekout');
-                            res.json({orders:response.orders,status:true,orderId:response.orderId})
+                    } else {
+                        userHelpers.generateRazorpay(orderId, totalPrice).then((response) => {
+                            console.log(response, 'its in the controller post chekout');
+                            res.json({ orders: response.orders, status: true, orderId: response.orderId })
                         })
                     }
                 })
@@ -545,7 +569,7 @@ module.exports = {
             const orderId = req.params.id
             const user = req.session.user
             const userId = req.session.user._id
-            console.log(orderId,'its the order id');
+            console.log(orderId, 'its the order id');
             const addressDetails = await adminHelpers.getOrderAddressDetails(orderId)
             const itemDetails = await adminHelpers.getOrderItemDetails(orderId)
             //getting the orderDetails by matching the userID and Lookup ing the product and address collection to order Collection
@@ -583,20 +607,68 @@ module.exports = {
             })
     },
     //******PAYMENT */
-    getVerifyPayment:async (req,res)=>{
+    getVerifyPayment: async (req, res) => {
         console.log(req.body);
         let orderId = req.body['order[receipt]']
-        console.log(orderId,'iiiiiiiiiiiiiiii');
+        console.log(orderId, 'iiiiiiiiiiiiiiii');
         await userHelpers.verifyPayment(req.body)
-        .then(()=>{
-            userHelpers.changePaymentStatus(orderId)
-            .then(()=>{
-                console.log(orderId);
-                res.json({status:true,orderId:orderId})
+            .then(() => {
+                userHelpers.changePaymentStatus(orderId)
+                    .then(() => {
+                        console.log(orderId);
+                        res.json({ status: true, orderId: orderId })
+                    })
+            }).catch((err) => {
+                console.log(err);
+                res.json({ status: false, errMsg: 'payment failed' })
             })
-        }).catch((err)=>{
-            console.log(err);
-            res.json({status:false,errMsg:'payment failed'})
-        })
+    },
+    //changing the ser password
+    getChangePwd: (req, res) => {
+        let changePwd = req.session.changed = true
+        res.render('user/forgetPwd', { changePwd })
+    },
+    //filtering the products
+    getFilterProducts: async (req, res) => {
+        try {
+            console.log(req.body);
+            const { sortBy,priceValue,colorValue} = req.body;
+            let filteredProducts = [];
+            const filter={}
+            
+            if(priceValue !== 'all'){
+                const [minPrice,maxPrice] = priceValue.split('-');
+                filter.prodPrice={
+                    $gte:minPrice,
+                    $lte:maxPrice
+                }
+            }
+
+            if (colorValue !== 'all') {
+                filter.prodColor = colorValue;
+              }
+
+
+              if(sortBy==='low-to-high' ){
+                filteredProducts= await productData.find(filter).sort({ prodPrice: 1 })
+            }else if (sortBy === 'high-to-low' ){
+                filteredProducts= await productData.find(filter).sort({ prodPrice: -1 })
+            }else{
+                filteredProducts= await productData.find(filter)
+            }
+
+            res.json(filteredProducts)
+
+        } catch (error) {
+            console.log(error);
+            res.status(500).render('error', { error });
+        }
+    },
+    getSearchProducts:async (req,res)=>{
+        const query = req.query.query
+        console.log(query);
+        const products = await productData.find({prodName:{$regex:`${query}` , $options:'i'}})
+        console.log(products);
+        res.json(products)
     }
 }

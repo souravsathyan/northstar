@@ -1,0 +1,203 @@
+<%- include('../partials/adminHeader') %>
+
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Sales Report </h2>
+            </div>
+            <div>
+                <a id="xlsheet" onclick="ExportToExcel()" class="btn btn-secondary rounded font-md">Download XLSheet</a>
+                <a href="#" id="pdf" data-value="" class="btn btn-danger rounded  font-md">Download PDF</a>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <header class="card-header">
+                <form id="date-wise-report">
+                    <div class="row gx-3">
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" name="startDate" value="" class="form-control" required>
+                        </div>
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <label class="form-label">End Date</label>
+                            <input type="date" name="endDate" value="" class="form-control" required>
+                        </div>
+                        <div class="col-lg-4 col-md-6 ms-auto" style="width: 15%;">
+                            <button type="submit" class="btn btn-primary mt-4  btn-sm rounded">Get Report</button>
+                        </div>
+                    </div>
+                </form>
+            </header> <!-- card-header end// -->
+            <div id="sales-report" class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="sales-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th scope="col">Order Id</th>
+                                <th scope="col">Customer</th>
+                                <th scope="col">Order Date</th>
+                                <th scope="col">Payment Method</th>
+                                <th scope="col">Order Status</th>
+                                <th scope="col">Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="defaultReport">
+                            <% sales.forEach((sales,index)=> { %>
+                                <tr>
+                                    <td>
+                                        <%= index+1 %>
+                                    </td>
+                                    <td><b>
+                                            <%= sales._id %>
+                                        </b></td>
+                                    <td>
+                                        <%= sales.users[0].name %>
+                                    </td>
+                                    <td>
+                                        <%= sales.orderDate.toLocaleDateString() %>
+                                    </td>
+                                    <td>
+                                        <%= sales.paymentMethod %>
+                                    </td>
+                                    <td><span class="badge rounded-pill bg-success">
+                                            <%= sales.orderStatus %>
+                                        </span></td>
+                                    <td>
+                                        Rs. <%= sales.totalAmount.toLocaleString() %>
+                                    </td>
+
+                                </tr>
+                                <% }) %>
+
+
+                        </tbody>
+                    </table>
+                    <!-- <input type="hidden" id="salesReportStore" value="ejsout sales "> -->
+                </div> <!-- table-responsive //end -->
+            </div> <!-- card-body end// -->
+        </div> <!-- card end// -->
+
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+        integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+    <script src="
+    https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js
+    "></script>
+    <script>
+
+        $(document).ready(function () {
+            // Get the form element
+            var form = $("#date-wise-report");
+
+            // Bind the submit event to the form
+            form.on("submit", function (e) {
+                // Prevent the default action from taking place
+                e.preventDefault();
+
+                // Get the form data
+                var data = form.serialize();
+
+                // Submit the data using AJAX
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/sales-report",
+                    data: data,
+                    success: function (response) {
+                        // Clear the existing table rows
+                        $("#defaultReport").empty();
+                        console.log(response)
+                        // Iterate over the sales data in the response
+                        for (let i = 0; i < response.sales.length; i++) {
+                            const sale = response.sales[i];
+                            // Create a new table row
+                            const row = $("<tr>");
+                            // Add the table cells with the sale data
+                            row.append($("<td>").text(i + 1)); // No
+                            row.append($("<td>").text(sale._id)); // Order Id
+                            row.append($("<td>").text(sale.user.name)); // Customer
+                            row.append($("<td>").text(sale.orderDate)); // Order Date
+                            row.append($("<td>").text(sale.paymentMethod)); // Payment Method
+                            row.append($("<td>").text(sale.orderStatus)); // Order Status
+                            row.append($("<td>").text("Rs. " + sale.totalAmount)); // Total Amount
+
+                            // Append the new table row to the table body
+                            $("#defaultReport").append(row);
+                        }
+                    },
+                    error: function (error) {
+                        // Handle errors
+                    }
+                });
+            });
+
+        });
+
+        function ExportToExcel() {
+            Swal.fire("Do you want to download this Excel Sheet", {
+                buttons: ["No", "Yes"]
+            }).then((res) => {
+                if (res) {
+                    var elt = document.getElementById('sales-table');
+                    var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+
+                    // Adjust column widths
+                    var ws = wb.Sheets['sheet1'];
+                    var columnWidths = [
+                        { wch: 5 },   // Width for column "No"
+                        { wch: 15 },  // Width for column "Order Id"
+                        { wch: 20 },  // Width for column "Customer"
+                        { wch: 15 },  // Width for column "Order Date"
+                        { wch: 20 },  // Width for column "Payment Method"
+                        { wch: 15 },  // Width for column "Order Status"
+                        { wch: 15 }   // Width for column "Total Amount"
+                    ];
+
+                    // Set column widths
+                    columnWidths.forEach(function (width, index) {
+                        var col = XLSX.utils.encode_col(index);
+                        ws['!cols'] = ws['!cols'] || [];
+                        ws['!cols'][index] = width;
+                    });
+
+                    XLSX.writeFile(wb, 'sales-table.xlsx');
+
+                }
+            })
+        }
+
+        $('#pdf').on('click', function (e) {
+            e.preventDefault();
+            Swal.fire("Do you want to download this pdf", {
+                buttons: ["No", "Yes"]
+            })
+                .then((res) => {
+                    if (res) {
+                        event.preventDefault();
+                        console.log("pdf");
+                        let element = document.getElementById('sales-report');
+                        const randomNumber = Math.floor(Math.random() * 10000);
+                        console.log(randomNumber);
+
+                        var opt = {
+                            margin: 0,
+                            filename: `sales-report${randomNumber}.pdf`,
+                            html2canvas: { scale: 10 },
+                            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                        };
+
+                        html2pdf().set(opt).from(element).save();
+
+
+                    }
+                })
+        })
+
+
+
+    </script>
+
+
+    <%- include('../partials/adminFooter') %>
