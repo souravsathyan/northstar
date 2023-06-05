@@ -58,14 +58,15 @@ module.exports = {
   },
   //updating the product
   postEditProduct: async (prodBody, prodId, newImg) => {
+    console.log('in the edit product')
+    console.log(newImg)
     try {
        const slug = slugify(prodBody.prodName)
-       console.log(prodBody,prodId,newImg);
       let updatedProduct;
-      console.log(newImg + 'neeeeeeeeeeeeeeeeeeeeeeeeeeeewIMageeeeee');
-      if (newImg) {
+      if (newImg.length !== 0) {
+        console.log('in the new image if');
         updatedProduct = await products.findByIdAndUpdate(
-          { _id: prodId },
+          prodId,
           {
             prodName: prodBody.prodName,
             prodDescription: prodBody.prodDescription,
@@ -82,8 +83,9 @@ module.exports = {
         );
       } else {
         //if no product image then update the project with no image
+        console.log('its in not image')
         updatedProduct = await products.findByIdAndUpdate(
-          { _id: prodId },
+          prodId,
           {
             prodName: prodBody.prodName,
             prodDescription: prodBody.prodDescription,

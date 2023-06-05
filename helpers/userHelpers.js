@@ -16,6 +16,8 @@ var instance = new Razorpay({
     key_id: process.env.RAZ_KEY_ID,
     key_secret: process.env.RAZ_SECRET_KEY,
 });
+const couponDatas = require('../model/couponModel')
+
 
 
 module.exports = {
@@ -209,7 +211,6 @@ module.exports = {
                         userId: new ObjectId(userId),
                         products: [{ productId: new ObjectId(prodId) }]
                     })
-                    console.log('product created');
                     resolve()
                 }
             } catch (error) {
@@ -398,22 +399,23 @@ module.exports = {
         })
     },
 
-    placeOrder: (order, products, total, userId) => {
-        console.log(order, products, total, userId);
+    placeOrder: (addressId, products, paymentMethod, total, userId,discountAmt,subTotal) => {
         return new Promise(async (resolve, reject) => {
             try {
-                let status = order.paymentType === 'COD' ? 'placed' : 'pending'
+                let status = paymentMethod === 'COD' ? 'placed' : 'pending'
                 const orderDetails = await orderData.create({
-                    address: order.address,
+                    address: addressId,
                     orderedItems: products,
                     user: userId,
                     totalAmount: total,
-                    paymentMethod: order['paymentType'],
+                    paymentMethod: paymentMethod,
                     orderStatus: status,
+                    realAmount:subTotal,
+                    couponAmount:discountAmt,
                     orderDate: new Date()
                 })
 
-                await cartDB.findOneAndRemove({ userId: new ObjectId(userId) })
+                // await cartDB.findOneAndRemove({ userId: new ObjectId(userId) })
                 const response = {
                     status: true,
                     orderId: orderDetails._id
@@ -563,6 +565,44 @@ module.exports = {
                 })
         })
 
+    },
+    applyCoupon: (userId, couponCode, totalPrice) => {
+        return new Promise(async (resolve, reject) => {
+            console.log(userId, couponCode, totalPrice)
+            let coupon = await couponDatas.findOne({ code: couponCode });
+          if (totalPrice < coupon.minimumAmt) {
+                resolve({status:false,message:`cannot apply this coupon below total purchase of Rs.${coupon.minimumAmt}`})
+            } else if (coupon && coupon.isActive == 'Active') {
+                if (!coupon.usedBy.includes(userId)) {
+                    let cart = await cartDB.findOne({ userId: userId })
+                    const discount = coupon.discount
+                    cart.totalAmount = totalPrice - coupon.discount;
+                    cart.coupon = couponCode;
+                    await cart.save()//saving the totalAmt
+
+                    coupon.usedBy.push(userId);//registering the userId in the coupon
+                    await coupon.save()
+                    console.log(cart)
+                    resolve({ discount, cart, status: true, message: "coupn added successfully" })
+                } else {
+                    resolve({ status: false, message: "Coupon code already used" })
+                }
+            } else {
+                resolve({ status: false, message: "invalid Coupon code" })
+            }
+        })
+    },
+    deleteAddress: (addId) => {
+        console.log(addId)
+        return new Promise((resolve, reject) => {
+            addressData.deleteOne({ _id: new ObjectId(addId) })
+                .then((response) => {
+                    resolve(response)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        })
     }
 
 

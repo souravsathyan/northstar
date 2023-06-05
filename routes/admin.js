@@ -31,7 +31,7 @@ router.get('/getProducts',isAdminLoggedIn,adminController.getProductList)//getti
 router.get('/addProduct',isAdminLoggedIn,adminController.getAddProduct)//getting adding product
 router.post('/addProduct',multer.upload.array('images',4),adminController.postAddProduct)//post adding product
 router.get('/editProduct/:id',isAdminLoggedIn,adminController.getEditProduct)//getting edit product page
-router.post('/editProduct/:id',isAdminLoggedIn,multer.upload.array('images',4),adminController.postEditProduct)//posting prodcut edit details 
+router.post('/editProduct/:id',multer.upload.array('images',4),isAdminLoggedIn,adminController.postEditProduct)//posting prodcut edit details 
 router.get('/deleteProduct/:id',isAdminLoggedIn,adminController.DeleteProduct)//deleting the product page
 
 //*****ORDER LIST******* */
@@ -43,6 +43,16 @@ router.get('/cancelOrder/:id',isAdminLoggedIn,adminController.getCancelOrder)
 // ***sales report*****/
 router.get('/salesReport',isAdminLoggedIn,adminController.getSalesData)
 router.post('/sales-report',isAdminLoggedIn,adminController.postSalesData)
+
+//***COUPONS***/
+router.get('/adminCoupons',isAdminLoggedIn,adminController.getCoupons)
+router.post('/add-coupon',isAdminLoggedIn,adminController.postCouponData)
+
+//**BANNER MANAGEMENT */
+router.get('/getBanner',isAdminLoggedIn,adminController.getBanner)
+router.post('/addBanner',isAdminLoggedIn,multer.upload.single('Image'),adminController.addBanner)
+
+
 
 
 

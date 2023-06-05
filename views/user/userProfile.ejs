@@ -135,41 +135,29 @@
                                                                         <%= order.paymentMethod %>
                                                                     </td>
                                                                     <td>
-                                                                        <% if (order.orderStatus=='placed' ||
-                                                                            order.orderStatus=='pending' ||
-                                                                            order.orderStatus=='Shipped' ) { %>
+                                                                        <% if (order.orderStatus=='placed' ||order.orderStatus=='pending' ||order.orderStatus=='Shipped' ) { %>
                                                                             <button class="btn btn-danger btn-sm "
-                                                                                onclick="cancelOrder('<%= order._id %>','cancelled')">
-                                                                                cancel
+                                                                            onclick="cancelOrder('<%= order._id %>','cancelled')">
+                                                                            cancel
                                                                             </button>
-                                                                            <% } else if (order.orderStatus=='Delivered'
-                                                                                ){%>
-                                                                                <% const currentDate=new Date(); %>
-                                                                                    <% const deliveryDate=new
-                                                                                        Date(order.orderDate); %>
-                                                                                        <% const daysPassed=(currentDate
-                                                                                            - deliveryDate) / (1000 * 60
-                                                                                            * 60 * 24); %>
-                                                                                            <% if (daysPassed <=15) { %>
-                                                                                                <button type="button"
-                                                                                                    class="btn btn-warning btn-sm"
-                                                                                                    data-bs-toggle="modal"
-                                                                                                    data-bs-target="#returnProduct">return</button>
-                                                                                                <% } else {%>
-                                                                                                    <span
-                                                                                                        class="badge bg-success">delivered</span>
-                                                                                                    <% } %>
-                                                                                                        <% } else
-                                                                                                            if(order.orderStatus=='cancelled'
-                                                                                                            ) { %>
-                                                                                                            <span
-                                                                                                                class="badge bg-danger">Cancelled</span>
-                                                                                                            <% } else if
-                                                                                                                (order.orderStatus=='return'
-                                                                                                                ) { %>
-                                                                                                                <span
-                                                                                                                    class="badge bg-warning">return</span>
-                                                                                                                <% } %>
+                                                                        <% } else if (order.orderStatus=='Delivered'  ){%>
+                                                                            <% const currentDate=new Date(); %>
+                                                                            <% const deliveryDate=new Date(order.orderDate); %>
+                                                                            <% const daysPassed=(currentDate- deliveryDate) / (1000 * 60* 60 * 24); %>
+                                                                            <% if (daysPassed <=15) { %>
+                                                                                <button type="button"
+                                                                                    class="btn btn-warning btn-sm"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#returnProduct">return</button>
+                                                                                <% } else {%>
+                                                                                    <span
+                                                                                        class="badge bg-success">delivered</span>
+                                                                                    <% } %>
+                                                                                    <% } else if(order.orderStatus=='cancelled') { %>
+                                                                                         <span class="badge bg-danger">Cancelled</span>
+                                                                                         <% } else if(order.orderStatus=='return') { %>
+                                                                                            <span class="badge bg-warning">return</span>
+                                                                                            <% } %>
                                                                     </td>
                                                                     <td><a href="/viewOrderSummary/<%= order._id %>"
                                                                             class="btn-small d-block">View</a>
@@ -182,43 +170,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- track your order -->
-                                    <div class="tab-pane fade" id="track-orders" role="tabpanel"
-                                        aria-labelledby="track-orders-tab">
-                                        <div class="card">
-                                            <div class="card-header">
-                                                <h5 class="mb-0">Orders tracking</h5>
-                                            </div>
-                                            <div class="card-body contact-from-area">
-                                                <p>To track your order please enter your OrderID in the box
-                                                    below and
-                                                    press "Track" button. This was given to you on your receipt
-                                                    and in
-                                                    the confirmation email you should have received.</p>
-                                                <div class="row">
-                                                    <div class="col-lg-8">
-                                                        <form class="contact-form-style mt-30 mb-50" action="#"
-                                                            method="post">
-                                                            <div class="input-style mb-20">
-                                                                <label>Order ID</label>
-                                                                <input name="order-id"
-                                                                    placeholder="Found in your order confirmation email"
-                                                                    type="text" class="square">
-                                                            </div>
-                                                            <div class="input-style mb-20">
-                                                                <label>Billing email</label>
-                                                                <input name="billing-email"
-                                                                    placeholder="Email you used during checkout"
-                                                                    type="email" class="square">
-                                                            </div>
-                                                            <button class="submit submit-auto-width"
-                                                                type="submit">Track</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
                                     <!-- add address -->
                                     <div class="tab-pane fade" id="address" role="tabpanel"
                                         aria-labelledby="address-tab">
@@ -244,13 +196,17 @@
                                                                                         <br>
                                                                                         <%= userAddress.pincode %>
                                                             </address>
+
                                                             <div class="d-flex justify-content-end">
                                                                 <a href="/editAddress/<%= userAddress._id %>"
                                                                     type="button"
-                                                                    class="cl0  pb-5 bg1 bor1 hov-btn1 p-lr-15 trans-04  btn-lg ">Edit</a>
-                                                                </p>
+                                                                    class="btn btn-outline-primary  btn-sm ">Edit</a>
+                                                                    
+                                                                    <button class="ms-3"
+                                                                    onclick="deleteAddress('<%= userAddress._id %>')"
+                                                                    >
+                                                                    <i class="fa-solid fa-trash" style="color: #ff0000;"></i></button>
                                                             </div>
-
                                                         </div>
                                                     </div>
                                                 </div>
@@ -352,11 +308,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Button trigger modal -->
-
-
-
 
             <!-- Modal for editing profile-->
             <div class="modal fade" id="editDetails" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -464,7 +415,6 @@
                 </div>
             </div>
 
-
             <!--image crop modal-->
             <!-- Button trigger modal -->
             <!-- Modal -->
@@ -532,12 +482,7 @@
             </div>
 
 
-
-
         </section>
-
-
-
     </main>
 
     <script>
@@ -547,6 +492,41 @@
         }
     </script>
     <script>
+        function deleteAddress(addId){
+            Swal.fire({
+                title: "Are you sure?",
+                text: "you are going to delete this address",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            }).then((confirmed) => {
+                if (confirmed.value) {
+                    $.ajax({
+                        url: '/deleteAddress',
+                        method: 'post',
+                        data: {
+                            addId:addId
+                        }
+                    }).done(res => {
+                        Swal.fire({
+                            title: "Success",
+                            text: res.message,
+                            icon: "success"
+                        }).then(() => {
+                            location.reload()
+                        });
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Cancelled",
+                        text: "Your action has been cancelled",
+                        icon: "info"
+                    });
+                }
+            });
+        }
+        
 
         function cancelOrder(orderId, status) {
             Swal.fire({
@@ -644,6 +624,8 @@
                 });
             })
         }
+
+
     </script>
 
     <%- include('../partials/userFooter') %>

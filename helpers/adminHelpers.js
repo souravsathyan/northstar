@@ -5,6 +5,9 @@ const orderData = require('../model/orderModel');
 const { response } = require("express");
 const ObjectId = require("mongoose").Types.ObjectId;
 const productsData = require('../model/productModel')
+const couponDatas = require('../model/couponModel')
+const vocherGenerator = require('voucher-code-generator')
+
 
 
 module.exports = {
@@ -279,9 +282,52 @@ module.exports = {
                 .then((result) => {
                     console.log(result[0].users);
                     resolve(result);
-                });
+                }).catch((error)=>{
+                    reject(error)
+                })
         })
-    }
+    },
+    makeCoupon: (couponData) => {
+        return new Promise(async (resolve, reject) => {
+
+            const dateString = couponData.couponExpiry; //asiging it into a variable
+            const [day, month, year] = dateString.split(/[-/]/); //spliting thedate format dd-mm-yyyy
+            const date = new Date(`${year}-${month}-${day}`);//taking it to the yyyy-mm-dd
+            const convertedDate = date.toISOString();//converting it into ISO format in database
+            
+
+            let couponCode = vocherGenerator.generate({ //COUPON CODE GENERATOR
+                length: 6,
+                count: 1,
+                charset: vocherGenerator.charset("alphabetic")//in alphabetic
+            });
+
+            const coupon = await new couponDatas({//creating the coupon in the database
+                couponName: couponData.couponName,
+                code: couponCode[0],
+                discount: couponData.couponAmount,
+                expiryDate: convertedDate,
+                minimumAmt:couponData.minimumAmt
+            })
+
+            await coupon.save()//saving the coupon in database
+                .then(() => {
+                    resolve(coupon._id)
+                })
+                .catch((error) => {
+                    reject(error)
+                })
+        })
+    },
+    getAllCoupons: () => {
+        return new Promise(async (resolve, reject) => {
+            await couponDatas.find().lean()
+                .then((result) => {
+                    resolve(result)
+                })
+        })
+    },
+
 }
 
 

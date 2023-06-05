@@ -81,6 +81,8 @@ router.post('/cancelOrder',isUserLogin,userController.getChangeStatusOrder)
 router.post('/returnOrder/:id',isUserLogin,userController.getReturnOrder) 
 //change password
 router.get('/changePassword',isUserLogin,userController.getChangePwd)
+//deleteing address
+router.post('/deleteAddress',isUserLogin,userController.deleteAddress)
 
 
 //****PAYMENT */
@@ -91,4 +93,7 @@ router.post('/verifyPayment',isUserLogin,userController.getVerifyPayment)
 router.post("/filterProducts",isUserLogin,userController.getFilterProducts)
 //** SEARCHING**/
 router.get('/searchProducts',isUserLogin,userController.getSearchProducts)
+
+//**COUPON */
+router.post('/applyCoupon',isUserLogin,userController.getApplyCoupon)
 module.exports = router;

@@ -7,7 +7,10 @@ const products = require("../model/productModel");
 const orderData = require("../model/orderModel");
 const userHelpers = require("../helpers/userHelpers");
 const ObjectId = require("mongoose").Types.ObjectId;
-const excelJs = require('exceljs')
+const excelJs = require('exceljs');
+const couponData = require('../model/couponModel')
+const vocherGenerator = require('voucher-code-generator')
+const bannersData = require('../model/banner')
 
 const adminCredentials = {
   name: "Admin",
@@ -188,11 +191,8 @@ module.exports = {
   //editing the porduct
   getEditProduct: async (req, res) => {
     try {
-      console.log("in edit prodyct******");
       let product = await products.findById({ _id: req.params.id });
-      console.log(product);
       let category = await categoryHelpers.getAllCategory();
-      console.log(product);
       if (product) {
         res.render("admin/editProduct", {
           product: product,
@@ -211,8 +211,7 @@ module.exports = {
       const body = req.body;
       const prodId = req.params.id;
       const files = req.files;
-      console.log(body, prodId, files, "iiiiiiiiiiiiiiiiiiiiiiiiii")
-      const updatedProduct = await productHelpers.postEditProduct(body, prodId, files);
+      await productHelpers.postEditProduct(body, prodId, files);
       res.redirect("/admin/getProducts");
     } catch (error) {
       console.log(error);
@@ -275,21 +274,85 @@ module.exports = {
   },
 
   getSalesData: async (req, res) => {
-    const sales = await adminHelpers.getAllDeliveredOrder()
-    console.log(sales)
-    res.render('admin/salesReport',{
-      sales
-    })
+    try {
+      const sales = await adminHelpers.getAllDeliveredOrder()
+      console.log(sales)
+      res.render('admin/salesReport', {
+        sales
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).render('error', { error });
+    }
   },
   //getting orders by date
-  postSalesData:async (req,res)=>{
-    let {startDate,endDate} = req.body;
-    console.log(startDate,endDate);
-    startDate = new Date(startDate)
-    endDate = new Date(endDate)
-    const salesReport = await adminHelpers.getDeliveredOrders(startDate,endDate)
-    console.log(salesReport,'its sales report...............')
-    res.json({sales:salesReport})
+  postSalesData: async (req, res) => {
+    try {
+      let { startDate, endDate } = req.body;
+      startDate = new Date(startDate)
+      endDate = new Date(endDate)
+      const salesReport = await adminHelpers.getDeliveredOrders(startDate, endDate)
+      res.json({ sales: salesReport })
+    } catch (error) {
+      console.log(error)
+      res.status(500).render('error', { error });
+    }
+  },
+
+  //coupons
+  getCoupons: async (req, res) => {
+    try {
+      let allCoupons = await adminHelpers.getAllCoupons();
+      res.render('admin/coupon', {
+        allCoupons
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).render('error', { error });
+    }
+  },
+  postCouponData: (req, res) => {
+    console.log(req.body)
+    adminHelpers.makeCoupon(req.body)
+      .then((response) => {
+        res.json({ status: true })
+      })
+      .catch((error) => {
+        console.log(error)
+        res.status(500).render('error', { error });
+      })
+  },
+  getBanner: async (req, res) => {
+    try {
+      const bannerList = await bannersData.find({})
+      res.render('admin/banner', {
+        bannerList
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).render('error', { error });
+    }
+  },
+  addBanner: async (req, res) => {
+    try {
+      const { Description } = req.body
+      const Image = req.file
+      const name = req.body.name
+      const newBanner = new bannersData({
+        name: name,
+        Image: Image.filename,
+        Description: Description,
+      })
+      const banner = await newBanner.save()
+      if (banner) {
+        res.send({ message: "banner added" })
+      } else {
+        res.send({ message: "something went worng" })
+      }
+    } catch (error) {
+      console.log(error)
+      res.status(500).render('error', { error });
+    }
   }
 
 

@@ -4,54 +4,159 @@
     <main class="main">
 
         <section class="mt-50 mb-50">
-            <div class="container">
+            <div class="container" style="min-height: 100vh;">
 
                 <form action="" id="checkout-form">
                     <div class="row">
 
                         <!-- ADDRESS BODY -->
                         <div class="col-md-6">
-                            <h4 class="ps-4 mt-1 mb-3 dark-bg">Select Address.</h4>
-                            <div class="col ">
-                                <div class="card mb-4 mb-lg-1">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">Billing Address</h5>
-                                    </div>
-                                    <div class="card-body">
+                            <!-- address -->
+                            <div class="col">
+                                <h4 class="ps-4 mt-1 mb-3 dark-bg">Select Address.</h4>
+                                <div class="col ">
+                                    <div class="card mb-4 mb-lg-1">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Billing Address</h5>
+                                        </div>
+                                        <div class="card-body">
 
-                                        <% userAddress.forEach(userAddress=> { %>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio"
-                                                    value="<%= userAddress._id %>" name="address" id="address1" checked>
-                                                <label class="form-check-label" for="address1">
-                                                    <address>
-                                                        <%= userAddress.firstName %>
-                                                            <%= userAddress.lastName %>
-                                                                <br>
-                                                                <%= userAddress.address %>
+                                            <% userAddress.forEach(userAddress=> { %>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio"
+                                                        value="<%= userAddress._id %>" name="address" id="addressId"
+                                                        checked>
+                                                    <label class="form-check-label" for="address1">
+                                                        <address>
+                                                            <%= userAddress.firstName %>
+                                                                <%= userAddress.lastName %>
                                                                     <br>
-                                                                    <%= userAddress.city %>,pin: <%= userAddress.pincode
-                                                                            %>
-                                                                            <br>
-                                                                            <%= userAddress.state %>,<%=
-                                                                                    userAddress.country %>
-                                                                                    <br>
-                                                                                    <%= userAddress.mobile %>
-                                                    </address>
+                                                                    <%= userAddress.address %>
+                                                                        <br>
+                                                                        <%= userAddress.city %>,pin: <%=
+                                                                                userAddress.pincode %>
+                                                                                <br>
+                                                                                <%= userAddress.state %>,<%=
+                                                                                        userAddress.country %>
+                                                                                        <br>
+                                                                                        <%= userAddress.mobile %>
+                                                        </address>
 
-                                                </label>
-                                            </div>
-                                            <% }) %>
+                                                    </label>
+                                                </div>
+                                                <% }) %>
 
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button class="cl0   bg1 bor1 hov-btn1  trans-04  btn-lg" type="button"
+                                            data-bs-toggle="modal" data-bs-target="#addAddressModal"> Add Address <i
+                                                class="fa-solid fa-circle-plus fa-lg"></i> </button>
                                     </div>
                                 </div>
-                                <div>
-                                    <button class="cl0   bg1 bor1 hov-btn1  trans-04  btn-lg" type="button"
-                                        data-bs-toggle="modal" data-bs-target="#addAddressModal"> Add Address <i
-                                            class="fa-solid fa-circle-plus fa-lg"></i> </button>
+                            </div>
+
+                            <!-- apply coupon -->
+                            <div class="mb-30 mt-50">
+                                <div class="heading_s1 mb-3">
+                                    <h4>Apply Coupon</h4>
+                                </div>
+                                <div class=" col total-amount">
+                                    <div class="left">
+                                        <div class="coupon">
+
+                                            <div class="form-row row justify-content-center">
+                                                <div class="form-group col-lg-6">
+                                                    <input class="font-medium" id="applyCoupon" name="Coupon"
+                                                        placeholder="Enter Your Coupon">
+                                                </div>
+                                                <div class="form-group col-lg-6">
+                                                    <button class="btn  btn-sm" id="couponBtn" type="button"><i
+                                                            class="fi-rs-label mr-10"></i>Apply</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- select coupon -->
+                            <div class="col" style="padding: 20px;">
+                                <div id="accordion" class="card ">
+                                    <div class="card-header" id="headingTwo">
+                                        <h5 class="mb-0">
+                                            <button class="btn collapsed text-dark" data-toggle="collapse"
+                                                data-target="#collapseTwo" aria-expanded="false"
+                                                aria-controls="collapseTwo">
+                                                Select Coupons
+                                            </button>
+                                        </h5>
+                                    </div>
+
+                                    <div id="collapseTwo" class="collapse " aria-labelledby="headingTwo"
+                                        data-parent="#accordion">
+
+                                        <div class="card-body ">
+                                            <table class="table table-hover" id="couponTable">
+                                                <thead>
+                                                    <tr class="text-left">
+                                                        <th>No</th>
+                                                        <th>Coupon Name</th>
+                                                        <th>Discount Amt</th>
+                                                        <th>Minimum Amt</th>
+                                                        <th>Expiry Date</th>
+                                                        <th>Coupon Code</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% allCoupons.forEach((coupon,index)=> { %>
+                                                        <tr class="text-left">
+                                                            <td width="15%">
+                                                                <!-- No -->
+                                                                <%= index+1 %>
+                                                            </td>
+                                                            <td width="20%">
+                                                                <!-- Coupon Name -->
+                                                                <%= coupon.couponName %>
+                                                            </td>
+
+                                                            <td width="10%">
+                                                                <!-- Discount Amount -->
+                                                                <%= coupon.discount %>
+                                                            </td>
+                                                            <td width="10%">
+                                                                <!-- minimum Amount -->
+                                                                <%= coupon.minimumAmt %>
+                                                            </td>
+                                                            <td width="15%">
+                                                                <!-- Expiry Date -->
+                                                                <%=coupon.expiryDate.toLocaleDateString()%>
+                                                            </td>
+                                                            <td width="20%">
+                                                                <!-- Coupon Code -->
+                                                                <span class="rounded-pill bg-success p-2 fs-6">
+                                                                    <%= coupon.code %>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+
+                                                        <% }) %>
+
+
+                                                </tbody>
+                                            </table>
+
+                                            
+                                        </div>
+                                        
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
+
+
 
                         <!-- ORDER DETAILS -->
                         <div class="col-md-6">
@@ -93,12 +198,23 @@
                                                 </tr>
                                                 <% }) %>
                                                     <tr>
-                                                        <th>SubTotal</th>
+                                                        <th>Sub Total</th>
                                                         <td></td>
-                                                        <td class="product-subtotal text-right" colspan="2">Rs.<%=
+                                                        <td class="product-subtotal text-right" id="subTotal" colspan="2">Rs.<%=
                                                                 totalPrice.toLocaleString() %>
                                                         </td>
                                                     </tr>
+
+                                                    <tr>
+                                                        <th>Coupon Discont</th>
+                                                        <td></td>
+                                                        <td class="product-subtotal text-right" colspan="3"
+                                                            id="discount">
+                                                            <%= %>
+                                                        </td>
+                                                    </tr>
+
+
                                                     <tr>
                                                         <th>Shipping</th>
                                                         <td></td>
@@ -108,10 +224,11 @@
                                                     <tr>
                                                         <th>Total</th>
                                                         <td></td>
-                                                        <td colspan="2" class="product-subtotal text-right"><span
-                                                                class="font-xl  text-brand fw-900">
-                                                                Rs.<%= totalPrice.toLocaleString() %>
-                                                            </span></td>
+                                                        <td colspan="2" class="product-subtotal text-right">
+                                                            <span class="font-xl  text-brand fw-900" id="totalSpan">
+                                                                Rs. <%= totalPrice.toLocaleString() %>
+                                                            </span>
+                                                        </td>
                                                     </tr>
 
                                         </tbody>
@@ -332,15 +449,29 @@ background: linear-gradient(351deg, rgba(198,198,203,1) 44%, rgba(176,176,184,1)
         //*****proceed to checkout********//
         $("#checkout-form").submit((e) => {
             e.preventDefault();
+            var addressId = $('input[name="address"]:checked').val();
+            var totalAmount = $('#totalSpan').text().trim().replace(/[^0-9]/g, ''); // Extract the numeric value from the span text
+            var paymentMethod = $('input[name="paymentType"]:checked').val();
+            var discountAmt = $('#discount').text().trim().replace(/[^0-9]/g, '')
+            var subTotal = $('#subTotal').text().trim().replace(/[^0-9]/g, '')
+
+            var data = {
+                addressId: addressId,
+                totalAmount: totalAmount,
+                paymentMethod: paymentMethod,
+                discountAmt:discountAmt,
+                subTotal : subTotal
+            }
+            
             $.ajax({
                 url: '/proceedToCheckout',
                 method: 'post',
-                data: $('#checkout-form').serialize(),
+                data: data,
                 success: function (response) {
                     Swal.fire({
                         title: "Are you sure you want to place this order?",
                         text: "Once you place the order, it cannot be cancelled.",
-                        type: "warning",
+                        icon: "warning",
                         showCancelButton: true,
                         confirmButtonText: "Yes, place order",
                         cancelButtonText: "No",
@@ -352,6 +483,8 @@ background: linear-gradient(351deg, rgba(198,198,203,1) 44%, rgba(176,176,184,1)
                                 console.log(response);
                                 razorpayPayment(response.orders)
                             }
+                        } else if (response.error) {
+                            alert('Choose a payment method');
                         }
                     });
                 }
@@ -405,6 +538,42 @@ background: linear-gradient(351deg, rgba(198,198,203,1) 44%, rgba(176,176,184,1)
         }
 
 
+        //Coupon validation
+            $(document).ready(function () {
+                $("#couponBtn").on("click", function () {
+                    console.log("clicked");
+                    var coupon = $("#applyCoupon").val();
+                    const data = {
+                        coupon: coupon
+                    }
+                    $.ajax({
+                        url: "/applyCoupon",
+                        method: "post",
+                        data: data,
+
+                        success: function (response) {
+                            if (response.status) {
+                                Swal.fire({
+                                    title: "Success",
+                                    text: "Coupon is Redeemed happy Shopping ",
+                                    icon: "success",
+                                    confirmButtonText: "OK",
+                                }).then((result) => {
+                                    document.getElementById('discount').innerHTML = response.discount
+                                    document.getElementById('totalSpan').innerHTML = response.cart.totalAmount
+                                })
+                            } else {
+                                Swal.fire({
+                                    title: "Failure",
+                                    text: `${response.message}`,
+                                    icon: "Danger",
+                                    confirmButtonText: "OK",
+                                })
+                            }
+                        },
+                    });
+                });
+            });
 
 
     </script>

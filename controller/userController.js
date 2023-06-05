@@ -13,6 +13,8 @@ const adminHelpers = require('../helpers/adminHelpers');
 const { ObjectId } = mongoose.Types;
 const userProfileData = require('../model/userDetailsModel');
 const slug = require('slugify')
+const bannersData = require('../model/banner')
+
 
 module.exports = {
     userHome: async (req, res, next) => {
@@ -23,13 +25,15 @@ module.exports = {
                 let cartCount = await userHelpers.getCartCount(userID)
                 productList = await products.find()
                 colorList = await userHelpers.getProdColors()
+                const bannerList = await bannersData.find({})
                 console.log(colorList);
                 let user = req.session.user
                 res.render('user/index', {
                     user,
                     productList,
                     cartCount,
-                    colorList
+                    colorList,
+                    bannerList
                 })
             } else {
                 res.redirect('/landingPage')
@@ -39,9 +43,12 @@ module.exports = {
         }
     },
 
-    landingPage: (req, res) => {
+    landingPage:async (req, res) => {
         try {
-            res.render('user/landingPage');
+            const bannerList = await bannersData.find({})
+            res.render('user/landingPage',{
+                bannerList
+            });
         } catch (error) {
             res.status(500).render('error', { error });
         }
@@ -323,13 +330,10 @@ module.exports = {
 
         let prodId = req.params.id
         let userID = req.session.user._id
-        console.log('api called');
         userHelpers.addToCart(prodId, userID)
             .then(async () => {
                 let response = {}
                 console.log('got the response for adding to  cart');
-
-
                 response.status = true
                 res.json(response)
             }).catch((error) => {
@@ -509,12 +513,14 @@ module.exports = {
             let totalPrice = await userHelpers.getTotalAmt(req.session.user._id);//getting the cart total
             let userAddress = await addressData.find({ userId: new ObjectId(userId) });//getting the address to display 
             let cartProducts = await userHelpers.getCart(userId);//getting the cart products to display by populate method
+            let allCoupons = await adminHelpers.getAllCoupons();//getting all coupons
             res.render('user/orderCheckout', {
                 user,
                 userAddress,
                 totalPrice,
                 cartProducts,
-                cartCount
+                cartCount,
+                allCoupons
             })
         } catch (error) {
             res.status(500).render('error', { error });
@@ -522,19 +528,26 @@ module.exports = {
     },
     postCheckout: async (req, res) => {
         try {
-            let userId = req.session.user._id
-            let products = await userHelpers.getCartProducts(userId)//getting the cart Products
-            let totalPrice = await userHelpers.getTotalAmt(userId);//getting the cart TotalAmt 
-            if (!req.body.paymentType) {
+            console.log(req.body,'iiiiiiiiiii')
+            const userId = req.session.user._id
+            const products = await userHelpers.getCartProducts(userId)//getting the cart Products
+            const totalPrice = req.body.totalAmount//getting the cart TotalAmt 
+            const userAddress = req.body.addressId
+            const paymentMethod = req.body.paymentMethod
+            const discountAmt = req.body.discountAmt
+            const subTotal = req.body.subTotal 
+            
+
+            if (!req.body.paymentMethod) {
                 return res.json({ error: true, message: "Please choose a payment method" });
             }
             //storing in the order Collection
             //adding cartProducts by finding the cart also adding the the address that comes from the body
-            userHelpers.placeOrder(req.body, products, totalPrice, userId)
+            userHelpers.placeOrder(userAddress,products,paymentMethod,totalPrice,userId,discountAmt,subTotal)
                 .then((response) => {
                     const orderId = response.orderId
-                    if (req.body['paymentType'] == 'COD') {
-                        res.json({ codSucess: true, orderId: orderId });
+                    if (req.body.paymentMethod == 'COD') {
+                        res.json({ codSuccess: true, orderId: orderId });
                     } else {
                         userHelpers.generateRazorpay(orderId, totalPrice).then((response) => {
                             console.log(response, 'its in the controller post chekout');
@@ -606,11 +619,20 @@ module.exports = {
                 res.status(500).render('error', { error });
             })
     },
+    deleteAddress:(req,res)=>{
+        
+         userHelpers.deleteAddress(req.body.addId)
+        .then((response)=>{
+            res.json({status:true})
+        })
+        .catch((error)=>{
+            res.json({status:false,message:'failed to delete the address'})
+        })
+    },
     //******PAYMENT */
     getVerifyPayment: async (req, res) => {
         console.log(req.body);
         let orderId = req.body['order[receipt]']
-        console.log(orderId, 'iiiiiiiiiiiiiiii');
         await userHelpers.verifyPayment(req.body)
             .then(() => {
                 userHelpers.changePaymentStatus(orderId)
@@ -625,36 +647,39 @@ module.exports = {
     },
     //changing the ser password
     getChangePwd: (req, res) => {
-        let changePwd = req.session.changed = true
-        res.render('user/forgetPwd', { changePwd })
+        try {
+            let changePwd = req.session.changed = true
+            res.render('user/forgetPwd', { changePwd })
+        } catch (error) {
+            res.json({ error: 'payment failed' })
+        }
     },
     //filtering the products
     getFilterProducts: async (req, res) => {
         try {
-            console.log(req.body);
-            const { sortBy,priceValue,colorValue} = req.body;
+            const { sortBy, priceValue, colorValue } = req.body;
             let filteredProducts = [];
-            const filter={}
-            
-            if(priceValue !== 'all'){
-                const [minPrice,maxPrice] = priceValue.split('-');
-                filter.prodPrice={
-                    $gte:minPrice,
-                    $lte:maxPrice
+            const filter = {}
+
+            if (priceValue !== 'all') {
+                const [minPrice, maxPrice] = priceValue.split('-');
+                filter.prodPrice = {
+                    $gte: minPrice,
+                    $lte: maxPrice
                 }
             }
 
             if (colorValue !== 'all') {
                 filter.prodColor = colorValue;
-              }
+            }
 
 
-              if(sortBy==='low-to-high' ){
-                filteredProducts= await productData.find(filter).sort({ prodPrice: 1 })
-            }else if (sortBy === 'high-to-low' ){
-                filteredProducts= await productData.find(filter).sort({ prodPrice: -1 })
-            }else{
-                filteredProducts= await productData.find(filter)
+            if (sortBy === 'low-to-high') {
+                filteredProducts = await productData.find(filter).sort({ prodPrice: 1 })
+            } else if (sortBy === 'high-to-low') {
+                filteredProducts = await productData.find(filter).sort({ prodPrice: -1 })
+            } else {
+                filteredProducts = await productData.find(filter)
             }
 
             res.json(filteredProducts)
@@ -664,11 +689,30 @@ module.exports = {
             res.status(500).render('error', { error });
         }
     },
-    getSearchProducts:async (req,res)=>{
-        const query = req.query.query
-        console.log(query);
-        const products = await productData.find({prodName:{$regex:`${query}` , $options:'i'}})
-        console.log(products);
-        res.json(products)
+    getSearchProducts: async (req, res) => {
+        try {
+            const query = req.query.query
+            const products = await productData.find({ prodName: { $regex: `${query}`, $options: 'i' } })
+            res.json(products)
+        } catch (error) {
+            res.status(500).render('error', { error });
+        }
+    },
+    getApplyCoupon: async (req, res) => {
+        try {
+            console.log(req.body)
+            if(req.body.coupon === ''){
+                res.json({error:true,message:`pelase select the coupon`})
+            }else{
+                const coupon = req.body.coupon
+                const user = req.session.user
+                let totalPrice = await userHelpers.getTotalAmt(req.session.user._id)
+                const response = await userHelpers.applyCoupon(user._id, coupon, totalPrice);
+                console.log(response)
+                res.status(202).json(response);
+            }
+        } catch (error) {
+            res.status(500).render('error', { error });
+        }
     }
 }

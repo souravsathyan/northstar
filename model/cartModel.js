@@ -15,7 +15,15 @@ const cartModel = new mongoose.Schema({
             required:true,
             default:1
         }
-    }]
+    }],
+    coupon:{
+        type:String,
+        default:null
+    },
+    totalAmount:{
+        type:Number,
+        default:0
+    }
 }
 )
 
