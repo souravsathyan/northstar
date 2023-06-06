@@ -360,7 +360,7 @@ module.exports = {
             })
     },
     //CHANGE CART PRODUCT QTY
-    postChangeQty: (req, res) => {
+    postChangeQty: async(req, res) => {
         try {
             const { cart, product, userId, count, quantity } = req.body
             userHelpers.changeQtyByButton(cart, product, count, quantity)
@@ -369,7 +369,7 @@ module.exports = {
                     res.json(response)
                 }).catch((error) => {
                     console.log("error");
-                    res.json({ status: false })
+                    res.json(error)
                 })
         } catch (error) {
             res.status(500).render('error', { error });
@@ -536,7 +536,6 @@ module.exports = {
             const paymentMethod = req.body.paymentMethod
             const discountAmt = req.body.discountAmt
             const subTotal = req.body.subTotal 
-            
 
             if (!req.body.paymentMethod) {
                 return res.json({ error: true, message: "Please choose a payment method" });
@@ -544,9 +543,10 @@ module.exports = {
             //storing in the order Collection
             //adding cartProducts by finding the cart also adding the the address that comes from the body
             userHelpers.placeOrder(userAddress,products,paymentMethod,totalPrice,userId,discountAmt,subTotal)
-                .then((response) => {
+                .then(async(response) => {
                     const orderId = response.orderId
                     if (req.body.paymentMethod == 'COD') {
+                        
                         res.json({ codSuccess: true, orderId: orderId });
                     } else {
                         userHelpers.generateRazorpay(orderId, totalPrice).then((response) => {

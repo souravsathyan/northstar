@@ -120,4 +120,19 @@ module.exports = {
     })
   },
 
+  decreaseStock:(cartProducts)=>{
+    return new Promise(async (resolve, reject) => {
+   
+      for (let i = 0; i < cartProducts.length; i++) {
+          let product = await products.findById({ _id: cartProducts[i].productId });
+          const isProductAvailableInStock = (product.prodQuantity - cartProducts[i].quantity) > 0 ? true : false;
+          if (isProductAvailableInStock) {
+              product.prodQuantity = product.prodQuantity - cartProducts[i].quantity;
+          }
+          await product.save();
+      }
+      resolve(true)
+  })
+  }
+
 };

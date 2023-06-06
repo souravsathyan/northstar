@@ -336,14 +336,35 @@
 										</div>
 									</div>
 
+									<!-- STOCK MNGMT -->
+									<div class="text-center" style="padding: 10px;">
+										<% if (product.prodQuantity <1) { %>
+											<p class="text-danger">
+												Out of stock
+											</p>
+										<% } else {%>
+											<p class="text-success">
+												Only <strong> <%= product.prodQuantity %> </strong> stocks left
+											</p>
+										<% } %>
+									</div>
+
 									<div class="d-flex justify-content-center">
 										<div style="border: none;">
 
+											<% if (product.prodQuantity <1) { %>
+												<button
+												class=" cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail me-1 font-weight-bold"
+												onclick="addToCart('<%= product._id %>')" disabled>
+												Add to cart<i class="ms-2 fi-rs-shopping-bag-add"></i>
+											</button>
+											<% } else { %>
 											<button
 												class=" cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail me-1 font-weight-bold"
 												onclick="addToCart('<%= product._id %>')">
 												Add to cart<i class="ms-2 fi-rs-shopping-bag-add"></i>
 											</button>
+											<% } %>
 											<button
 												class=" cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail font-weight-bold ">
 												wishlist<i class="fa-sharp fa-regular fa-heart ms-2"></i></i>

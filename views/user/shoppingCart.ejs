@@ -7,108 +7,111 @@
             <div class="container" style="min-height: 100vh;">
                 <div class="row">
                     <div class="col-12">
-                        <% if (cartProduct && cartProduct.products && cartProduct.products.length > 0) { %>
-                        <div class="table-responsive">
-                            <table class="table-shopping-cart">
-                                <tr class="table_head">
-                                    <th class="column-1 text-center">Product</th>
-                                    <th class="column-2 text-center">name</th>
-                                    <th class="column-3 text-center">Price</th>
-                                    <th class="column-4 text-center">Quantity</th>
-                                    <th class="text-center">Total</th>
-                                    <th class="column-5 text-center">Action</th>
-                                </tr>
-
-
-                                <% cartProduct.products.forEach(product=> { %>
-                                    <tr class="table_row">
-                                        <td class="column-1 text-center">
-                                            <div class="how-itemcart1">
-                                                <img src="/<%= product.productId.prodImage[0] %>" alt="IMG">
-                                            </div>
-                                        </td>
-                                        <td class="column-2 text-center ">
-                                            <%= product.productId.prodName %>
-                                        </td>
-                                        <td class="column-3 text-center ">
-                                            Rs.<%= product.productId.prodPrice.toLocaleString() %>
-                                        </td>
-
-                                        <td class="column-4 text-center">
-
-                                            <button class="btn btn-primary"
-                                                onclick="changeQuantity('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id %>',-1,'<%=product.productId.prodPrice%>')">-</button>
-                                            <span style="margin: 10px;" id="<%=product.productId._id%>">
-                                                <%= product.quantity %>
-                                            </span>
-                                            <button class="btn btn-primary"
-                                                onclick="changeQuantity('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id  %>',1,'<%=product.productId.prodPrice%>')">+</button>
-                                        </td>
-                                        <!-- total field -->
-                                        <td class="text-center" id="indTotal">
-                                            Rs.<%= product.productId.prodPrice *  product.quantity.toLocaleString() %>
-                                        </td>
-
-                                        <td class="column-5 text-center">
-                                            <button class="btn"
-                                                onclick="deleteProduct('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id  %>')"><i
-                                                    class="fa-solid fa-trash-can" style="color: #ff0000;"></i></button>
-                                        </td>
-
+                        <% if (cartProduct && cartProduct.products && cartProduct.products.length> 0) { %>
+                            <div class="table-responsive">
+                                <table class="table-shopping-cart">
+                                    <tr class="table_head">
+                                        <th class="column-1 text-center">Product</th>
+                                        <th class="column-2 text-center">name</th>
+                                        <th class="column-3 text-center">Price</th>
+                                        <th class="column-4 text-center">Quantity</th>
+                                        <th class="text-center">Total</th>
+                                        <th class="column-5 text-center">Action</th>
                                     </tr>
-                                    <% }) %>
 
-                            </table>
-                        </div>
-                        
-                        <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div>
-                        <div class="row mb-50">
-                            <div class="col-lg-6 col-md-12">
-                                
+
+                                    <% cartProduct.products.forEach(product=> { %>
+                                        <tr class="table_row">
+                                            <td class="column-1 text-center">
+                                                <div class="how-itemcart1">
+                                                    <img src="/<%= product.productId.prodImage[0] %>" alt="IMG">
+                                                </div>
+                                            </td>
+                                            <td class="column-2 text-center ">
+                                                <%= product.productId.prodName %>
+                                            </td>
+                                            <td class="column-3 text-center ">
+                                                Rs.<%= product.productId.prodPrice.toLocaleString() %>
+                                            </td>
+
+                                            <td class="column-4 text-center">
+
+                                                <button class="btn btn-primary"
+                                                    onclick="changeQuantity('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id %>',-1,'<%=product.productId.prodPrice%>','<%=product.productId.prodQuantity%>')">-</button>
+                                                <span style="margin: 10px;" id="<%=product.productId._id%>">
+                                                    <%= product.quantity %>
+                                                </span>
+                                                <button class="btn btn-primary"
+                                                    onclick="changeQuantity('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id  %>',1,'<%=product.productId.prodPrice%>','<%=product.productId.prodQuantity%>')">+</button>
+                                            </td>
+                                            <!-- total field -->
+                                            <td class="text-center" id="indTotal">
+                                                Rs.<%= product.productId.prodPrice * product.quantity.toLocaleString()
+                                                    %>
+                                            </td>
+
+                                            <td class="column-5 text-center">
+                                                <button class="btn"
+                                                    onclick="deleteProduct('<%=cartProduct._id  %>','<%= product.productId._id %>','<%=user._id  %>')"><i
+                                                        class="fa-solid fa-trash-can"
+                                                        style="color: #ff0000;"></i></button>
+                                            </td>
+
+                                        </tr>
+                                        <% }) %>
+
+                                </table>
                             </div>
-                            <div class="col-lg-6 col-md-12">
-                                <div class="border p-md-4 p-30 border-radius cart-totals">
-                                    <div class="heading_s1 mb-3" >
-                                        <h4>Cart Totals</h4>
+
+                            <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div>
+                            <div class="row mb-50">
+                                <div class="col-lg-6 col-md-12">
+
+                                </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="border p-md-4 p-30 border-radius cart-totals">
+                                        <div class="heading_s1 mb-3">
+                                            <h4>Cart Totals</h4>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="cart_total_label">Cart Subtotal</td>
+                                                        <td class="cart_total_amount  "><span
+                                                                class="font-lg fw-900 text-brand " id="subTotal">
+                                                                 <%= totalPrice.toLocaleString() %>
+                                                            </span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="cart_total_label">Shipping</td>
+                                                        <td class="cart_total_amount "> <i class="ti-gift mr-5"></i>
+                                                            Free
+                                                            Shipping</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="cart_total_label">Total</td>
+                                                        <td class="cart_total_amount "><strong><span
+                                                                    class="font-xl fw-900 text-brand " id="grandTotal">
+                                                                    Rs.<%= totalPrice.toLocaleString() %>
+                                                                </span></strong>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <a href="/placeOrder" class="text-light" style="text-decoration: none; ">
+                                            <button class="btn" style="background-color: #717fe0;">
+                                                <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a>
+                                        </button>
                                     </div>
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <tbody>
-                                                <tr>
-                                                    <td class="cart_total_label">Cart Subtotal</td>
-                                                    <td class="cart_total_amount  "><span
-                                                            class="font-lg fw-900 text-brand " id="subTotal">
-                                                            Rs. <%= totalPrice.toLocaleString() %>
-                                                        </span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="cart_total_label">Shipping</td>
-                                                    <td class="cart_total_amount "> <i class="ti-gift mr-5"></i> Free
-                                                        Shipping</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="cart_total_label">Total</td>
-                                                    <td class="cart_total_amount "><strong><span
-                                                                class="font-xl fw-900 text-brand " id="grandTotal">
-                                                                Rs.<%= totalPrice.toLocaleString() %>
-                                                            </span></strong>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <a href="/placeOrder" class="text-light" style="text-decoration: none; ">
-                                        <button class="btn" style="background-color: #717fe0;">
-                                            <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a>
-                                    </button>
                                 </div>
                             </div>
-                        </div>
-                        <% } else{%>
-                            <div class="col-12" style="margin-top:150px">
-                                <h1 class="text-center">Cart is Empty</h1>
-                            </div>
-                            <% } %>
+                            <% } else{%>
+                                <div class="col-12" style="margin-top:150px">
+                                    <h1 class="text-center">Cart is Empty</h1>
+                                </div>
+                                <% } %>
                     </div>
                 </div>
             </div>
@@ -117,9 +120,15 @@
 
     <script>
         //btnChangeQty
-        function changeQuantity(cartId, prodId, userId, count,prodPrice) {
+        function changeQuantity(cartId, prodId, userId, count, prodPrice,prodQuantity) {
             let quantity = parseInt(document.getElementById(prodId).innerHTML)
             count = parseInt(count)
+            let updatedQuantity = quantity + count;
+
+            if (updatedQuantity > prodQuantity) {
+                Swal.fire('Error', 'Quantity exceeds available stock', 'error');
+                return; // Exit the function if quantity exceeds available stock
+            }
             $.ajax({
                 url: '/changeQuantity',
                 data: {
@@ -142,9 +151,14 @@
                     } else if (response.qtyChanged) {
                         document.getElementById(prodId).innerHTML = quantity + count
                         total = response.total;
-                        document.getElementById('subTotal').innerHTML=total;
-                        document.getElementById('grandTotal').innerHTML=total;
+                        document.getElementById('subTotal').innerHTML = total;
+                        document.getElementById('grandTotal').innerHTML = total;
+                    } else if (response.error) {
+                        Swal.fire('successfull', `done`, 'success')
                     }
+                },
+                error: (error) => {
+                    console.error(error);
                 }
             })
         }

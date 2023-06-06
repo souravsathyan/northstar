@@ -17,6 +17,7 @@ var instance = new Razorpay({
     key_secret: process.env.RAZ_SECRET_KEY,
 });
 const couponDatas = require('../model/couponModel')
+const productHelpers = require('../helpers/productHelpers')
 
 
 
@@ -371,7 +372,7 @@ module.exports = {
     //         }
     //     })
     // },
-    //TODO edit full user profile 
+
     editProfile: (userId, data, newImage) => {
         return new Promise(async (resolve, reject) => {
             if (newImage) {
@@ -399,7 +400,7 @@ module.exports = {
         })
     },
 
-    placeOrder: (addressId, products, paymentMethod, total, userId,discountAmt,subTotal) => {
+    placeOrder: (addressId, products, paymentMethod, total, userId, discountAmt, subTotal) => {
         return new Promise(async (resolve, reject) => {
             try {
                 let status = paymentMethod === 'COD' ? 'placed' : 'pending'
@@ -410,12 +411,16 @@ module.exports = {
                     totalAmount: total,
                     paymentMethod: paymentMethod,
                     orderStatus: status,
-                    realAmount:subTotal,
-                    couponAmount:discountAmt,
+                    realAmount: subTotal,
+                    couponAmount: discountAmt,
                     orderDate: new Date()
                 })
 
-                // await cartDB.findOneAndRemove({ userId: new ObjectId(userId) })
+
+
+                await cartDB.findOneAndRemove({ userId: new ObjectId(userId) })//clearing cart
+                await productHelpers.decreaseStock(products)//decreasnig product qty
+
                 const response = {
                     status: true,
                     orderId: orderDetails._id
@@ -570,8 +575,8 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             console.log(userId, couponCode, totalPrice)
             let coupon = await couponDatas.findOne({ code: couponCode });
-          if (totalPrice < coupon.minimumAmt) {
-                resolve({status:false,message:`cannot apply this coupon below total purchase of Rs.${coupon.minimumAmt}`})
+            if (totalPrice < coupon.minimumAmt) {
+                resolve({ status: false, message: `cannot apply this coupon below total purchase of Rs.${coupon.minimumAmt}` })
             } else if (coupon && coupon.isActive == 'Active') {
                 if (!coupon.usedBy.includes(userId)) {
                     let cart = await cartDB.findOne({ userId: userId })
