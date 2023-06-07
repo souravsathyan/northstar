@@ -455,7 +455,8 @@ module.exports = {
                             foreignField: '_id',
                             as: 'products'
                         }
-                    }
+                    },
+                    { $sort: { createdAt: -1 } }
                 ])
                 resolve(orderDetails)
             } catch (error) {

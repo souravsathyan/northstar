@@ -96,6 +96,8 @@
 
                                     <input type="text" value="<%= product.prodSize %>" name="prodSize"
                                         class="form-control">
+
+                                    <input type="text" name="" value="<%= product._id %>" id="productId" hidden>
                                 </div>
                             </div>
 
@@ -112,16 +114,29 @@
             <!-- image  -->
             <div class="col-lg-3">
                 <div class="card mb-4">
+
                     <div class="card-header">
-                        <img src="/<%=product.prodImage[0]%>" alt="" srcset="" id="imgView" >
+                        <!-- main image -->
+                        <img src="/<%=product.prodImage[0]%>" alt="no image" srcset="" id="imgView" width="100%"
+                            height="300px">
+
+                        <button class="btn btn-outline-primary m-2" id="deleteBtn" type="button" style="position: absolute;
+                            top: 68%;
+                            background-color: white;
+                            right: 4%;">
+                            <i class="fa-regular fa-trash-can" style="color: #ff0000;"></i>
+                        </button>
+
                     </div>
+
                     <div class="card-body">
 
                         <div class="input-upload">
                             <!-- <img src="assets/imgs/theme/upload.svg" alt=""> -->
-                            
+
                             <span id="imgError" class="text-danger"></span>
-                            <input class="form-control" type="file" accept=".jpg, .png, .jpeg" multiple onchange="viewImage(event)" name="images" >
+                            <input class="form-control" type="file" accept=".jpg, .png, .jpeg" multiple
+                                onchange="viewImage(event)" name="images">
 
                         </div>
 
@@ -162,14 +177,79 @@
                     </div>
                 </div> <!-- card end// -->
             </div>
+
+            <div class="col-lg-3" id="image-container">
+                <% product.prodImage.forEach((image, index)=> {%>
+
+                    <div class="card-header">
+                        <img src="/<%= image %>" alt="no image" srcset="" class="thumbnail-img" width="100px"
+                            height="100px" style="padding: 10px;cursor: pointer;">
+                    </div>
+
+                    <% }) %>
+            </div>
             </form>
         </div>
     </section>
 
     <script>
-        function viewImage(event){
-            document.getElementById('imgView').src=URL.createObjectURL(event.target.files[0])
+        function viewImage(event) {
+            var imageContainer = document.getElementById('image-container')
+            var deleteBtn = document.getElementById('deleteBtn')
+            deleteBtn.style.display='none'
+            imageContainer.innerHTML=''
+            document.getElementById('imgView').src = URL.createObjectURL(event.target.files[0])
+            
         }
+    </script>
+    <script>
+
+        $(document).ready(function () {
+            $('#deleteBtn').click(function () {
+                var src = $('#imgView').attr('src')
+                var fileName = src.split('/').pop();
+                var prodId = $("#productId").val()
+                console.log(prodId)
+
+                $.ajax({
+                    url: '/admin/deleteImage',
+                    method: 'post',
+                    data: {
+                        fileName: fileName,
+                        prodId: prodId
+                    },
+                    success: function (response) {
+                        Swal.fire({
+                            title: "Are you sure you want delete this image?",
+                            text: "Once you delete this image, it cannot be cancelled.",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonText: "Yes, delete image",
+                            cancelButtonText: "No",
+                        }).then((result) => {
+                            if (result.value) {
+                                if (response) {
+                                    Swal.fire({
+                                        title: "Successful",
+                                        text: "Done",
+                                        icon: "success"
+                                    }).then(()=>{
+                                        location.reload()
+                                    })
+                                }
+                            }
+                        });
+                    }
+                });
+            })
+        })
+
+        $(document).ready(function () {
+            $('.thumbnail-img').click(function () {
+                var newImgSrc = $(this).attr('src');
+                $('#imgView').attr('src', newImgSrc);
+            });
+        });
     </script>
 
     <%- include('../partials/adminFooter') %>

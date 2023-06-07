@@ -478,6 +478,7 @@ module.exports = {
     },
     getChangeStatusOrder: async (req, res) => {
         const { orderId, status } = req.body
+        console.log(req.body)
         await orderData.updateOne(
             { _id: new ObjectId(orderId) },
             {

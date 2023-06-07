@@ -220,12 +220,23 @@ module.exports = {
     }
 
   },
+  deleteImage: async (req, res) => {
+    const { fileName, prodId } = req.body
+    await products.updateOne(
+      { _id: new ObjectId(prodId) },
+      {
+        $pull: { prodImage:fileName } 
+      })
+
+      res.json({status:true})
+  },
 
 
   //ORDERlIST
   getOrderList: (req, res) => {
     adminHelpers.getAllOrder()
       .then((orderDetails) => {
+        orderDetails.sort((a, b) => b.orderDate - a.orderDate);
         res.render("admin/orderList", {
           orderDetails
         })

@@ -33,6 +33,8 @@ router.post('/addProduct',multer.upload.array('images',4),adminController.postAd
 router.get('/editProduct/:id',isAdminLoggedIn,adminController.getEditProduct)//getting edit product page
 router.post('/editProduct/:id',multer.upload.array('images',4),isAdminLoggedIn,adminController.postEditProduct)//posting prodcut edit details 
 router.get('/deleteProduct/:id',isAdminLoggedIn,adminController.DeleteProduct)//deleting the product page
+router.post('/deleteImage',isAdminLoggedIn,adminController.deleteImage)//deleting the product image
+
 
 //*****ORDER LIST******* */
 router.get('/orderList',isAdminLoggedIn,adminController.getOrderList)

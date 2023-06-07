@@ -148,7 +148,10 @@
                                                                                 <button type="button"
                                                                                     class="btn btn-warning btn-sm"
                                                                                     data-bs-toggle="modal"
-                                                                                    data-bs-target="#returnProduct">return</button>
+                                                                                    data-bs-target="#returnProduct"
+                                                                                    id="reasonBtn"
+                                                                                    data-order-id="<%= order._id %>"
+                                                                                    >return</button>
                                                                                 <% } else {%>
                                                                                     <span
                                                                                         class="badge bg-success">delivered</span>
@@ -474,7 +477,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button class="btn btn-warning" type="button" id="returnBtn"
-                                onclick="returnOrder('<%= orderDetails[0]._id %>')">
+                                onclick="returnOrder()">
                                 return </button>
                         </div>
                     </div>
@@ -603,13 +606,16 @@
 
     </script>
     <script>
-        function returnOrder(orderId) {
+        function returnOrder() {
             const saveButton = document.getElementById('returnBtn')
+            const reasonBtn = document.getElementById('reasonBtn') 
+            const orderId = reasonBtn.getAttribute('data-order-id');
+            console.log(orderId)
             saveButton.addEventListener('click', function (event) {
                 event.preventDefault()
                 const selectElement = document.querySelector('#returnStatus');
                 const selectedValue = selectElement.value;
-                console.log(selectedValue);
+                console.log(selectedValue,orderId);
                 $.ajax({
                     url: '/returnOrder/' + orderId,
                     method: 'POST',

@@ -66,8 +66,12 @@ module.exports = {
                             foreignField: '_id',
                             as: 'users'
                         }
-                    }
-                ]).then((response) => {
+                    },
+
+                    {$sort:{orderDate:-1}}
+
+                ])
+                .then((response) => {
                     resolve(response)
                 })
             } catch (error) {
