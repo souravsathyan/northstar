@@ -24,6 +24,7 @@ router.get('/userLogout',userController.userLogout);
 router.get('/otpLogin',userController.getOtpLogin);//getting the otpLogin page
 router.post('/otpLogin',userController.postOtpMob);//posting The mobile number
 router.post('/verifyOtp',userController.otpVerify)//verifying and login
+router.get('/resendOtp',userController.resendOtp)
 
 //forget password
 router.get('/forgetPassword',userController.getForgetPassword)//getting the otp page
@@ -76,7 +77,7 @@ router.post('/postEditProfile',isUserLogin,multer.upload.single('image'),userCon
 //editing user image
 router.post('/postChangeImage',isUserLogin,multer.upload.single('image'),userController.postChangeUserImage)
 //cancel order by user
-router.post('/cancelOrder',isUserLogin,userController.getChangeStatusOrder)
+router.post('/cancelOrder/:id',isUserLogin,userController.getChangeStatusOrder)
 //return order
 router.post('/returnOrder/:id',isUserLogin,userController.getReturnOrder) 
 //change password
@@ -96,4 +97,5 @@ router.get('/searchProducts',isUserLogin,userController.getSearchProducts)
 
 //**COUPON */
 router.post('/applyCoupon',isUserLogin,userController.getApplyCoupon)
+router.get('/findAndApplyCoupon',isUserLogin,userController.getCoupon)
 module.exports = router;

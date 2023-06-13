@@ -1,139 +1,202 @@
 <%- include('../partials/adminHeader') %>
 
 
-<section class="content-main">
-    <div class="content-header">
-        <h2 class="content-title">Coupon Management</h2>
-        <div>
+    <section class="content-main">
+        <div class="content-header">
+            <h2 class="content-title">Coupon Management</h2>
+            <div>
 
-            
+
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCoupon">
                     Add Coupon +
-                  </button>
+                </button>
+
+            </div>
 
         </div>
-
-    </div>
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover" id="couponTable">
-                    <thead>
-                        <tr class="text-left">
-                            <th>No</th>
-                            <th>Coupon Name</th>
-                            <th>Coupon Code</th>
-                            <th>Discount Amt</th>
-                            <th>Minimum Amt</th>
-                            <th>Expiry Date</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% allCoupons.forEach((coupon,index) => { %>
-                         
-                        
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="couponTable">
+                        <thead>
                             <tr class="text-left">
-                                <td width="15%">
-                                    <!-- No -->
-                                    <%= index+1 %>
-                                </td>
-                                <td width="20%">
-                                  <!-- Coupon Name -->
-                                  <%= coupon.couponName %>
-                                </td>
-                                <td width="20%">
-                                   <!-- Coupon Code -->
-                                    <%= coupon.code %>
-                                </td>
-                                <td width="10%">
-                                    <!-- Discount Amount -->
-                                    <%= coupon.discount %>
-                                </td>
-                                <td width="10%">
-                                    <!-- minimum Amount -->
-                                    <%= coupon.minimumAmt %>
-                                </td>
-                                <td width="15%">
-                                    <!-- Expiry Date -->
-                                   <%=coupon.expiryDate.toLocaleDateString()%>
-                                </td>
-                                <td width="10%">
-                                    <button class="btn btn-danger">Delete</button>    
-                                </td>
+                                <th>No</th>
+                                <th>Coupon Name</th>
+                                <th>Coupon Code</th>
+                                <th>Discount Amt</th>
+                                <th>Minimum Amt</th>
+                                <th>Expiry Date</th>
+                                <th>Delete</th>
                             </tr>
+                        </thead>
+                        <tbody>
+                            <% allCoupons.forEach((coupon,index)=> { %>
 
-                            <% }) %>
-                        
 
-                    </tbody>
-                </table>  <!-- table-responsive.// --><!-- table-responsive.// -->
-            </div>
-        </div> <!-- card-body end// -->
-    </div> <!-- card end// -->
+                                <tr class="text-left">
+                                    <td width="15%">
+                                        <!-- No -->
+                                        <%= index+1 %>
+                                    </td>
+                                    <td width="20%">
+                                        <!-- Coupon Name -->
+                                        <%= coupon.couponName %>
+                                    </td>
+                                    <td width="20%">
+                                        <!-- Coupon Code -->
+                                        <%= coupon.code %>
+                                    </td>
+                                    <td width="10%">
+                                        <!-- Discount Amount -->
+                                        <%= coupon.discount %>
+                                    </td>
+                                    <td width="10%">
+                                        <!-- minimum Amount -->
+                                        <%= coupon.minimumAmt %>
+                                    </td>
+                                    <td width="15%">
+                                        <!-- Expiry Date -->
+                                        <%=coupon.expiryDate.toLocaleDateString()%>
+                                    </td>
+                                    <td width="10%">
+                                        <button class="btn btn-danger"
+                                            onclick="deleteCoupon('<%=coupon._id%>')">Delete</button>
+                                    </td>
+                                </tr>
 
-</section> <!-- content-main end// -->
+                                <% }) %>
+
+
+                        </tbody>
+                    </table> <!-- table-responsive.// --><!-- table-responsive.// -->
+                </div>
+            </div> <!-- card-body end// -->
+        </div> <!-- card end// -->
+
+    </section> <!-- content-main end// -->
 
 
     <!-- Button trigger modal -->
-  <!-- Modal -->
-  <div class="modal fade" id="addCoupon" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add Coupon </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Modal -->
+    <div class="modal fade" id="addCoupon" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Coupon </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="couponForm">
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Coupon Name</label>
+                            <input type="text" class="form-control" name="couponName" id="couponName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Discount Amount</label>
+                            <input type="text" class="form-control" name="couponAmount" id="couponAmount">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">minimum purchase amount</label>
+                            <input type="text" class="form-control" name="minimumAmt" id="couponAmount">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Expire On</label>
+                            <input type="text" class="form-control" name="couponExpiry" id="couponExpiry">
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Create Coupon</button>
+                        </div>
+
+                    </form>
+                </div>
+
             </div>
-            <div class="modal-body">
-                <form id="couponForm" >
-                    <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Coupon Name</label>
-                        <input type="text" class="form-control" name="couponName" id="couponName">
-                    </div>
-                    <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Discount Amount</label>
-                        <input type="text" class="form-control" name="couponAmount" id="couponAmount">
-                    </div>
-                    <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">minimum purchase amount</label>
-                        <input type="text" class="form-control" name="minimumAmt" id="couponAmount">
-                    </div>
-                    <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Expire On</label>
-                        <input type="text" class="form-control" name="couponExpiry" id="couponExpiry">
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Create Coupon</button>
-                    </div>
-
-                </form>
-            </div>
-
         </div>
     </div>
-</div>
-<script>
-    $('#couponForm').submit((e)=>{
-        e.preventDefault()
-        $.ajax({
-            url:'/admin/add-coupon',
-            method:'post',
-            data:$('#couponForm').serialize(),
-            success:(response)=>{
-                if(response){
-                    Swal.fire({
-                        title:'coupon added succesfully',
-                        buttons:['OK']
-                    }).then(() => {
-                    $('#addCoupon').modal('hide'); // Close the modal
-                    location.reload()
+    <script>
+        $('#couponForm').submit((e) => {
+            e.preventDefault()
+            let couponExpiry = $('#couponExpiry').val();
+            // Convert the entered date to a JavaScript Date object
+            let expiryDate = new Date(couponExpiry);
+            // Get today's date
+            let today = new Date();
+            // Compare the entered date with today's date
+            if (expiryDate < today) {
+                // Date is less than today's date, show SweetAlert message and return from the function
+                Swal.fire({
+                    title: 'Invalid  date',
+                    text: 'The expiry date cannot be in the past.',
+                    icon: 'error',
+                    buttons: ['OK']
                 });
-                }
+                return;
             }
+            $.ajax({
+                url: '/admin/add-coupon',
+                method: 'post',
+                data: $('#couponForm').serialize(),
+                success: (response) => {
+                    if (response) {
+                        Swal.fire({
+                            title: 'coupon added succesfully',
+                            buttons: ['OK']
+                        }).then(() => {
+                            $('#addCoupon').modal('hide'); // Close the modal
+                            location.reload()
+                        });
+                    }
+                }
+            })
         })
-    })
-</script>
+
+
+        function deleteCoupon(couponId) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You are about to delete coupon",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "Cancel",
+            }).then((confirmed) => {
+                if (confirmed) {
+                    $.ajax({
+                        url: '/admin/deleteCoupon/' + couponId,
+                        type: 'post'
+                    }).done(res => {
+                        if (res) {
+                            Swal.fire({
+                                title: "Success",
+                                text: res.message,
+                                icon: "success"
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Failure",
+                                text: res.message,
+                                icon: "info"
+                            })
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Cancelled",
+                        text: "The coupon is not deleted",
+                        icon: "info"
+                    });
+                }
+            })
+                .catch((error) => {
+                    swal('Error', `An error occured:${error}`, 'error')
+                })
+        }
+
+
+    </script>
 
     <%- include('../partials/adminFooter') %>

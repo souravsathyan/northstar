@@ -14,6 +14,9 @@ const { ObjectId } = mongoose.Types;
 const userProfileData = require('../model/userDetailsModel');
 const slug = require('slugify')
 const bannersData = require('../model/banner')
+const wallet = require('../model/walletModel');
+const walletSchema = require('../model/walletModel');
+const couponData = require('../model/couponModel')
 
 
 module.exports = {
@@ -21,19 +24,21 @@ module.exports = {
         try {
             if (req.session.user) {
                 let productList = []
+                let user = req.session.user
                 let userID = req.session.user._id
                 let cartCount = await userHelpers.getCartCount(userID)
                 productList = await products.find()
                 colorList = await userHelpers.getProdColors()
                 const bannerList = await bannersData.find({})
-                console.log(colorList);
-                let user = req.session.user
+                const userWallet = await userHelpers.getWalletData(userID)
+                console.log(userWallet)
                 res.render('user/index', {
                     user,
                     productList,
                     cartCount,
                     colorList,
-                    bannerList
+                    bannerList,
+                    userWallet
                 })
             } else {
                 res.redirect('/landingPage')
@@ -43,10 +48,10 @@ module.exports = {
         }
     },
 
-    landingPage:async (req, res) => {
+    landingPage: async (req, res) => {
         try {
             const bannerList = await bannersData.find({})
-            res.render('user/landingPage',{
+            res.render('user/landingPage', {
                 bannerList
             });
         } catch (error) {
@@ -124,6 +129,7 @@ module.exports = {
 
 
     //:::::OTP LOGIN:::://
+    // FIXME TWILIO OTP - GIT ISSUE
     getOtpLogin: (req, res) => {
         try {
             res.render('user/otpLogin')
@@ -135,6 +141,24 @@ module.exports = {
         const { phone } = req.body;
         //assigining the phone no to session inorder to retreive it when verifying the otp
         req.session.phone = phone
+        userHelpers.sendOtp(phone).then((response) => {
+            if (response.status) {
+                req.session.tempUser = response.user
+                const sendMsg = 'OTP has been Sent. Please check your Mobile'
+                res.render('user/otpVerify', {
+                    otpSend: true,
+                    sendMsg: sendMsg,
+                })
+            } else {
+                const msg = 'enter a valid mobile number'
+                res.render('user/otpLogin', { msg })
+            }
+        }).catch((error) => {
+            res.status(500).render('error', { error });
+        })
+    },
+    resendOtp: (req, res) => {
+        const phone = req.session.phone
         userHelpers.sendOtp(phone).then((response) => {
             if (response.status) {
                 req.session.tempUser = response.user
@@ -265,6 +289,8 @@ module.exports = {
             let category = await categoryDB.find()
             productList = await products.find()
             let cartCount = await userHelpers.getCartCount(userID)
+            const userWallet = await userHelpers.getWalletData(userID)
+            console.log(userWallet)
             //if filtered / user clicked view by category
             if (req.session.filtered) {
                 req.session.filtered = false
@@ -274,14 +300,16 @@ module.exports = {
                     product: product,
                     category,
                     user,
-                    cartCount
+                    cartCount,
+                    userWallet
                 })
             } else {
                 res.render('user/product', {
                     category,
                     user,
                     productList,
-                    cartCount
+                    cartCount,
+                    userWallet
                 })
             }
         } catch (error) {
@@ -306,6 +334,8 @@ module.exports = {
         let prodId = req.params.id
         let userID = req.session.user._id
         let cartCount = await userHelpers.getCartCount(userID)
+        const userWallet = await userHelpers.getWalletData(userID)
+
         userHelpers.getProductView(prodId)
             .then((response) => {
                 let user = req.session.user
@@ -313,6 +343,7 @@ module.exports = {
                 res.render('user/viewProduct', {
                     product: product,
                     user,
+                    userWallet
                     // cartCount
                 })
             }).catch((error) => {
@@ -347,20 +378,23 @@ module.exports = {
         let user = req.session.user
         let cartCount = await userHelpers.getCartCount(userID)
         let totalPrice = await userHelpers.getTotalAmt(req.session.user._id)
+        const userWallet = await userHelpers.getWalletData(userID)
+
         userHelpers.getCart(userID)
             .then((cartProduct) => {
                 res.render('user/shoppingCart', {
                     user,
                     cartProduct,
                     totalPrice,
-                    cartCount
+                    cartCount,
+                    userWallet
                 })
             }).catch((error) => {
                 res.status(500).render('error', { error });
             })
     },
     //CHANGE CART PRODUCT QTY
-    postChangeQty: async(req, res) => {
+    postChangeQty: async (req, res) => {
         try {
             const { cart, product, userId, count, quantity } = req.body
             userHelpers.changeQtyByButton(cart, product, count, quantity)
@@ -407,13 +441,16 @@ module.exports = {
             const userAddress = await addressData.find({ userId: new ObjectId(userId) })
             const orderDetails = await userHelpers.getUserOrders(userId)
             const userDetails = await userHelpers.getUserDetails(userId)
+            const userWallet = await userHelpers.getWalletData(userId)
+
             console.log(userDetails)
             res.render('user/userProfile', {
                 user,
                 userAddress,
                 cartCount,
                 orderDetails,
-                userDetails
+                userDetails,
+                userWallet
             })
         } catch (error) {
             res.status(500).render('error', { error });
@@ -477,32 +514,57 @@ module.exports = {
         }
     },
     getChangeStatusOrder: async (req, res) => {
-        const { orderId, status } = req.body
         console.log(req.body)
-        await orderData.updateOne(
-            { _id: new ObjectId(orderId) },
-            {
-                $set: {
-                    orderStatus: status
-                }
-            }
-        )
-        res.json({ status: true })
+        const { selectedValue } = req.body
+        const orderId = req.params.id
+        const userId = req.session.user._id
+        const orderPrice = await userHelpers.getOrderPrice(orderId)
+        console.log(orderPrice)
+        if (orderPrice.paymentMethod === 'COD') {
+            // If payment method is COD, do not add money to wallet and cancel the order
+            await userHelpers.getCancelOrder(orderId,selectedValue)
+                .then(() => {
+                    console.log('updated');
+                    res.json({ status: true, message: 'Order cancelled successfully.' });
+                })
+                .catch((error) => {
+                    res.status(500).render('error', { error });
+                });
+        } else {
+            // If payment method is ONLINE, add money to wallet and cancel the order
+            await userHelpers.addToWallet(orderPrice.totalAmont, userId);
+            await userHelpers.getCancelOrder(orderId)
+                .then(() => {
+                    console.log('updated');
+                    res.json({ status: true, message: 'Order cancelled and the amount has been credited to your wallet.' });
+                })
+                .catch((error) => {
+                    res.status(500).render('error', { error });
+                });
+        }
+
     },
     getReturnOrder: async (req, res) => {
         console.log(req.body, 'iiiiiiiiiiiiiiiiiiiiii');
-        const orderId = req.params.id
-        const reason = req.body.selectedValue
-        await orderData.updateOne(
-            { _id: orderId },
-            {
-                $set: {
-                    returnReason: reason,
-                    orderStatus: 'return'
+        try {
+            const orderId = req.params.id
+            const reason = req.body.selectedValue
+            const orderPrice = await userHelpers.getOrderPrice(orderId)
+            const userId = req.session.user._id
+            await userHelpers.addToWallet(orderPrice.totalAmount, userId)
+            await orderData.updateOne(
+                { _id: orderId },
+                {
+                    $set: {
+                        returnReason: reason,
+                        orderStatus: 'return'
+                    }
                 }
-            }
-        )
-        res.json({ status: true })
+            )
+            res.json({ status: true })
+        } catch (error) {
+            res.status(500).render('error', { error });
+        }
     },
     //***********ORDER MANAGEMENT***** */
     //PLACING THE ORDER
@@ -515,13 +577,16 @@ module.exports = {
             let userAddress = await addressData.find({ userId: new ObjectId(userId) });//getting the address to display 
             let cartProducts = await userHelpers.getCart(userId);//getting the cart products to display by populate method
             let allCoupons = await adminHelpers.getAllCoupons();//getting all coupons
+            const userWallet = await userHelpers.getWalletData(userId)
+
             res.render('user/orderCheckout', {
                 user,
                 userAddress,
                 totalPrice,
                 cartProducts,
                 cartCount,
-                allCoupons
+                allCoupons,
+                userWallet
             })
         } catch (error) {
             res.status(500).render('error', { error });
@@ -529,49 +594,87 @@ module.exports = {
     },
     postCheckout: async (req, res) => {
         try {
-            console.log(req.body,'iiiiiiiiiii')
+            console.log(req.body, 'iiiiiiiiiii')
             const userId = req.session.user._id
             const products = await userHelpers.getCartProducts(userId)//getting the cart Products
+            const userWallet = await walletSchema.findOne({ user: new ObjectId(userId) })//getting wallet 
             const totalPrice = req.body.totalAmount//getting the cart TotalAmt 
             const userAddress = req.body.addressId
             const paymentMethod = req.body.paymentMethod
             const discountAmt = req.body.discountAmt
-            const subTotal = req.body.subTotal 
-
+            const subTotal = req.body.subTotal
+            const coupon = req.body.couponId
+            console.log(req.body, 'iiiiiiiiiii')
+            const response = await userHelpers.applyCoupon(userId, coupon, totalPrice);
+            console.log(req.body, 'iiiiiiiiiii')
+            console.log(userWallet)
             if (!req.body.paymentMethod) {
                 return res.json({ error: true, message: "Please choose a payment method" });
             }
             //storing in the order Collection
             //adding cartProducts by finding the cart also adding the the address that comes from the body
-            userHelpers.placeOrder(userAddress,products,paymentMethod,totalPrice,userId,discountAmt,subTotal)
-                .then(async(response) => {
-                    const orderId = response.orderId
-                    if (req.body.paymentMethod == 'COD') {
-                        
-                        res.json({ codSuccess: true, orderId: orderId });
-                    } else {
-                        userHelpers.generateRazorpay(orderId, totalPrice).then((response) => {
-                            console.log(response, 'its in the controller post chekout');
-                            res.json({ orders: response.orders, status: true, orderId: response.orderId })
+
+            if (req.body.paymentMethod == 'COD') {
+                console.log('in the cod')
+                userHelpers.placeOrder(userAddress, products, paymentMethod, totalPrice, userId, discountAmt, subTotal)
+                    .then((response) => {
+                        console.log('order placed in COD')
+                        const orderId = response.orderId
+                        res.json({ status: true, orderId: orderId, message: 'order placed successfully' });
+                    })
+            } else if (req.body.paymentMethod == 'wallet') {
+                console.log('in the wallet')
+                if (totalPrice <= userWallet.walletBalance) {
+                    console.log('in the wallet if')
+                    const newBalance = userWallet.walletBalance - totalPrice
+                    console.log(newBalance, totalPrice, userWallet.walletBalance)
+                    await walletSchema.updateOne(
+                        { user: new ObjectId(userId) },
+                        {
+                            $set: { walletBalance: newBalance }
+                        }
+                    )
+                    console.log('wallet amount updated')
+                    userHelpers.placeOrder(userAddress, products, paymentMethod, totalPrice, userId, discountAmt, subTotal)
+                        .then((response) => {
+                            console.log('order placed in wallet')
+                            const orderId = response.orderId
+                            res.json({ status: true, orderId: orderId, message: 'order placed successfully' });
                         })
-                    }
-                })
-                .catch((error) => {
-                    res.json({ error: true, message: "There was an error placing your order. Please try again later." });
-                });
+                } else {
+                    res.json({ error: true, message: 'insufficient amount in wallet' })
+                }
+            } else if (req.body.paymentMethod === 'ONLINE') {//ONLINE
+                console.log('in online')
+                userHelpers.placeOrder(userAddress, products, paymentMethod, totalPrice, userId, discountAmt, subTotal)
+                    .then((response) => {
+                        console.log('order placed in online')
+                        const orderId = response.orderId
+                        userHelpers.generateRazorpay(orderId, totalPrice).then((response) => {
+                            res.json({ online: true, orders: response.orders, status: true, orderId: response.orderId, message: 'order placed successfully' })
+                        })
+                    }).catch((error) => {
+                        res.json({ error: true, status: false, message: 'Error placing the order' });
+                    })
+
+            }
         } catch (error) {
             res.status(500).render('error', { error });
 
         }
     },
-    getPlaceOrderFinal: (req, res) => {
+    getPlaceOrderFinal: async (req, res) => {
         try {
             const user = req.session.user
+            const userID = req.session.user._id
             const orderId = req.query.orderId
             console.log(orderId);
+            const userWallet = await userHelpers.getWalletData(userID)
+
             res.render('user/orderPlaceSuccess', {
                 user,
-                orderId
+                orderId,
+                userWallet
             })
         } catch (error) {
             res.status(500).render('error', { error });
@@ -587,14 +690,15 @@ module.exports = {
             const addressDetails = await adminHelpers.getOrderAddressDetails(orderId)
             const itemDetails = await adminHelpers.getOrderItemDetails(orderId)
             //getting the orderDetails by matching the userID and Lookup ing the product and address collection to order Collection
-            console.log(addressDetails, '  addresDetails');
             const productDetails = itemDetails[0].orderProducts
-            console.log(productDetails, '  itemDetails');
+            const userWallet = await userHelpers.getWalletData(userId)
+
 
             res.render('user/orderSummary', {
                 user,
                 addressDetails,
-                productDetails
+                productDetails,
+                userWallet
             })
         } catch (error) {
             console.log(error);
@@ -620,15 +724,14 @@ module.exports = {
                 res.status(500).render('error', { error });
             })
     },
-    deleteAddress:(req,res)=>{
-        
-         userHelpers.deleteAddress(req.body.addId)
-        .then((response)=>{
-            res.json({status:true})
-        })
-        .catch((error)=>{
-            res.json({status:false,message:'failed to delete the address'})
-        })
+    deleteAddress: (req, res) => {
+        userHelpers.deleteAddress(req.body.addId)
+            .then((response) => {
+                res.json({ status: true })
+            })
+            .catch((error) => {
+                res.json({ status: false, message: 'failed to delete the address' })
+            })
     },
     //******PAYMENT */
     getVerifyPayment: async (req, res) => {
@@ -702,18 +805,27 @@ module.exports = {
     getApplyCoupon: async (req, res) => {
         try {
             console.log(req.body)
-            if(req.body.coupon === ''){
-                res.json({error:true,message:`pelase select the coupon`})
-            }else{
+            if (req.body.coupon === '') {
+                res.json({ error: true, message: `pelase select the coupon` })
+            } else {
                 const coupon = req.body.coupon
                 const user = req.session.user
                 let totalPrice = await userHelpers.getTotalAmt(req.session.user._id)
-                const response = await userHelpers.applyCoupon(user._id, coupon, totalPrice);
+
                 console.log(response)
                 res.status(202).json(response);
             }
         } catch (error) {
             res.status(500).render('error', { error });
+        }
+    },
+    getCoupon: async (req, res) => {
+        try {
+            const coupon = await couponData.findById(req.query.coupon)
+            console.log(coupon)
+            res.json(coupon)
+        } catch (error) {
+
         }
     }
 }

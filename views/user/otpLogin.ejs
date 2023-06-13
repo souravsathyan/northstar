@@ -47,7 +47,7 @@
     <link href="
     https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.min.css
     " rel="stylesheet">
-  <!-- Template CSS -->
+    <!-- Template CSS -->
     <link rel="stylesheet" href="/evara/assets/css/main2.css">
 
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -62,7 +62,7 @@
             width: 50px;
         }
     </style>
- <link href="
+    <link href="
  https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css
  " rel="stylesheet">
 
@@ -70,280 +70,285 @@
 
 <body class="animsition ">
 
-   
-        <!-- Header -->
-        <header style="min-height:50px;">
-            <!-- Header desktop -->
-            <div class="container-menu-desktop">
-                <div class="wrap-menu-desktop">
-                    <nav class="limiter-menu-desktop " style="background-color: #717fe0;    padding: 0 20px;">
-                        <!-- Logo desktop -->
-                        <a href="/" class="logo text-class" style="text-decoration: none;">
-                            <img src="/images/north-star-logo-480A222F2E-seeklogo.com.png" alt="" srcset="" width="100px">
 
-                        </a>
+    <!-- Header -->
+    <header style="min-height:50px;">
+        <!-- Header desktop -->
+        <div class="container-menu-desktop">
+            <div class="wrap-menu-desktop">
+                <nav class="limiter-menu-desktop " style="background-color: #717fe0;    padding: 0 20px;">
+                    <!-- Logo desktop -->
+                    <a href="/" class="logo text-class" style="text-decoration: none;">
+                        <img src="/images/north-star-logo-480A222F2E-seeklogo.com.png" alt="" srcset="" width="100px">
 
-                        <!-- Menu desktop -->
-                        <div class="menu-desktop">
-                            <ul class="main-menu">
-                                <li class="text-light">
-                                    <a href="/">Home</a>
-                                    <!-- <ul class="sub-menu text-light">
+                    </a>
+
+                    <!-- Menu desktop -->
+                    <div class="menu-desktop">
+                        <ul class="main-menu">
+                            <li class="text-light">
+                                <a href="/">Home</a>
+                                <!-- <ul class="sub-menu text-light">
                                         <li><a href="index.html">Homepage 1</a></li>
                                         <li><a href="home-02.html">Homepage 2</a></li>
                                         <li><a href="home-03.html">Homepage 3</a></li>
                                     </ul> -->
-                                </li>
+                            </li>
 
-                                <li>
-                                    <a href="/getShopProducts">Shop</a>
-                                </li>
+                            <li>
+                                <a href="/getShopProducts">Shop</a>
+                            </li>
 
-                                <li>
-                                    <a href="about.html">About</a>
-                                </li>
+                            <li>
+                                <a href="about.html">About</a>
+                            </li>
 
-                                <li>
-                                    <a href="contact.html">Contact</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-                </div>
-            </div>
-
-            <!-- Header Mobile -->
-            <div class="wrap-header-mobile">
-                <!-- Logo moblie -->
-                <div class="logo-mobile">
-                    <a href="index.html"><img src="images/icons/logo-01.png" alt="IMG-LOGO"></a>
-                </div>
-
-                <!-- Icon header -->
-                <div class="wrap-icon-header flex-w flex-r-m m-r-15">
-                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
-                        <i class="zmdi zmdi-search"></i>
-                    </div>
-
-                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
-                        data-notify="2">
-                        <i class="zmdi zmdi-shopping-cart"></i>
-                    </div>
-
-                    <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
-                        data-notify="0">
-                        <i class="zmdi zmdi-favorite-outline"></i>
-                    </a>
-                </div>
-
-                <!-- Button show menu -->
-                <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
-                    <span class="hamburger-box">
-                        <span class="hamburger-inner"></span>
-                    </span>
-                </div>
-            </div>
-
-
-            <!-- Menu Mobile -->
-            <div class="menu-mobile">
-
-                <ul class="main-menu-m">
-                    <li>
-                        <a href="index.html">Home</a>
-                        <ul class="sub-menu-m">
-                            <li><a href="index.html">Homepage 1</a></li>
-                            <li><a href="home-02.html">Homepage 2</a></li>
-                            <li><a href="home-03.html">Homepage 3</a></li>
+                            <li>
+                                <a href="contact.html">Contact</a>
+                            </li>
                         </ul>
-                        <span class="arrow-main-menu-m">
-                            <i class="fa fa-angle-right" aria-hidden="true"></i>
-                        </span>
-                    </li>
-
-                    <li>
-                        <a href="product.html">Shop</a>
-                    </li>
-
-                    <li>
-                        <a href="about.html">About</a>
-                    </li>
-
-                    <li>
-                        <a href="contact.html">Contact</a>
-                    </li>
-                </ul>
-            </div>
-       </header>
-
-        <div class=" row pt-5" style="margin-top: 60px;">
-            <div class="col-md-6 m-auto bg-light border rounded myFormBody">
-                <div class="mt-3">
-                    <a href="/">
-                        <button class="btn btn-outline-dark btn-sm">
-                            <i class="fas fa-home"></i>
-                            <span>Back to Home</span>
-                          </button>
-                        </a>
-                </div>
-                <div class="container mt-5 pl-5  ">
-                        <h2 class="text-center">OTP LOGIN</h2>
-                    <form action="/otpLogin" method="post" id="otpForm">
-                        <% var msg %>
-                        <% if (msg) { %>
-                            <span class="text-danger"><%= msg %></span>
-                            <% } %>
-                        <div class="form-outline mb-2 text-center">
-                            <label for="" class="py-2">Enter your Mobile Number</label>
-                            <span id="mobError" class="text-danger"></span>
-                            <input type="text" id="mobile" class="form-control form-control-lg " placeholder="Mobile NUmber" name="phone" >
-                        </div>
-
-                        <div class="mt-3 mb-4 text-center ">
-                            <a href="" class="p-5">
-                                <button type="submit" class="cl0 size-101 bg1 pb-5 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail btn px-4 validate text-light" style="background-color: #717fe0;">
-                                    Send
-                                </button>
-                            </a>
-                        </div>
-                    </form>
-
-                </div>
+                    </div>
+                </nav>
             </div>
         </div>
-      
 
-        <script src="https://kit.fontawesome.com/1457d0b10a.js" crossorigin="anonymous"></script>
+        <!-- Header Mobile -->
+        <div class="wrap-header-mobile">
+            <!-- Logo moblie -->
+            <div class="logo-mobile">
+                <a href="index.html"><img src="images/icons/logo-01.png" alt="IMG-LOGO"></a>
+            </div>
 
-        <!--===============================================================================================-->
-        <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-        <!--===============================================================================================-->
-        <script src="vendor/animsition/js/animsition.min.js"></script>
-        <!--===============================================================================================-->
-        <script src="vendor/bootstrap/js/popper.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-        <!--===============================================================================================-->
-        <script src="vendor/select2/select2.min.js"></script>
-        <script>
-            $(".js-select2").each(function () {
-                $(this).select2({
-                    minimumResultsForSearch: 20,
-                    dropdownParent: $(this).next('.dropDownSelect2')
-                });
-            })
-        </script>
-        <!--===============================================================================================-->
-        <script src="vendor/daterangepicker/moment.min.js"></script>
-        <script src="vendor/daterangepicker/daterangepicker.js"></script>
-        <!--===============================================================================================-->
-        <script src="vendor/slick/slick.min.js"></script>
-        <script src="javascripts/slick-custom.js"></script>
-        <!--===============================================================================================-->
-        <script src="vendor/parallax100/parallax100.js"></script>
-        <script>
-            $('.parallax100').parallax100();
-        </script>
-        <!--===============================================================================================-->
-        <script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
-        <script>
-            $('.gallery-lb').each(function () { // the containers for all your galleries
-                $(this).magnificPopup({
-                    delegate: 'a', // the selector for gallery item
-                    type: 'image',
-                    gallery: {
-                        enabled: true
-                    },
-                    mainClass: 'mfp-fade'
-                });
+            <!-- Icon header -->
+            <div class="wrap-icon-header flex-w flex-r-m m-r-15">
+                <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
+                    <i class="zmdi zmdi-search"></i>
+                </div>
+
+                <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart"
+                    data-notify="2">
+                    <i class="zmdi zmdi-shopping-cart"></i>
+                </div>
+
+                <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti"
+                    data-notify="0">
+                    <i class="zmdi zmdi-favorite-outline"></i>
+                </a>
+            </div>
+
+            <!-- Button show menu -->
+            <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+                <span class="hamburger-box">
+                    <span class="hamburger-inner"></span>
+                </span>
+            </div>
+        </div>
+
+
+        <!-- Menu Mobile -->
+        <div class="menu-mobile">
+
+            <ul class="main-menu-m">
+                <li>
+                    <a href="index.html">Home</a>
+                    <ul class="sub-menu-m">
+                        <li><a href="index.html">Homepage 1</a></li>
+                        <li><a href="home-02.html">Homepage 2</a></li>
+                        <li><a href="home-03.html">Homepage 3</a></li>
+                    </ul>
+                    <span class="arrow-main-menu-m">
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </span>
+                </li>
+
+                <li>
+                    <a href="product.html">Shop</a>
+                </li>
+
+                <li>
+                    <a href="about.html">About</a>
+                </li>
+
+                <li>
+                    <a href="contact.html">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <div class=" row pt-5" style="margin-top: 60px;">
+        <div class="col-md-6 m-auto bg-light border rounded myFormBody">
+            <div class="mt-3">
+                <a href="/">
+                    <button class="btn btn-outline-dark btn-sm">
+                        <i class="fas fa-home"></i>
+                        <span>Back to Home</span>
+                    </button>
+                </a>
+            </div>
+            <div class="container mt-5 pl-5  ">
+                <h2 class="text-center">OTP LOGIN</h2>
+                <form action="/otpLogin" method="post" id="otpForm">
+                    <% var msg %>
+                        <% if (msg) { %>
+                            <span class="text-danger">
+                                <%= msg %>
+                            </span>
+                            <% } %>
+                                <div class="form-outline mb-2 text-center">
+                                    <label for="" class="py-2">Enter your Mobile Number</label>
+                                    <span id="mobError" class="text-danger"></span>
+                                    <input type="text" id="mobile" class="form-control form-control-lg "
+                                        placeholder="Mobile NUmber" name="phone">
+                                </div>
+
+                                <div class="mt-3 mb-4 text-center ">
+                                   
+                                    <a href="" class="p-5">
+                                        <button type="submit"
+                                            class="cl0 size-101 bg1 pb-5 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail btn px-4 validate text-light"
+                                            style="background-color: #717fe0;">
+                                            Send
+                                        </button>
+                                    </a>
+                                </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://kit.fontawesome.com/1457d0b10a.js" crossorigin="anonymous"></script>
+
+    <!--===============================================================================================-->
+    <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="vendor/animsition/js/animsition.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="vendor/bootstrap/js/popper.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="vendor/select2/select2.min.js"></script>
+    <script>
+        $(".js-select2").each(function () {
+            $(this).select2({
+                minimumResultsForSearch: 20,
+                dropdownParent: $(this).next('.dropDownSelect2')
             });
-        </script>
-        <!--===============================================================================================-->
-        <script src="vendor/isotope/isotope.pkgd.min.js"></script>
-        <!--===============================================================================================-->
-        <script src="
+        })
+    </script>
+    <!--===============================================================================================-->
+    <script src="vendor/daterangepicker/moment.min.js"></script>
+    <script src="vendor/daterangepicker/daterangepicker.js"></script>
+    <!--===============================================================================================-->
+    <script src="vendor/slick/slick.min.js"></script>
+    <script src="javascripts/slick-custom.js"></script>
+    <!--===============================================================================================-->
+    <script src="vendor/parallax100/parallax100.js"></script>
+    <script>
+        $('.parallax100').parallax100();
+    </script>
+    <!--===============================================================================================-->
+    <script src="vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>
+    <script>
+        $('.gallery-lb').each(function () { // the containers for all your galleries
+            $(this).magnificPopup({
+                delegate: 'a', // the selector for gallery item
+                type: 'image',
+                gallery: {
+                    enabled: true
+                },
+                mainClass: 'mfp-fade'
+            });
+        });
+    </script>
+    <!--===============================================================================================-->
+    <script src="vendor/isotope/isotope.pkgd.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="
         https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js
         "></script>
-        <script>
-            $('.js-addwish-b2').on('click', function (e) {
-                e.preventDefault();
-            });
-    
-            $('.js-addwish-b2').each(function () {
-                var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
-                $(this).on('click', function () {
-                    swal(nameProduct, "is added to wishlist !", "success");
-    
-                    $(this).addClass('js-addedwish-b2');
-                    $(this).off('click');
-                });
-            });
-    
-            $('.js-addwish-detail').each(function () {
-                var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
-    
-                $(this).on('click', function () {
-                    swal(nameProduct, "is added to wishlist !", "success");
-    
-                    $(this).addClass('js-addedwish-detail');
-                    $(this).off('click');
-                });
-            });
-    
-            /*---------------------------------------------*/
-    
-            $('.js-addcart-detail').each(function () {
-                var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
-                $(this).on('click', function () {
-                    swal(nameProduct, "is added to cart !", "success");
-                });
-            });
-    
-        </script>
-        <!--===============================================================================================-->
-        <script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-        <script>
-            $('.js-pscroll').each(function () {
-                $(this).css('position', 'relative');
-                $(this).css('overflow', 'hidden');
-                var ps = new PerfectScrollbar(this, {
-                    wheelSpeed: 1,
-                    scrollingThreshold: 1000,
-                    wheelPropagation: false,
-                });
-    
-                $(window).on('resize', function () {
-                    ps.update();
-                })
-            });
-        </script>
-        <!--===============================================================================================-->
-        <script src="javascripts/main.js"></script>
+    <script>
+        $('.js-addwish-b2').on('click', function (e) {
+            e.preventDefault();
+        });
 
-        <script>
-            const form = document.getElementById('otpForm')
-            form.addEventListener('submit',(event)=>{
-                event.preventDefault()
+        $('.js-addwish-b2').each(function () {
+            var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
+            $(this).on('click', function () {
+                swal(nameProduct, "is added to wishlist !", "success");
 
-                validateForm()
-                const mobError = document.getElementById('mobError')
+                $(this).addClass('js-addedwish-b2');
+                $(this).off('click');
+            });
+        });
 
-                if(mobError.innerHTML !== ""){
-                    return false
-                }else{
-                    form.submit()
-                }
+        $('.js-addwish-detail').each(function () {
+            var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
+
+            $(this).on('click', function () {
+                swal(nameProduct, "is added to wishlist !", "success");
+
+                $(this).addClass('js-addedwish-detail');
+                $(this).off('click');
+            });
+        });
+
+        /*---------------------------------------------*/
+
+        $('.js-addcart-detail').each(function () {
+            var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
+            $(this).on('click', function () {
+                swal(nameProduct, "is added to cart !", "success");
+            });
+        });
+
+    </script>
+    <!--===============================================================================================-->
+    <script src="vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script>
+        $('.js-pscroll').each(function () {
+            $(this).css('position', 'relative');
+            $(this).css('overflow', 'hidden');
+            var ps = new PerfectScrollbar(this, {
+                wheelSpeed: 1,
+                scrollingThreshold: 1000,
+                wheelPropagation: false,
+            });
+
+            $(window).on('resize', function () {
+                ps.update();
             })
-            
-            function validateForm() {
-                const mobValue = document.getElementById('mobile').value
-                const mobError = document.getElementById('mobError')
-                if(mobValue.trim() == ""){
-                    mobError.innerHTML='enter  mobile number'
-                }
+        });
+    </script>
+    <!--===============================================================================================-->
+    <script src="javascripts/main.js"></script>
+
+    <script>
+        const form = document.getElementById('otpForm')
+        form.addEventListener('submit', (event) => {
+            event.preventDefault()
+
+            validateForm()
+            const mobError = document.getElementById('mobError')
+
+            if (mobError.innerHTML !== "") {
+                return false
+            } else {
+                form.submit()
             }
-        </script>
-    
-    </body>
-    
-    </html>
-        
+        })
+
+        function validateForm() {
+            const mobValue = document.getElementById('mobile').value
+            const mobError = document.getElementById('mobError')
+            if (mobValue.trim() == "") {
+                mobError.innerHTML = 'enter  mobile number'
+            }
+        }
+    </script>
+
+</body>
+
+</html>

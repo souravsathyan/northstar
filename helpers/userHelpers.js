@@ -17,7 +17,8 @@ var instance = new Razorpay({
     key_secret: process.env.RAZ_SECRET_KEY,
 });
 const couponDatas = require('../model/couponModel')
-const productHelpers = require('../helpers/productHelpers')
+const productHelpers = require('../helpers/productHelpers');
+const walletSchema = require('../model/walletModel');
 
 
 
@@ -572,31 +573,23 @@ module.exports = {
         })
 
     },
-    applyCoupon: (userId, couponCode, totalPrice) => {
-        return new Promise(async (resolve, reject) => {
-            console.log(userId, couponCode, totalPrice)
-            let coupon = await couponDatas.findOne({ code: couponCode });
-            if (totalPrice < coupon.minimumAmt) {
-                resolve({ status: false, message: `cannot apply this coupon below total purchase of Rs.${coupon.minimumAmt}` })
-            } else if (coupon && coupon.isActive == 'Active') {
-                if (!coupon.usedBy.includes(userId)) {
-                    let cart = await cartDB.findOne({ userId: userId })
-                    const discount = coupon.discount
-                    cart.totalAmount = totalPrice - coupon.discount;
-                    cart.coupon = couponCode;
-                    await cart.save()//saving the totalAmt
-
-                    coupon.usedBy.push(userId);//registering the userId in the coupon
-                    await coupon.save()
-                    console.log(cart)
-                    resolve({ discount, cart, status: true, message: "coupn added successfully" })
-                } else {
-                    resolve({ status: false, message: "Coupon code already used" })
-                }
-            } else {
-                resolve({ status: false, message: "invalid Coupon code" })
+    applyCoupon: async(userId, couponCode, totalPrice) => {
+            try {
+                console.log(userId, couponCode, totalPrice)
+                let coupon = await couponDatas.findById(couponCode);
+                console.log('coupon found')       
+                        let cart = await cartDB.findOne({ userId: userId })
+                        const discount = coupon.discount
+                        cart.totalAmount = totalPrice - coupon.discount;
+                        cart.coupon = couponCode;
+                        await cart.save()//saving the totalAmt
+                        coupon.usedBy.push(userId);//registering the userId in the coupon
+                        await coupon.save()
+                        console.log('cart updated success')
+            } catch (error) {
+                throw new Error(error);
             }
-        })
+       
     },
     deleteAddress: (addId) => {
         console.log(addId)
@@ -608,6 +601,91 @@ module.exports = {
                 .catch((error) => {
                     reject(error)
                 })
+        })
+    },
+    // *WALLET**
+    getWalletData: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            const userWallet = await walletSchema.findOne({user:userId})
+            if (!userWallet) {
+                resolve({ walletBalance: 0 })
+            } else {
+                resolve(userWallet.walletBalance)
+            }
+        })
+    },
+    getOrderPrice: (orderId) => {
+        return new Promise((resolve, reject) => {
+            orderData.findById(orderId)
+                .then((response) => {
+                    const result ={
+                      totalAmont :response.totalAmount,
+                       paymentMethod:response.paymentMethod
+                    }
+                    resolve(result)
+                })
+                .catch((error) => {
+                    console.log(error)
+                    reject(error)
+                })
+        })
+    },
+    getCancelOrder: (orderId , reason) => {
+      return  new Promise((resolve, reject) => {
+            orderData.updateOne(//changing the order status
+                { _id: orderId },
+                {
+                    $set: {
+                        returnReason: reason,
+                        orderStatus: 'cancelled'
+                    }
+                }
+            ).then(()=>{
+                resolve()
+            })
+            .catch((error)=>{
+                console.log(error)
+                reject(error)
+            })
+        })
+    },
+    addToWallet:(addCash,userId)=>{
+        console.log(addCash,'00000000000000')
+        return new Promise(async(resolve, reject) => {
+            const userWalletExists = await walletSchema.findOne({user:userId}) 
+            //if no wallet is created
+            if(!userWalletExists){
+                await walletSchema.create({
+                    walletBalance:addCash,
+                    user:userId
+                }).then((response)=>{
+                    console.log(response,'11111111111111111111')
+                    resolve()
+                })
+                .catch((error)=>{
+                    reject(error)
+                })
+            }else{
+                //if user has wallet then add the new balance to the existing wallet amount 
+                const walletBalance = userWalletExists.walletBalance
+                const newBalance = walletBalance+addCash
+                await walletSchema.updateOne(
+                    {user:userId},
+                    {
+                        $set:{
+                            walletBalance:newBalance
+                        }
+                    }
+                )
+                .then(()=>{
+
+                    resolve()
+                })
+                .catch((error)=>{
+                    reject(error)
+                })
+            }
+
         })
     }
 

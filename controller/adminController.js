@@ -11,6 +11,7 @@ const excelJs = require('exceljs');
 const couponData = require('../model/couponModel')
 const vocherGenerator = require('voucher-code-generator')
 const bannersData = require('../model/banner')
+const offers = require('../model/offerModel');
 
 const adminCredentials = {
   name: "Admin",
@@ -225,10 +226,10 @@ module.exports = {
     await products.updateOne(
       { _id: new ObjectId(prodId) },
       {
-        $pull: { prodImage:fileName } 
+        $pull: { prodImage: fileName }
       })
 
-      res.json({status:true})
+    res.json({ status: true })
   },
 
 
@@ -286,7 +287,7 @@ module.exports = {
 
   getSalesData: async (req, res) => {
     try {
-      const sales = await adminHelpers.getAllDeliveredOrder()
+      const sales = await adminHelpers.getAllOrders()
       console.log(sales)
       res.render('admin/salesReport', {
         sales
@@ -302,6 +303,7 @@ module.exports = {
       let { startDate, endDate } = req.body;
       startDate = new Date(startDate)
       endDate = new Date(endDate)
+      console.log(startDate,endDate)
       const salesReport = await adminHelpers.getDeliveredOrders(startDate, endDate)
       res.json({ sales: salesReport })
     } catch (error) {
@@ -363,6 +365,73 @@ module.exports = {
     } catch (error) {
       console.log(error)
       res.status(500).render('error', { error });
+    }
+  },
+
+  //offers
+  getOffer: async (req, res) => {
+    try {
+      const category = await categoryHelpers.getAllCategory()
+      const allOffers = await offers.aggregate([
+        {
+          $lookup: {
+            from: 'categories',
+            localField: 'category',
+            foreignField: '_id',
+            as: 'offerCategory'
+          }
+        }
+      ])
+
+      res.render('admin/offer',
+        {
+          category,
+          allOffers
+        })
+    } catch (error) {
+      console.log(error)
+      res.status(500).render('error', { error });
+    }
+  },
+
+  addOffer: async (req, res) => {
+    try {
+      const { offerName, offerAmount, offerExDate, offerCategory } = req.body
+      const offer = new offers({
+        offerName: offerName,
+        discount: offerAmount,
+        category: offerCategory,
+        expiryDate: offerExDate
+      })
+      await offer.save()
+      res.json({ status: true, message: 'offer added successfully' })
+    } catch (error) {
+      res.json({ status: false, message: 'operation cancelled due to some errors' })
+    }
+
+  },
+  applyOffer: async (req, res) => {
+    try {
+      await adminHelpers.applyOffer(req.params.id);
+      res.json({ status: true, message: 'offer applied' });
+    } catch (error) {
+      res.json(error);
+    }
+  },
+  deleteOffer: async (req, res) => {
+    try {
+      await adminHelpers.deleteOffer(req.params.id)
+      res.json({ status: true, message: 'offer removed successfully' })
+    } catch (error) {
+      res.json({ status: false, message: 'offer removal failed' })
+    }
+  },
+  deleteCoupon: async (req, res) => {
+    try {
+      await couponData.findByIdAndDelete(req.params.id)
+      res.json({ status: true, message: 'coupon deleted succesfully' })
+    } catch (error) {
+      res.json({ error: true, message: 'there was an error in deleteing the coupon' })
     }
   }
 

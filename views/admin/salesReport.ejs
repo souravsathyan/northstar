@@ -1,5 +1,6 @@
 <%- include('../partials/adminHeader') %>
 
+
     <section class="content-main">
         <div class="content-header">
             <div>
@@ -16,11 +17,11 @@
                     <div class="row gx-3">
                         <div class="col-lg-2 col-6 col-md-3">
                             <label class="form-label">Start Date</label>
-                            <input type="date" name="startDate" value="" class="form-control" required>
+                            <input type="date" name="startDate" id="startDate" class="form-control" required>
                         </div>
                         <div class="col-lg-2 col-6 col-md-3">
                             <label class="form-label">End Date</label>
-                            <input type="date" name="endDate" value="" class="form-control" required>
+                            <input type="date" name="endDate" id="endDate" class="form-control" required>
                         </div>
                         <div class="col-lg-4 col-md-6 ms-auto" style="width: 15%;">
                             <button type="submit" class="btn btn-primary mt-4  btn-sm rounded">Get Report</button>
@@ -113,12 +114,15 @@
                         for (let i = 0; i < response.sales.length; i++) {
                             const sale = response.sales[i];
                             // Create a new table row
+                            const orderDate = new Date(sale.orderDate);
+                            const formattedOrderDate = (orderDate.getMonth() + 1).toString().padStart(2, '0') + "-" + orderDate.getDate().toString().padStart(2, '0') + "-" + orderDate.getFullYear();
+
                             const row = $("<tr>");
                             // Add the table cells with the sale data
                             row.append($("<td>").text(i + 1)); // No
                             row.append($("<td>").text(sale._id)); // Order Id
                             row.append($("<td>").text(sale.user.name)); // Customer
-                            row.append($("<td>").text(sale.orderDate)); // Order Date
+                            row.append($("<td>").text(formattedOrderDate)); // Order Date
                             row.append($("<td>").text(sale.paymentMethod)); // Payment Method
                             row.append($("<td>").text(sale.orderStatus)); // Order Status
                             row.append($("<td>").text("Rs. " + sale.totalAmount)); // Total Amount
@@ -198,6 +202,29 @@
 
 
     </script>
+    <script>
+        // Get the current date
+        var currentDate = new Date();
+
+        // Set the start date to the beginning of the current month
+        var startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        var formattedStartDate = formatDate(startDate); // Format the date as "YYYY-MM-DD"
+        document.getElementById("startDate").value = formattedStartDate;
+
+        // Set the end date to the end of the current month
+        var endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+        var formattedEndDate = formatDate(endDate); // Format the date as "YYYY-MM-DD"
+        document.getElementById("endDate").value = formattedEndDate;
+
+        // Function to format the date as "YYYY-MM-DD"
+        function formatDate(date) {
+            var year = date.getFullYear();
+            var month = String(date.getMonth() + 1).padStart(2, "0");
+            var day = String(date.getDate()).padStart(2, "0");
+            return year + "-" + month + "-" + day;
+        }
+    </script>
+
 
 
     <%- include('../partials/adminFooter') %>

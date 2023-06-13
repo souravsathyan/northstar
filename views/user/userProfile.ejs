@@ -1,5 +1,9 @@
 <%- include('../partials/userHeader') %>
 
+    <head>
+        <link rel="stylesheet" href="/cropper/cropper.css">
+
+    </head>
 
     <main class="main">
         <div class="page-header breadcrumb-wrap">
@@ -135,35 +139,44 @@
                                                                         <%= order.paymentMethod %>
                                                                     </td>
                                                                     <td>
-                                                                        <% if (order.orderStatus=='placed' ||order.orderStatus=='pending' ||order.orderStatus=='Shipped' ) { %>
-                                                                            <button class="btn btn-danger btn-sm "
-                                                                            onclick="cancelOrder('<%= order._id %>','cancelled')">
-                                                                            cancel
-                                                                            </button>
-                                                                        <% } else if (order.orderStatus=='Delivered'  ){%>
-                                                                            <% const currentDate=new Date(); %>
-                                                                            <% const deliveryDate=new Date(order.orderDate); %>
-                                                                            <% const daysPassed=(currentDate- deliveryDate) / (1000 * 60* 60 * 24); %>
-                                                                            <% if (daysPassed <=15) { %>
-                                                                                <button type="button"
-                                                                                    class="btn btn-warning btn-sm"
-                                                                                    data-bs-toggle="modal"
-                                                                                    data-bs-target="#returnProduct"
-                                                                                    id="reasonBtn"
-                                                                                    data-order-id="<%= order._id %>"
-                                                                                    >return</button>
-                                                                                <% } else {%>
-                                                                                    <span
-                                                                                        class="badge bg-success">delivered</span>
-                                                                                    <% } %>
-                                                                                    <% } else if(order.orderStatus=='cancelled') { %>
-                                                                                         <span class="badge bg-danger">Cancelled</span>
-                                                                                         <% } else if(order.orderStatus=='return') { %>
-                                                                                            <span class="badge bg-warning">return</span>
-                                                                                            <% } %>
+                                                                        <% if (order.orderStatus=='placed'||order.orderStatus=='pending'||order.orderStatus=='Shipped' ) { %>
+                                                                            <button type="button"
+                                                                                class="btn btn-danger btn-sm"
+                                                                                data-bs-toggle="modal"
+                                                                                data-bs-target="#cancelOrder"
+                                                                                id="cancelBtn"
+                                                                                data-order-id="<%= order._id %>">Cancel</button>
+
+                                                                            <% } else if (order.orderStatus=='Delivered'){%>
+                                                                                <% const currentDate=new Date(); %>
+                                                                                    <% const deliveryDate=new
+                                                                                        Date(order.orderDate); %>
+                                                                                        <% const
+                                                                                            daysPassed=(currentDate-
+                                                                                            deliveryDate) / (1000 * 60*
+                                                                                            60 * 24); %>
+                                                                                            <% if (daysPassed <=15) { %>
+                                                                                                <button type="button"
+                                                                                                    class="btn btn-warning btn-sm"
+                                                                                                    data-bs-toggle="modal"
+                                                                                                    data-bs-target="#returnProduct"
+                                                                                                    id="reasonBtn"
+                                                                                                    data-order-id="<%= order._id %>">return</button>
+                                                                                                <% } else {%>
+                                                                                                    <span
+                                                                                                        class="badge bg-success">delivered</span>
+                                                                                                    <% } %>
+                                                                                                        <% } else
+                                                                                                            if(order.orderStatus=='cancelled') { %>
+                                                                                                            <span
+                                                                                                                class="badge bg-danger">Cancelled</span>
+                                                                                                            <% } else if(order.orderStatus=='return') { %>
+                                                                                                                <span
+                                                                                                                    class="badge bg-warning">return</span>
+                                                                                                                <% } %>
                                                                     </td>
-                                                                    <td><a href="/viewOrderSummary/<%= order._id %>"
-                                                                            class="btn-small d-block">View</a>
+                                                                    <td>
+                                                                        <a href="/viewOrderSummary/<%= order._id %>"class="btn-small d-block">View</a>
                                                                     </td>
                                                                 </tr>
                                                                 <% }) %>
@@ -173,7 +186,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- add address -->
                                     <div class="tab-pane fade" id="address" role="tabpanel"
                                         aria-labelledby="address-tab">
@@ -204,11 +217,11 @@
                                                                 <a href="/editAddress/<%= userAddress._id %>"
                                                                     type="button"
                                                                     class="btn btn-outline-primary  btn-sm ">Edit</a>
-                                                                    
-                                                                    <button class="ms-3"
-                                                                    onclick="deleteAddress('<%= userAddress._id %>')"
-                                                                    >
-                                                                    <i class="fa-solid fa-trash" style="color: #ff0000;"></i></button>
+
+                                                                <button class="ms-3"
+                                                                    onclick="deleteAddress('<%= userAddress._id %>')">
+                                                                    <i class="fa-solid fa-trash"
+                                                                        style="color: #ff0000;"></i></button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -239,7 +252,7 @@
                                                         <!-- profile pic -->
                                                         <div>
                                                             <% if (userDetails.profilePic) { %>
-                                                                <img src="/<%= userDetails.profilePic %>" style="width: 150px;
+                                                                <img src="/<%= userDetails.profilePic %>" style="max-width: 100%; display: block;
                                                             margin: 10px;
                                                             border-radius: 50px;" class="mx-auto d-block" alt="...">
                                                                 <% } else { %>
@@ -406,7 +419,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
+                                        <button type="button" id="cropButton" class="btn btn-secondary"
                                             data-bs-dismiss="modal">Close</button>
                                         <button type="submit" class="btn btn-primary">Save changes</button>
                                     </div>
@@ -429,13 +442,14 @@
                             <h1 class="modal-title fs-5" id="exampleModalLabel">crop image</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body" id="croppingContainer">
 
-                            <img src="/<%= userDetails.profilePic %>" id="croppingImage" alt="Cropping Image">
+                            <img src="/<%= userDetails.profilePic %>" id="croppingImage" alt="Cropping Image"
+                                style="max-width: 100%; display: block;">
 
                         </div>
                         <div>
-                            <button class="btn btn-primary" id="cropButton">
+                            <button class="btn btn-primary">
                                 crop
                             </button>
                         </div>
@@ -476,9 +490,42 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button class="btn btn-warning" type="button" id="returnBtn"
-                                onclick="returnOrder()">
+                            <button class="btn btn-warning" type="button" id="returnBtn" onclick="returnOrder()">
                                 return </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--modal for cancel-->
+            <div class="modal fade" id="cancelOrder" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Reason for cancelling product </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="mb-3">
+                                <label for="" class="form-label fs-6"> please mention your Reason</label>
+                                <select id="cancelStatus" lass="form-select" aria-label="Default select example">
+                                    <option class="fs-6" selected>Open this select menu</option>
+                                    <option class="fs-6" value="damaged">product is damaged or defective</option>
+                                    <option class="fs-6" value="quality issues">product is not what the you expected
+                                    </option>
+                                    <option class="fs-6" value="non-satisfication">unhappy with the customer service
+                                    </option>
+                                    <option class="fs-6" value="quality issues">quality issues</option>
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button class="btn btn-danger btn-sm " id="saveBtn" onclick="cancelOrder()">
+                                    cancel
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -487,6 +534,7 @@
 
         </section>
     </main>
+    <script src="/cropper/cropper.min.js"></script>
 
     <script>
 
@@ -495,7 +543,7 @@
         }
     </script>
     <script>
-        function deleteAddress(addId){
+        function deleteAddress(addId) {
             Swal.fire({
                 title: "Are you sure?",
                 text: "you are going to delete this address",
@@ -509,7 +557,7 @@
                         url: '/deleteAddress',
                         method: 'post',
                         data: {
-                            addId:addId
+                            addId: addId
                         }
                     }).done(res => {
                         Swal.fire({
@@ -529,93 +577,19 @@
                 }
             });
         }
-        
-
-        function cancelOrder(orderId, status) {
-            Swal.fire({
-                title: "Are you sure?",
-                text: "you are going to cancel the order",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No"
-            }).then((confirmed) => {
-                if (confirmed.value) {
-                    $.ajax({
-                        url: '/cancelOrder',
-                        method: 'post',
-                        data: {
-                            orderId: orderId,
-                            status: status
-                        }
-                    }).done(res => {
-                        Swal.fire({
-                            title: "Success",
-                            text: res.message,
-                            icon: "success"
-                        }).then(() => {
-                            location.reload();
-                        });
-                    });
-                } else {
-                    Swal.fire({
-                        title: "Cancelled",
-                        text: "Your action has been cancelled",
-                        icon: "info"
-                    });
-                }
-            });
-        }
-
-
-        function returnOrder(orderId, status) {
-            Swal.fire({
-                title: "Are you sure?",
-                text: "you are going to reurn the order",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes",
-                cancelButtonText: "No"
-            }).then((confirmed) => {
-                if (confirmed.value) {
-                    $.ajax({
-                        url: '/returnOrder',
-                        method: 'post',
-                        data: {
-                            orderId: orderId,
-                            status: status
-                        }
-                    }).done(res => {
-                        Swal.fire({
-                            title: "Success",
-                            text: res.message,
-                            icon: "success"
-                        }).then(() => {
-                            location.reload();
-                        });
-                    });
-                } else {
-                    Swal.fire({
-                        title: "Cancelled",
-                        text: "Your action has been cancelled",
-                        icon: "info"
-                    });
-                }
-            });
-        }
 
     </script>
     <script>
         function returnOrder() {
             const saveButton = document.getElementById('returnBtn')
-            const reasonBtn = document.getElementById('reasonBtn') 
+            const reasonBtn = document.getElementById('reasonBtn')
             const orderId = reasonBtn.getAttribute('data-order-id');
             console.log(orderId)
             saveButton.addEventListener('click', function (event) {
                 event.preventDefault()
                 const selectElement = document.querySelector('#returnStatus');
                 const selectedValue = selectElement.value;
-                console.log(selectedValue,orderId);
+                console.log(selectedValue, orderId);
                 $.ajax({
                     url: '/returnOrder/' + orderId,
                     method: 'POST',
@@ -631,7 +605,33 @@
             })
         }
 
+        function cancelOrder() {
+            const saveButton = document.getElementById('cancelBtn')
+            const cancelBtn = document.getElementById('saveBtn')
+            const orderId = saveButton.getAttribute('data-order-id');
+            
+            cancelBtn.addEventListener('click', function (event) {
+                event.preventDefault()
+                const selectElement = document.querySelector('#cancelStatus');
+                const selectedValue = selectElement.value;
+                console.log(selectedValue, orderId);
+                $.ajax({
+                    url: '/cancelOrder/' + orderId,
+                    method: 'POST',
+                    data: { selectedValue: selectedValue },
+                    success: function (response) {
+                        alert('order cancel accepted')
+                        location.reload()
+                    },
+                    error: function (error) {
+                        // Handle any errors that occur during the request
+                    }
+                });
+            })
+        }
+
 
     </script>
+
 
     <%- include('../partials/userFooter') %>

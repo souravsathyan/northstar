@@ -1,3 +1,6 @@
 .env
 node_modules
 todo.js
+.env.TWILIO_SERVICE_SID
+.env.TWILIO_AUTH_TOKEN
+.env.TWILIO_ACCOUNT_SID

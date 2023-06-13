@@ -7,6 +7,7 @@ const client = require('twilio')(accountSid, authToken);
 module.exports = {
 
     sendOTP: (mobileNo) => {
+        console.log(mobileNo,'in twilio')
         try {
             return new Promise((resolve, reject) => {
                 client.verify.v2.services(serviceSid)

@@ -48,6 +48,10 @@ const productSchema = new mongoose.Schema({
       type:String,
       required:true,
       unique:true
+  },
+  realPrice:{
+   type:Number,
+   default:0
   }
 
 })

@@ -61,98 +61,51 @@
                                 <div class="heading_s1 mb-3">
                                     <h4>Apply Coupon</h4>
                                 </div>
-                                <div class=" col total-amount">
-                                    <div class="left">
-                                        <div class="coupon">
 
-                                            <div class="form-row row justify-content-center">
-                                                <div class="form-group col-lg-6">
-                                                    <input class="font-medium" id="applyCoupon" name="Coupon"
-                                                        placeholder="Enter Your Coupon">
+                                <!-- select coupon -->
+                                <div class="col" style="padding: 20px;">
+                                    <div id="accordion" class="card ">
+                                        <div class="card-header" id="headingTwo">
+                                            <h5 class="mb-0">
+                                                <button class="btn collapsed text-light btn-secondary"
+                                                    data-toggle="collapse" data-target="#collapseTwo"
+                                                    aria-expanded="false" aria-controls="collapseTwo">
+                                                    Select Coupon
+                                                </button>
+                                            </h5>
+                                        </div>
+
+                                        <div id="collapseTwo" class="collapse " aria-labelledby="headingTwo"
+                                            data-parent="#accordion">
+
+
+
+                                            <% for( let i=0; i < allCoupons.length; i++ ) { %>
+                                                <div class="card-body">
+                                                    <div class="coupon-card">
+                                                        <h4>Rs.<%= allCoupons[i].discount %> on
+                                                                this order</h4>
+                                                        <div class="coupon-row">
+                                                            <span id="cpnCode">
+                                                                <%= allCoupons[i].code %>
+                                                            </span>
+                                                            <button class="cpnBtn btn btn-secondary"
+                                                                onclick="findCoupon('<%= allCoupons[i]._id %>','<%=allCoupons[i].minimumAmt%>')"
+                                                                type="button" style="margin-left: 5px;">Use this
+                                                                Code</button>
+                                                        </div>
+                                                        <p class="text-light">Valid till: <%=
+                                                                allCoupons[i].expiryDate.toLocaleDateString() %>
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                                <div class="form-group col-lg-6">
-                                                    <button class="btn  btn-sm" id="couponBtn" type="button"><i
-                                                            class="fi-rs-label mr-10"></i>Apply</button>
-                                                </div>
-                                            </div>
+                                                <% } %>
 
                                         </div>
+
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- select coupon -->
-                            <div class="col" style="padding: 20px;">
-                                <div id="accordion" class="card ">
-                                    <div class="card-header" id="headingTwo">
-                                        <h5 class="mb-0">
-                                            <button class="btn collapsed text-dark" data-toggle="collapse"
-                                                data-target="#collapseTwo" aria-expanded="false"
-                                                aria-controls="collapseTwo">
-                                                Select Coupons
-                                            </button>
-                                        </h5>
-                                    </div>
-
-                                    <div id="collapseTwo" class="collapse " aria-labelledby="headingTwo"
-                                        data-parent="#accordion">
-
-                                        <div class="card-body ">
-                                            <table class="table table-hover" id="couponTable">
-                                                <thead>
-                                                    <tr class="text-left">
-                                                        <th>No</th>
-                                                        <th>Coupon Name</th>
-                                                        <th>Discount Amt</th>
-                                                        <th>Minimum Amt</th>
-                                                        <th>Expiry Date</th>
-                                                        <th>Coupon Code</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <% allCoupons.forEach((coupon,index)=> { %>
-                                                        <tr class="text-left">
-                                                            <td width="15%">
-                                                                <!-- No -->
-                                                                <%= index+1 %>
-                                                            </td>
-                                                            <td width="20%">
-                                                                <!-- Coupon Name -->
-                                                                <%= coupon.couponName %>
-                                                            </td>
-
-                                                            <td width="10%">
-                                                                <!-- Discount Amount -->
-                                                                <%= coupon.discount %>
-                                                            </td>
-                                                            <td width="10%">
-                                                                <!-- minimum Amount -->
-                                                                <%= coupon.minimumAmt %>
-                                                            </td>
-                                                            <td width="15%">
-                                                                <!-- Expiry Date -->
-                                                                <%=coupon.expiryDate.toLocaleDateString()%>
-                                                            </td>
-                                                            <td width="20%">
-                                                                <!-- Coupon Code -->
-                                                                <span class="rounded-pill bg-success p-2 fs-6">
-                                                                    <%= coupon.code %>
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-
-                                                        <% }) %>
-
-
-                                                </tbody>
-                                            </table>
-
-                                            
-                                        </div>
-                                        
-                                    </div>
-
-                                </div>
                             </div>
                         </div>
 
@@ -200,17 +153,28 @@
                                                     <tr>
                                                         <th>Sub Total</th>
                                                         <td></td>
-                                                        <td class="product-subtotal text-right" id="subTotal" colspan="2">Rs.<%=
-                                                                totalPrice.toLocaleString() %>
+                                                        <td class="product-subtotal text-right" id="subTotal"
+                                                            colspan="2">
+                                                            <%= totalPrice.toLocaleString() %>
                                                         </td>
                                                     </tr>
 
                                                     <tr>
                                                         <th>Coupon Discont</th>
-                                                        <td></td>
+                                                        <td>
+                                                            <input type="text" name="couponCode" value=""
+                                                                id="couponIdPost" hidden>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="d-none" id="couponRemoveButton"
+                                                                onclick="removeCoupon()">
+                                                                <i class="fa-solid fa-xmark" style="color: #ff0019;"
+                                                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                    title="remove coupon"></i>
+                                                            </button>
+                                                        </td>
                                                         <td class="product-subtotal text-right" colspan="3"
                                                             id="discount">
-                                                            <%= %>
                                                         </td>
                                                     </tr>
 
@@ -226,7 +190,7 @@
                                                         <td></td>
                                                         <td colspan="2" class="product-subtotal text-right">
                                                             <span class="font-xl  text-brand fw-900" id="totalSpan">
-                                                                Rs. <%= totalPrice.toLocaleString() %>
+                                                                <%= totalPrice.toLocaleString() %>
                                                             </span>
                                                         </td>
                                                     </tr>
@@ -257,6 +221,13 @@ background: linear-gradient(351deg, rgba(198,198,203,1) 44%, rgba(176,176,184,1)
                                             <input class="form-check-input" type="radio" value="COD" name="paymentType">
                                             <label class="form-check-label fw-bolder" for="flexRadioDefault2">
                                                 Cash on Delivery
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" value="wallet"
+                                                name="paymentType">
+                                            <label class="form-check-label fw-bolder" for="flexRadioDefault2">
+                                                Wallet
                                             </label>
                                         </div>
                                     </div>
@@ -454,15 +425,17 @@ background: linear-gradient(351deg, rgba(198,198,203,1) 44%, rgba(176,176,184,1)
             var paymentMethod = $('input[name="paymentType"]:checked').val();
             var discountAmt = $('#discount').text().trim().replace(/[^0-9]/g, '')
             var subTotal = $('#subTotal').text().trim().replace(/[^0-9]/g, '')
-
+            var couponId = $('#couponIdPost').val()
             var data = {
                 addressId: addressId,
                 totalAmount: totalAmount,
                 paymentMethod: paymentMethod,
-                discountAmt:discountAmt,
-                subTotal : subTotal
+                discountAmt: discountAmt,
+                subTotal: subTotal,
+                couponId: couponId
             }
-            
+
+
             $.ajax({
                 url: '/proceedToCheckout',
                 method: 'post',
@@ -477,14 +450,21 @@ background: linear-gradient(351deg, rgba(198,198,203,1) 44%, rgba(176,176,184,1)
                         cancelButtonText: "No",
                     }).then((result) => {
                         if (result.value) {
-                            if (response.codSuccess) {
-                                window.location.href = '/placeOrderFinal?orderId=' + response.orderId;
-                            } else {
-                                console.log(response);
+                            if (response.online) {
                                 razorpayPayment(response.orders)
+                            } else {
+                                Swal.fire({
+                                    title: `${response.message}`,
+                                    buttons: ['OK']
+                                }).then(() => {
+                                    window.location.href = '/placeOrderFinal?orderId=' + response.orderId;
+                                });
                             }
                         } else if (response.error) {
-                            alert('Choose a payment method');
+                            Swal.fire({
+                                    title: `${response.message}`,
+                                    buttons: ['OK']
+                                })
                         }
                     });
                 }
@@ -538,42 +518,128 @@ background: linear-gradient(351deg, rgba(198,198,203,1) 44%, rgba(176,176,184,1)
         }
 
 
-        //Coupon validation
-            $(document).ready(function () {
-                $("#couponBtn").on("click", function () {
-                    console.log("clicked");
-                    var coupon = $("#applyCoupon").val();
-                    const data = {
-                        coupon: coupon
-                    }
-                    $.ajax({
-                        url: "/applyCoupon",
-                        method: "post",
-                        data: data,
+        //Coupon applying
+        // $(document).ready(function () {
+        //         $("#couponBtn").on("click", function () {
+        //             console.log("clicked");
+        //             var coupon = $("#applyCoupon").val();
+        //             const data = {
+        //                 coupon: coupon
+        //             }
+        //             $.ajax({
+        //                 url: "/applyCoupon",
+        //                 method: "post",
+        //                 data: data,
 
-                        success: function (response) {
-                            if (response.status) {
-                                Swal.fire({
-                                    title: "Success",
-                                    text: "Coupon is Redeemed happy Shopping ",
-                                    icon: "success",
-                                    confirmButtonText: "OK",
-                                }).then((result) => {
-                                    document.getElementById('discount').innerHTML = response.discount
-                                    document.getElementById('totalSpan').innerHTML = response.cart.totalAmount
-                                })
-                            } else {
-                                Swal.fire({
-                                    title: "Failure",
-                                    text: `${response.message}`,
-                                    icon: "Danger",
-                                    confirmButtonText: "OK",
-                                })
-                            }
-                        },
-                    });
+        //                 success: function (response) {
+        //                     if (response.status) {
+        //                         Swal.fire({
+        //                             title: "Success",
+        //                             text: "Coupon is Redeemed happy Shopping ",
+        //                             icon: "success",
+        //                             confirmButtonText: "OK",
+        //                         }).then((result) => {
+        //                             document.getElementById('discount').innerHTML = response.discount
+        //                             document.getElementById('totalSpan').innerHTML = response.cart.totalAmount
+        //                         })
+        //                     } else {
+        //                         Swal.fire({
+        //                             title: "Failure",
+        //                             text: `${response.message}`,
+        //                             icon: "Danger",
+        //                             confirmButtonText: "OK",
+        //                         })
+        //                     }
+        //                 },
+        //             });
+        //         });
+        //     });
+
+        var initialTotal = $("#totalSpan").text().replace(/[^\d\.]/g, "");
+        function findCoupon(couponId, minAmt, userId) {
+            console.log(minAmt)
+            if (minAmt < initialTotal) {
+                Swal.fire({
+                    title: `not exceeding${minAmt}`,
+                    text: 'coupon cannot be applied',
+                    icon: 'error',
+                    buttons: ['OK']
                 });
+                return;
+            }
+
+            var removeBtn = $('#couponRemoveButton');
+            $.ajax({
+                url: `/findAndApplyCoupon?coupon=${couponId}`,
+                method: 'get',
+                success: function (response) {
+                    if (response && response.usedBy.includes(userId)) {
+                        Swal.fire({
+                            title: 'coupon already used by this user',
+                            icon: 'info',
+                            buttons: ['OK']
+                        });
+                        return;
+                    }
+
+                    if (response && response.isActive !== 'Active') {
+                        Swal.fire({
+                            title: 'coupon is not active',
+                            icon: 'info',
+                            buttons: ['OK']
+                        });
+                        return;
+                    }
+
+                    Swal.fire({
+                        title: 'coupon applied successfully',
+                        icon: 'success',
+                        buttons: ['OK']
+                    }).then(() => {
+                        if (response) {
+                            document.getElementById('discount').innerHTML = '';
+                            document.getElementById('discount').innerHTML = response.discount;
+                            document.getElementById('couponIdPost').value = response._id; // Set the coupon ID value in the hidden input
+                            removeBtn.removeClass('d-none');
+                            var totalValue = initialTotal - response.discount; // Calculate the updated total amount
+                            document.getElementById('totalSpan').innerHTML = 'Rs.' + totalValue;
+                        } else {
+                            Swal.fire({
+                                title: 'error',
+                                icon: 'info',
+                                buttons: ['OK']
+                            });
+                        }
+                    });
+                }
             });
+        }
+
+        // removing coupon
+        function removeCoupon() {
+            Swal.fire({
+                title: "Are you sure you want remove this coupon?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+            }).then((result) => {
+                if (result.value) {
+                    // Remove the coupon code from the DOM
+                    document.getElementById('discount').innerHTML = '';
+                    // Hide the remove coupon button
+                    var removeBtn = $('#couponRemoveButton');
+                    removeBtn.addClass('d-none');
+                    // Update the total price
+                    document.getElementById('totalSpan').innerHTML = initialTotal;
+                    document.getElementById('couponIdPost').value = ''
+                }
+            });
+        }
+
+
+
+
 
 
     </script>

@@ -13,6 +13,10 @@ const categoryModel = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    offerApplied:{
+        type:Boolean,
+        default:false
+    }
 },
     {
         timestamps: true

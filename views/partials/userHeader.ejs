@@ -85,8 +85,7 @@ https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css
                             <!-- Logo desktop -->
                             <a href="/" class="logo text-class" style="text-decoration: none;">
                                 <img src="/images/north-star-logo-480A222F2E-seeklogo.com.png" alt="" srcset=""
-                                    width="100px">
-
+                                    width="100px">gi
                             </a>
 
                             <!-- Menu desktop -->
@@ -167,6 +166,41 @@ https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css
                                                             <i class="fa-regular fa-heart"
                                                                 style="color: #ffffff;"></i></i>
                                                         </a>
+                                                        <% if (user) { %>
+                                                            <!-- Button trigger modal -->
+                                                            <button type="button" class="btn btn-outline-light"
+                                                                data-bs-toggle="modal" data-bs-toggle="tooltip"
+                                                                data-bs-placement="bottom" title="wallet"
+                                                                data-bs-target="#walletModal">
+                                                                <i class="fa-solid fa-wallet"
+                                                                    style="color: #ffffff;"></i>
+                                                            </button>
+
+                                                            <!-- Modal -->
+                                                            <div class="modal fade" id="walletModal" tabindex="-1"
+                                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title"
+                                                                                id="exampleModalLabel">Your Wallet</h5>
+                                                                            <button type="button" class="btn-close"
+                                                                                data-bs-dismiss="modal"
+                                                                                aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <h6 >Your wallet balance is : <span class="rounded-pill bg-success p-2">Rs.<%=userWallet.toLocaleString()%> </span></h6>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button"
+                                                                                class="btn btn-secondary"
+                                                                                data-bs-dismiss="modal">Close</button>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <% } %>
                                     </div>
                         </nav>
                     </div>

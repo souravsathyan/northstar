@@ -16,6 +16,8 @@ const flash = require('connect-flash');
 const nocache = require('nocache')
 const axios = require('axios')
 const qs = require('querystring');
+const Cropper = require('cropperjs')
+
 
 
 
@@ -43,6 +45,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'uploads')));
+app.use('/cropper', express.static(path.join(__dirname, 'node_modules/cropperjs/dist')));
+
 
 //initializing session
 app.use(nocache())

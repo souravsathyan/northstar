@@ -264,7 +264,7 @@
 								</label>
 							</div>
 							<div class="form-check">
-								<input class="form-check-input" type="radio" name="price" value="3000-3500" id="price-200+" data-filter-type="price">
+								<input class="form-check-input" type="radio" name="price" value="3000-4000" id="price-200+" data-filter-type="price">
 								<label class="form-check-label" for="flexRadioDefault2">
 									Rs.3000.00+
 								</label>
@@ -324,15 +324,23 @@
 
 								<div style="padding: 8px;">
 
-									<div class="block2-txt flex-w flex-t ">
-										<div class="flex-col-l" style="margin: auto; padding-bottom:10px ;">
+									<div class="block2-txt flex-w flex-t  ">
+										<div class="flex-col-l text-center" style="margin: auto; padding-bottom:10px ;">
 											<a href="product-detail.html"
 												class="font-weight-bold fs-5 stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
 												<%= product.prodName %>
 											</a>
-											<span class="stext-105 cl3 fs-6">
+											<span class="stext-105  cl3 fs-6" style="margin: auto;">
 												Rs.<%= product.prodPrice.toLocaleString() %>
+												<% if (product.realPrice > 0) { %>
+													<p class="text-decoration-line-through text-danger">
+														Rs.<%= product.realPrice.toLocaleString() %>
+													</p>
+
+											 <% } %>
 											</span>
+											 
+											
 										</div>
 									</div>
 
@@ -355,7 +363,7 @@
 											<% if (product.prodQuantity <1) { %>
 												<button
 												class=" cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail me-1 font-weight-bold"
-												onclick="addToCart('<%= product._id %>')" disabled>
+												onclick="addToCart('<%= product._id %>')" style="display: none;">
 												Add to cart<i class="ms-2 fi-rs-shopping-bag-add"></i>
 											</button>
 											<% } else { %>

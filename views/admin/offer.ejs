@@ -1,0 +1,196 @@
+<%- include('../partials/adminHeader') %>
+
+
+    <section class="content-main">
+        <div class="content-header">
+            <h2 class="content-title">Offer management</h2>
+            <div>
+
+
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCoupon">
+                    Add Offer +
+                </button>
+
+            </div>
+
+        </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover" id="couponTable">
+                        <thead>
+                            <tr class="text-left fs-6">
+                                <th>No</th>
+                                <th>Offer Name</th>
+                                <th>Discount Amt</th>
+                                <th>Expiry Date</th>
+                                <th>Category</th>
+                                <th>Apply Offer</th>
+                                <th>Remove</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <% console.log(allOffers) %>
+                                <% allOffers.forEach((offer,index)=> { %>
+                                    <tr class="text-left fs-6">
+                                        <td width="15%">
+                                            <!-- No -->
+                                            <%= index+1 %>
+                                        </td>
+                                        <td width="20%">
+                                            <!-- Coupon Name -->
+                                            <%= offer.offerName %>
+                                        </td>
+                                        <td width="10%">
+                                            <!-- Discount Amount -->
+                                            <%= offer.discount %>
+                                        </td>
+                                        <td width="15%">
+                                            <!-- Expiry Date -->
+                                            <%= offer.expiryDate.toLocaleDateString() %>
+                                        </td>
+                                        <td width="15%">
+                                            <!-- Expiry Date -->
+                                            <%= offer.offerCategory[0].name%>
+                                        </td>
+
+                                        <td width="10%">
+                                            <% if (!offer.offerApplied) { %>
+                                                <button class="btn btn-warning"
+                                                    onclick="applyOffer('<%=offer._id%>')">Apply</button>
+                                                <% } %>
+                                        </td>
+                                        <td width="10%">
+                                            <% if (offer.offerApplied) { %>
+                                                <button class="btn btn-danger"
+                                                    onclick="deleteOffer('<%=offer._id%>')">remove</button>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+
+                                    <% }) %>
+                        </tbody>
+
+                    </table> <!-- table-responsive.// --><!-- table-responsive.// -->
+                </div>
+            </div> <!-- card-body end// -->
+        </div> <!-- card end// -->
+
+    </section> <!-- content-main end// -->
+
+
+    <!-- Button trigger modal -->
+    <!-- Modal -->
+    <div class="modal fade" id="addCoupon" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create Offer </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="offerForm">
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Offer Name</label>
+                            <input type="text" class="form-control" name="offerName" id="couponName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Discount Amount</label>
+                            <input type="text" class="form-control" name="offerAmount" id="couponAmount">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Expiry Date</label>
+                            <input type="date" class="form-control" name="offerExDate" id="couponAmount">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label">Category</label>
+                            <select class="form-select" name="offerCategory">
+                                <% category.forEach(category=> { %>
+                                    <option value="<%= category.id %>">
+                                        <%= category.name %>
+                                    </option>
+                                    <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Create Coupon</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#offerForm').submit((e) => {
+            e.preventDefault()
+            $.ajax({
+                url: '/admin/addOffer',
+                method: 'post',
+                data: $('#offerForm').serialize(),
+                success: (response) => {
+                    if (response) {
+                        Swal.fire({
+                            title: `${response.message}`,
+                            buttons: ['OK']
+                        }).then(() => {
+                            $('#addCoupon').modal('hide'); // Close the modal
+                            location.reload()
+                        });
+                    }
+                }
+            })
+        })
+
+        function applyOffer(offerId) {
+            $.ajax({
+                url: '/admin/applyOffer/' + offerId,
+                method: 'post',
+                success: function (response) {
+                    console.log(response)
+                    if (response) {
+                        Swal.fire({
+                            title: `${response.message}`,
+                            buttons: ['OK']
+                        }).then(() => {
+                            location.reload()
+                        });
+                    } else {
+                        Swal.fire({
+                            title: `${response.message}`,
+                            buttons: ['OK']
+                        })
+                    }
+                }
+            })
+        }
+
+        function deleteOffer(offerId) {
+            $.ajax({
+                url: '/admin/deleteOffer/' + offerId,
+                method: 'post',
+                success: function (response) {
+                    if (response) {
+                        Swal.fire({
+                            title: `${response.message}`,
+                            buttons: ['OK']
+                        }).then(() => {
+                            location.reload()
+                        });
+                    } else {
+                        Swal.fire({
+                            title: `${response.message}`,
+                            buttons: ['OK']
+                        })
+                    }
+                }
+            })
+        }
+
+    </script>
+
+    <%- include('../partials/adminFooter') %>

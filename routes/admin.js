@@ -49,11 +49,16 @@ router.post('/sales-report',isAdminLoggedIn,adminController.postSalesData)
 //***COUPONS***/
 router.get('/adminCoupons',isAdminLoggedIn,adminController.getCoupons)
 router.post('/add-coupon',isAdminLoggedIn,adminController.postCouponData)
-
+router.post('/deleteCoupon/:id',isAdminLoggedIn,adminController.deleteCoupon)
 //**BANNER MANAGEMENT */
 router.get('/getBanner',isAdminLoggedIn,adminController.getBanner)
 router.post('/addBanner',isAdminLoggedIn,multer.upload.single('Image'),adminController.addBanner)
 
+//****OFFERS */
+router.get('/gerOffer',isAdminLoggedIn,adminController.getOffer)
+router.post('/addOffer',isAdminLoggedIn,adminController.addOffer)
+router.post('/applyOffer/:id',isAdminLoggedIn,adminController.applyOffer)
+router.post('/deleteOffer/:id',isAdminLoggedIn,adminController.deleteOffer)
 
 
 

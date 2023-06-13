@@ -7,6 +7,8 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const productsData = require('../model/productModel')
 const couponDatas = require('../model/couponModel')
 const vocherGenerator = require('voucher-code-generator')
+const categoryDB = require("../model/categoryModel");
+const offers = require('../model/offerModel');
 
 
 
@@ -68,12 +70,12 @@ module.exports = {
                         }
                     },
 
-                    {$sort:{orderDate:-1}}
+                    { $sort: { orderDate: -1 } }
 
                 ])
-                .then((response) => {
-                    resolve(response)
-                })
+                    .then((response) => {
+                        resolve(response)
+                    })
             } catch (error) {
                 reject(error)
             }
@@ -249,9 +251,11 @@ module.exports = {
 
         })
     },
-    getAllDeliveredOrder: () => {
+    getAllOrders: () => {
         return new Promise((resolve, reject) => {
             try {
+                const currentMonthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+
                 orderData.aggregate([
                     {
                         $lookup: {
@@ -263,7 +267,7 @@ module.exports = {
                     },
                     {
                         $match: {
-                            orderStatus: 'Delivered'
+                            createdAt: { $gte: currentMonthStart },
                         }
                     }
                 ]).then((response) => {
@@ -277,7 +281,7 @@ module.exports = {
     },
     getDeliveredOrders: (startDate, endDate) => {
         return new Promise(async (resolve, reject) => {
-            await orderData.find({ orderDate: { $gte: startDate, $lte: endDate }, orderStatus: 'Delivered' })
+            await orderData.find({ orderDate: { $gte: startDate, $lte: endDate }})
                 .populate({
                     path: 'user',
                     model: 'myusers'
@@ -286,7 +290,7 @@ module.exports = {
                 .then((result) => {
                     console.log(result[0].users);
                     resolve(result);
-                }).catch((error)=>{
+                }).catch((error) => {
                     reject(error)
                 })
         })
@@ -298,7 +302,7 @@ module.exports = {
             const [day, month, year] = dateString.split(/[-/]/); //spliting thedate format dd-mm-yyyy
             const date = new Date(`${year}-${month}-${day}`);//taking it to the yyyy-mm-dd
             const convertedDate = date.toISOString();//converting it into ISO format in database
-            
+
 
             let couponCode = vocherGenerator.generate({ //COUPON CODE GENERATOR
                 length: 6,
@@ -311,7 +315,7 @@ module.exports = {
                 code: couponCode[0],
                 discount: couponData.couponAmount,
                 expiryDate: convertedDate,
-                minimumAmt:couponData.minimumAmt
+                minimumAmt: couponData.minimumAmt
             })
 
             await coupon.save()//saving the coupon in database
@@ -331,6 +335,106 @@ module.exports = {
                 })
         })
     },
+    applyOffer: (offerId) => {
+        return new Promise(async (resolve, reject) => {
+            console.log(offerId, 'oooooooo')
+            const offer = await offers.find({ _id: new ObjectId(offerId) })
+            const productsInOffer = await productsData.find({ prodCategory: new ObjectId(offer[0].category) })
+            console.log(productsInOffer)
+            if (!offer) {
+                reject({ status: false, message: 'this offer is expired' })
+            } else {
+                discoutAmount = offer[0].discount
+                for (const product of productsInOffer) {
+                    console.log(product, 'iiiiiiiiiii')
+                    const discountedPrice = product.prodPrice - discoutAmount;
+                    const newRealPrice = discountedPrice + offer[0].discount;
+
+                    console.log(discountedPrice, newRealPrice)
+
+                    await productsData.updateOne(
+                        { _id: new ObjectId(product._id) },
+                        {
+                            $set: {
+                                prodPrice: discountedPrice,
+                                realPrice: newRealPrice,
+                            },
+                        }
+                    );
+                }
+                console.log('products updated')
+                await offers.updateOne(
+                    { _id: new ObjectId(offerId) },
+                    {
+                        $set: {
+                            offerApplied: true
+                        }
+                    }
+                )
+                console.log('offer updated')
+                await categoryDB.updateOne(
+                    { _id: new ObjectId(offer.category) },
+                    {
+                        $set: {
+                            offerApplied: true
+                        }
+                    }
+                )
+                console.log('category updated')
+                resolve()
+            }
+
+        })
+    },
+    deleteOffer: (offerId) => {
+        return new Promise(async (resolve, reject) => {
+            console.log(offerId, 'oooooooo')
+            const offer = await offers.find({ _id: new ObjectId(offerId) })
+            const productsInOffer = await productsData.find({ prodCategory: new ObjectId(offer[0].category) })
+            console.log(productsInOffer)
+            if (!offer) {
+                reject({ status: false, message: 'this offer is expired' })
+            } else {
+                discoutAmount = offer[0].discount
+                for (const product of productsInOffer) {
+                    console.log(product, 'iiiiiiiiiii')
+                    const addedDiscountedPrice = product.prodPrice + discoutAmount;
+                    const newRealPrice = 0
+
+                    await productsData.updateOne(
+                        { _id: new ObjectId(product._id) },
+                        {
+                            $set: {
+                                prodPrice: addedDiscountedPrice,
+                                realPrice: newRealPrice,
+                            },
+                        }
+                    );
+                }
+                console.log('products updated')
+                await offers.updateOne(
+                    { _id: new ObjectId(offerId) },
+                    {
+                        $set: {
+                            offerApplied: false
+                        }
+                    }
+                )
+                console.log('offer updated')
+                await categoryDB.updateOne(
+                    { _id: new ObjectId(offer.category) },
+                    {
+                        $set: {
+                            offerApplied: false
+                        }
+                    }
+                )
+                console.log('category updated')
+                resolve({ status: true, meesage: 'offer removed' })
+            }
+
+        })
+    }
 
 }
 
