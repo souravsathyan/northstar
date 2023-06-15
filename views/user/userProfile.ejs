@@ -595,8 +595,13 @@
                     method: 'POST',
                     data: { selectedValue: selectedValue },
                     success: function (response) {
-                        alert('order return accepted')
-                        location.reload()
+                        Swal.fire({
+                            title:'product return accepted',
+                            icon:'success',
+                            buttons:['OK']
+                        }).then(()=>{
+                            location.reload()
+                        })
                     },
                     error: function (error) {
                         // Handle any errors that occur during the request
@@ -620,8 +625,13 @@
                     method: 'POST',
                     data: { selectedValue: selectedValue },
                     success: function (response) {
-                        alert('order cancel accepted')
-                        location.reload()
+                        Swal.fire({
+                            title:'product return accepted',
+                            icon:'success',
+                            buttons:['OK']
+                        }).then(()=>{
+                            location.reload()
+                        })
                     },
                     error: function (error) {
                         // Handle any errors that occur during the request

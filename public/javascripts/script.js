@@ -9,6 +9,12 @@ function addToCart(prodId) {
                 Swal.fire('successfull', `done`, 'success')
                 document.getElementById('cartCount').dataset.notify = response.cartCount;
                 document.getElementById('cartCount2').dataset.notify = response.cartCount;
+            } else {
+                Swal.fire({
+                    title: 'please login ',
+                    icon: 'error',
+                    buttons: ['OK']
+                })
             }
         }
     })

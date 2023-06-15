@@ -558,7 +558,7 @@ background: linear-gradient(351deg, rgba(198,198,203,1) 44%, rgba(176,176,184,1)
         var initialTotal = $("#totalSpan").text().replace(/[^\d\.]/g, "");
         function findCoupon(couponId, minAmt, userId) {
             console.log(minAmt)
-            if (minAmt < initialTotal) {
+            if (initialTotal < minAmt) {
                 Swal.fire({
                     title: `not exceeding${minAmt}`,
                     text: 'coupon cannot be applied',
@@ -573,7 +573,7 @@ background: linear-gradient(351deg, rgba(198,198,203,1) 44%, rgba(176,176,184,1)
                 url: `/findAndApplyCoupon?coupon=${couponId}`,
                 method: 'get',
                 success: function (response) {
-                    if (response && response.usedBy.includes(userId)) {
+                    if (response.used) {
                         Swal.fire({
                             title: 'coupon already used by this user',
                             icon: 'info',

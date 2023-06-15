@@ -96,6 +96,11 @@ router.post("/filterProducts",isUserLogin,userController.getFilterProducts)
 router.get('/searchProducts',isUserLogin,userController.getSearchProducts)
 
 //**COUPON */
-router.post('/applyCoupon',isUserLogin,userController.getApplyCoupon)
+// router.post('/applyCoupon',isUserLogin,userController.getApplyCoupon)
 router.get('/findAndApplyCoupon',isUserLogin,userController.getCoupon)
+
+//***wishlist */
+router.post('/addToWishlist',isUserLogin,userController.getAddToWishlist)
+router.get('/wishlist',isUserLogin,userController.getWishlist)
+
 module.exports = router;

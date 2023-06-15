@@ -1,0 +1,103 @@
+<%- include('../partials/userHeader') %>
+	<!-- Product -->
+	<div class="bg0 m-t-23 p-b-140">
+		<div class="container">
+
+            <div class="container">
+                <h2>
+                    Your Wishlist.
+                </h2>
+            </div>
+            <hr>
+			<!-- ..PEODUCT STARTS -->
+			<div class="row isotope-grid">
+						
+								<% wishProducts.forEach(products=> { %>
+									
+										<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+											<!-- Block2 -->
+											<div class="block2">
+												<div class="block2-pic hov-img0">
+
+													<a href="/viewProduct/<%= products.slug %>">
+														<img src="/<%= products.prodImage[0] %> " width="320"
+															height="400" alt="IMG-PRODUCT">
+													</a>
+													<a href="#"
+														class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
+														Quick View
+													</a>
+
+												</div>
+
+												<div class="block2-txt d-flex justify-content-center p-t-14">
+                                                    
+													<div class=" flex-col-l text-center ">
+														<a href="/viewProduct"
+															class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+															<%= products.prodName %>
+														</a>
+
+														<% if (products.realPrice> 0) { %>
+                                                            <h6>
+                                                                Rs.<%= products.prodPrice.toLocaleString() %> 
+                                                                <span class="text-decoration-line-through text-danger stext-105  cl3 fs-6">
+                                                                    Rs.<%= products.realPrice.toLocaleString() %>
+                                                                </span>	<span class="text-danger">OFF!..</span>
+                                                            </h6>
+                                                        <% }else { %>
+                                                        <span class="stext-105  cl3 fs-6" style="margin: auto;">
+                                                            Rs.<%= products.prodPrice.toLocaleString() %>
+                                                        </span>
+                                                        <% } %>
+													</div>
+
+												</div>
+
+												<div class="text-center" style="padding: 10px;">
+													<% if (products.prodQuantity <1) { %>
+														<p class="text-danger">
+															Out of stock
+														</p>
+													<% } else {%>
+														<p class="text-success">
+															Only <strong> <%= products.prodQuantity %> </strong> stocks left
+														</p>
+													<% } %>
+												</div>
+
+
+												<div class="d-flex justify-content-center">
+													<div style="border: none;">
+
+														<% if (products.prodQuantity <1) { %>
+															<button
+															class=" cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail me-1 font-weight-bold"
+															onclick="addToCart('<%= products._id %>')" style="display: none;">
+															Add to cart<i class="ms-2 fi-rs-shopping-bag-add"></i>
+														</button>
+														<% } else { %>
+														<button
+															class=" cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail me-1 font-weight-bold"
+															onclick="addToCart('<%= products._id %>')">
+															Add to cart<i class="ms-2 fi-rs-shopping-bag-add"></i>
+														</button>
+														<% } %>
+														<button
+															class=" cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail ">
+															wishlist<i class="fa-sharp fa-regular fa-heart"></i></i>
+														</button>
+													</div>
+													<div>
+													</div>
+												</div>
+
+											</div>
+										</div>
+
+										<% }) %>
+											
+			</div>
+		</div>
+
+		<%- include('../partials/userFooter') %>

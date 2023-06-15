@@ -17,7 +17,7 @@ const bannersData = require('../model/banner')
 const wallet = require('../model/walletModel');
 const walletSchema = require('../model/walletModel');
 const couponData = require('../model/couponModel')
-
+const wishlistSchema = require('../model/wishlist')
 
 module.exports = {
     userHome: async (req, res, next) => {
@@ -31,7 +31,6 @@ module.exports = {
                 colorList = await userHelpers.getProdColors()
                 const bannerList = await bannersData.find({})
                 const userWallet = await userHelpers.getWalletData(userID)
-                console.log(userWallet)
                 res.render('user/index', {
                     user,
                     productList,
@@ -51,8 +50,11 @@ module.exports = {
     landingPage: async (req, res) => {
         try {
             const bannerList = await bannersData.find({})
+            let productList = []
+            productList = await products.find()
             res.render('user/landingPage', {
-                bannerList
+                bannerList,
+                productList
             });
         } catch (error) {
             res.status(500).render('error', { error });
@@ -522,7 +524,7 @@ module.exports = {
         console.log(orderPrice)
         if (orderPrice.paymentMethod === 'COD') {
             // If payment method is COD, do not add money to wallet and cancel the order
-            await userHelpers.getCancelOrder(orderId,selectedValue)
+            await userHelpers.getCancelOrder(orderId, selectedValue)
                 .then(() => {
                     console.log('updated');
                     res.json({ status: true, message: 'Order cancelled successfully.' });
@@ -532,6 +534,7 @@ module.exports = {
                 });
         } else {
             // If payment method is ONLINE, add money to wallet and cancel the order
+            console.log(orderPrice)
             await userHelpers.addToWallet(orderPrice.totalAmont, userId);
             await userHelpers.getCancelOrder(orderId)
                 .then(() => {
@@ -551,7 +554,8 @@ module.exports = {
             const reason = req.body.selectedValue
             const orderPrice = await userHelpers.getOrderPrice(orderId)
             const userId = req.session.user._id
-            await userHelpers.addToWallet(orderPrice.totalAmount, userId)
+            console.log(orderPrice)
+            await userHelpers.addToWallet(orderPrice.totalAmont, userId)
             await orderData.updateOne(
                 { _id: orderId },
                 {
@@ -802,30 +806,70 @@ module.exports = {
             res.status(500).render('error', { error });
         }
     },
-    getApplyCoupon: async (req, res) => {
-        try {
-            console.log(req.body)
-            if (req.body.coupon === '') {
-                res.json({ error: true, message: `pelase select the coupon` })
-            } else {
-                const coupon = req.body.coupon
-                const user = req.session.user
-                let totalPrice = await userHelpers.getTotalAmt(req.session.user._id)
+    // getApplyCoupon: async (req, res) => {
+    //     try {
+    //         console.log(req.body)
+    //         if (req.body.coupon === '') {
+    //             res.json({ error: true, message: `pelase select the coupon` })
+    //         } else {
+    //             const coupon = req.body.coupon
+    //             const user = req.session.user
+    //             let totalPrice = await userHelpers.getTotalAmt(req.session.user._id)
 
-                console.log(response)
-                res.status(202).json(response);
+    //             console.log(response)
+    //             res.status(202).json(response);
+    //         }
+    //     } catch (error) {
+    //         res.status(500).render('error', { error });
+    //     }
+    // },
+    getCoupon: async (req, res) => {
+        try {
+            const userId = req.session.user._id
+            const coupon = await couponData.findById(req.query.coupon)
+            const exists =coupon.usedBy.indexOf(userId) !== -1;
+            console.log(exists)
+            if (exists) {
+                res.json({used:true,message:'You Have Already used coupon'})
+            } else {
+                res.json(coupon)
             }
         } catch (error) {
             res.status(500).render('error', { error });
         }
     },
-    getCoupon: async (req, res) => {
+    getAddToWishlist: (req, res) => {
         try {
-            const coupon = await couponData.findById(req.query.coupon)
-            console.log(coupon)
-            res.json(coupon)
+            console.log(req.body)
+            const userId = req.session.user._id
+            const prodId = req.body.prodId
+            userHelpers.addToWishlist(userId, prodId)
+                .then((response) => {
+                    console.log(response)
+                    res.json(response)
+                }).catch((error) => {
+                    console.log(error)
+                    res.json(error)
+                })
         } catch (error) {
-
+            res.status(500).render('error', { error })
         }
+    },
+    getWishlist: async (req, res) => {
+        const userID = req.session.user._id
+        const user = req.session.user
+        const userWallet = await userHelpers.getWalletData(userID)
+        userHelpers.getAllWishProducts(userID)
+            .then((wishProducts) => {
+                res.render('user/wishlist', {
+                    wishProducts,
+                    user,
+                    userWallet
+                })
+            })
+            .catch((error) => {
+                res.status(500).render('error', { error })
+            })
+
     }
 }

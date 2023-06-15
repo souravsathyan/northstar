@@ -317,6 +317,8 @@
 														</button>
 														<% } %>
 														<button
+															id="<%= product._id %>"
+															onclick="addToWishlist('<%=product._id%>')"
 															class=" cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail ">
 															wishlist<i class="fa-sharp fa-regular fa-heart"></i></i>
 														</button>
@@ -395,6 +397,8 @@
 																	</button>
 																	<% } %>
 																	<button
+																		id="<%= products._id %>"
+																		onclick="addToWishlist('<%=products._id%>')"
 																		class=" cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail ">
 																		wishlist<i
 																			class="fa-sharp fa-regular fa-heart"></i></i>

@@ -3,23 +3,25 @@
 	<section class="section-slide">
 		<div class="wrap-slick1">
 			<div class="slick1">
-				<% bannerList.forEach(banner => { %>
-				 
+				<% bannerList.forEach(banner=> { %>
+
 					<div class="item-slick1" style="background-image: url(/<%=banner.Image%>);">
 						<div class="container h-full">
 							<div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
-								<div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
+								<div class="layer-slick1 animated visible-false" data-appear="fadeInDown"
+									data-delay="0">
 									<span class="ltext-101 cl2 respon2">
 										Women Collection 2018
 									</span>
 								</div>
-	
-								<div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="800">
+
+								<div class="layer-slick1 animated visible-false" data-appear="fadeInUp"
+									data-delay="800">
 									<h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
 										NEW SEASON
 									</h2>
 								</div>
-	
+
 								<div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
 									<a href="product.html"
 										class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
@@ -30,7 +32,7 @@
 						</div>
 					</div>
 
-				<% }) %>
+					<% }) %>
 			</div>
 		</div>
 	</section>
@@ -195,197 +197,205 @@
 				<div class="dis-none panel-filter w-full p-t-10">
 					<form action="" id="filter-form">
 
-					<div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
+						<div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
 
-						<!-- SORT -->
-						<div class="filter-col1 p-r-15 p-b-27">
+							<!-- SORT -->
+							<div class="filter-col1 p-r-15 p-b-27">
 
-							<div class="mtext-102 cl2 p-b-15">
-								Sort By
-							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio" name="sort-by" value="all" id="price-all"
-									checked>
-								<label class="form-check-label" for="flexRadioDefault1">
-									All
-								</label>
-							</div>
-
-							<div class="form-check">
-								<input class="form-check-input" type="radio" name="sort-by" value="low-to-high"
-									id="price-low-to-high-sort-by">
-								<label class="form-check-label" for="flexRadioDefault1">
-									price low to high
-								</label>
-							</div>
-
-							<div class="form-check">
-								<input class="form-check-input" type="radio" name="sort-by" value="high-to-low"
-									id="price-high-to-low-sort-by">
-								<label class="form-check-label" for="flexRadioDefault2">
-									Price: High to Low
-								</label>
-							</div>
-
-
-						</div>
-
-						<!-- PRICE -->
-						<div class="filter-col2 p-r-15 p-b-27">
-							<div class="mtext-102 cl2 p-b-15">
-								Price
-							</div>
-
-							<div class="form-check">
-								<input class="form-check-input" type="radio" name="price" value="all" id="price-all"
-									checked>
-								<label class="form-check-label" for="flexRadioDefault1">
-									All
-								</label>
-							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio" name="price" value="0-1000" id="price-0-50" data-filter-type="price">
-								<label class="form-check-label" for="flexRadioDefault2">
-									below Rs.1000
-								</label>
-							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio" name="price" value="1000-2500"
-									id="price-100-150" data-filter-type="price">
-								<label class="form-check-label" for="flexRadioDefault2">
-									Rs.1000.00 - Rs.2500.00
-								</label>
-							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio" name="price" value="2500-3000"
-									id="price-150-200" data-filter-type="price">
-								<label class="form-check-label" for="flexRadioDefault2">
-									Rs.2500.00 - Rs.3000.00
-								</label>
-							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio" name="price" value="3000-4000" id="price-200+" data-filter-type="price">
-								<label class="form-check-label" for="flexRadioDefault2">
-									Rs.3000.00+
-								</label>
-							</div>
-						</div>
-
-						<!-- COLOR -->
-						<div class="filter-col3 p-r-15 p-b-27">
-							<div class="mtext-102 cl2 p-b-15">
-								Color
-							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio" name="color"
-									value="white" data-filter-value="all" checked>
-								<label class="form-check-label" for="flexRadioDefault1">
-									All
-								</label>
-							</div>
-							<% console.log(colorList) %>
-							<% colorList.forEach(color => { %>
+								<div class="mtext-102 cl2 p-b-15">
+									Sort By
+								</div>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="color"
-										value="<%= color %>" data-filter-value="<%= color %>" >
+									<input class="form-check-input" type="radio" name="sort-by" value="all"
+										id="price-all" checked>
 									<label class="form-check-label" for="flexRadioDefault1">
-										<%= color %>
+										All
 									</label>
 								</div>
-							<% }) %>
-								
-						</div>
-						<div>
-							<button class="btn btn-secondary" type="submit">
-								Apply
-							</button>
-						</div>
-					</div>
 
-					
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="sort-by" value="low-to-high"
+										id="price-low-to-high-sort-by">
+									<label class="form-check-label" for="flexRadioDefault1">
+										price low to high
+									</label>
+								</div>
 
-				</form>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="sort-by" value="high-to-low"
+										id="price-high-to-low-sort-by">
+									<label class="form-check-label" for="flexRadioDefault2">
+										Price: High to Low
+									</label>
+								</div>
+
+
+							</div>
+
+							<!-- PRICE -->
+							<div class="filter-col2 p-r-15 p-b-27">
+								<div class="mtext-102 cl2 p-b-15">
+									Price
+								</div>
+
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="price" value="all" id="price-all"
+										checked>
+									<label class="form-check-label" for="flexRadioDefault1">
+										All
+									</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="price" value="0-1000"
+										id="price-0-50" data-filter-type="price">
+									<label class="form-check-label" for="flexRadioDefault2">
+										below Rs.1000
+									</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="price" value="1000-2500"
+										id="price-100-150" data-filter-type="price">
+									<label class="form-check-label" for="flexRadioDefault2">
+										Rs.1000.00 - Rs.2500.00
+									</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="price" value="2500-3000"
+										id="price-150-200" data-filter-type="price">
+									<label class="form-check-label" for="flexRadioDefault2">
+										Rs.2500.00 - Rs.3000.00
+									</label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="price" value="3000-4000"
+										id="price-200+" data-filter-type="price">
+									<label class="form-check-label" for="flexRadioDefault2">
+										Rs.3000.00+
+									</label>
+								</div>
+							</div>
+
+							<!-- COLOR -->
+							<div class="filter-col3 p-r-15 p-b-27">
+								<div class="mtext-102 cl2 p-b-15">
+									Color
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="color" value="white"
+										data-filter-value="all" checked>
+									<label class="form-check-label" for="flexRadioDefault1">
+										All
+									</label>
+								</div>
+								<% console.log(colorList) %>
+									<% colorList.forEach(color=> { %>
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="color"
+												value="<%= color %>" data-filter-value="<%= color %>">
+											<label class="form-check-label" for="flexRadioDefault1">
+												<%= color %>
+											</label>
+										</div>
+										<% }) %>
+
+							</div>
+							<div>
+								<button class="btn btn-secondary" type="submit">
+									Apply
+								</button>
+							</div>
+						</div>
+
+
+
+					</form>
 				</div>
 			</div>
 
 			<!-- Product Listing-->
 
-				<div class="row isotope-grid" id="productContainer">
-					<% productList.forEach(product=> { %>
-						<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-							<!-- Block2 -->
-							<div class="block2 shadow" style="border-radius: 20px;  ">
-								<div class="block2-pic hov-img0" id="img-container"
-									style="border-radius: 20px 20px 0px 0px;">
-									<a href="/viewProduct/<%= product.slug %>">
-										<img src="/<%= product.prodImage[0] %> " width="320" height="400" alt="IMG-PRODUCT">
-									</a>
+			<div class="row isotope-grid" id="productContainer">
+				<% productList.forEach(product=> { %>
+					<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+						<!-- Block2 -->
+						<div class="block2 shadow" style="border-radius: 20px;  ">
+							<div class="block2-pic hov-img0" id="img-container"
+								style="border-radius: 20px 20px 0px 0px;">
+								<a href="/viewProduct/<%= product.slug %>">
+									<img src="/<%= product.prodImage[0] %> " width="320" height="400" alt="IMG-PRODUCT">
+								</a>
+							</div>
+
+							<div style="padding: 8px;">
+
+								<div class="block2-txt flex-w flex-t  ">
+									<div class="flex-col-l text-center" style="margin: auto; padding-bottom:10px ;">
+										<a href="product-detail.html"
+											class="font-weight-bold fs-5 stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+											<%= product.prodName %>
+										</a>
+										<% if (product.realPrice> 0) { %>
+											<h6>
+												Rs.<%= product.prodPrice.toLocaleString() %>
+												<span class="text-decoration-line-through text-danger stext-105  cl3 fs-6">
+													Rs.<%= product.realPrice.toLocaleString() %>
+												</span>	<span class="text-danger">OFF!..</span>
+											</h6>
+										<% }else { %>
+										<span class="stext-105  cl3 fs-6" style="margin: auto;">
+											Rs.<%= product.prodPrice.toLocaleString() %>
+										</span>
+										<% } %>
+
+
+									</div>
 								</div>
 
-								<div style="padding: 8px;">
-
-									<div class="block2-txt flex-w flex-t  ">
-										<div class="flex-col-l text-center" style="margin: auto; padding-bottom:10px ;">
-											<a href="product-detail.html"
-												class="font-weight-bold fs-5 stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-												<%= product.prodName %>
-											</a>
-											<span class="stext-105  cl3 fs-6" style="margin: auto;">
-												Rs.<%= product.prodPrice.toLocaleString() %>
-												<% if (product.realPrice > 0) { %>
-													<p class="text-decoration-line-through text-danger">
-														Rs.<%= product.realPrice.toLocaleString() %>
-													</p>
-
-											 <% } %>
-											</span>
-											 
-											
-										</div>
-									</div>
-
-									<!-- STOCK MNGMT -->
-									<div class="text-center" style="padding: 10px;">
-										<% if (product.prodQuantity <1) { %>
-											<p class="text-danger">
-												Out of stock
-											</p>
+								<!-- STOCK MNGMT -->
+								<div class="text-center" style="padding: 10px;">
+									<% if (product.prodQuantity <1) { %>
+										<p class="text-danger">
+											Out of stock
+										</p>
 										<% } else {%>
 											<p class="text-success">
-												Only <strong> <%= product.prodQuantity %> </strong> stocks left
+												Only <strong>
+													<%= product.prodQuantity %>
+												</strong> stocks left
 											</p>
-										<% } %>
-									</div>
+											<% } %>
+								</div>
 
-									<div class="d-flex justify-content-center">
-										<div style="border: none;">
+								<div class="d-flex justify-content-center">
+									<div style="border: none;">
 
-											<% if (product.prodQuantity <1) { %>
-												<button
+										<% if (product.prodQuantity <1) { %>
+											<button
 												class=" cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail me-1 font-weight-bold"
 												onclick="addToCart('<%= product._id %>')" style="display: none;">
 												Add to cart<i class="ms-2 fi-rs-shopping-bag-add"></i>
 											</button>
 											<% } else { %>
-											<button
-												class=" cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail me-1 font-weight-bold"
-												onclick="addToCart('<%= product._id %>')">
-												Add to cart<i class="ms-2 fi-rs-shopping-bag-add"></i>
-											</button>
-											<% } %>
-											<button
-												class=" cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail font-weight-bold ">
-												wishlist<i class="fa-sharp fa-regular fa-heart ms-2"></i></i>
-											</button>
-										</div>
+												<button
+													class=" cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail me-1 font-weight-bold"
+													onclick="addToCart('<%= product._id %>')">
+													Add to cart<i class="ms-2 fi-rs-shopping-bag-add"></i>
+												</button>
+												<% } %>
+													<button id="<%= product._id %>"
+														onclick="addToWishlist('<%=product._id%>')"
+														class=" cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail font-weight-bold ">
+														wishlist<i class="fa-sharp fa-regular fa-heart ms-2"></i></i>
+													</button>
 									</div>
-
 								</div>
 
 							</div>
+
 						</div>
-						<% }) %>
-				</div>
+					</div>
+					<% }) %>
+			</div>
 			<!-- Load more
 			<div class="flex-c-m flex-w w-full p-t-45">
 				<a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
@@ -398,33 +408,33 @@
 	<script>
 
 		//filteringn the products
-		$(document).ready(function(){
-			$('#filter-form').submit(function(event){
+		$(document).ready(function () {
+			$('#filter-form').submit(function (event) {
 				event.preventDefault()
 
 				var sortValue = $('input[name="sort-by"]:checked').val();
 				var priceValue = $('input[name="price"]:checked').val();
 				var colorValue = $('input[name="color"]:checked').data('filter-value');
 
-				var filterData={
-					sortBy:sortValue,
-					priceValue:priceValue,
-					colorValue:colorValue
+				var filterData = {
+					sortBy: sortValue,
+					priceValue: priceValue,
+					colorValue: colorValue
 				}
 
 				$.ajax({
-					url:'/filterProducts',
-					type:'POST',
-					dataType:'json',
-					data:filterData,
-					success:function(filteredProducts){
+					url: '/filterProducts',
+					type: 'POST',
+					dataType: 'json',
+					data: filterData,
+					success: function (filteredProducts) {
 						updateProductListUI(filteredProducts)
 					}
 				})
 			})
 		})
 
-		function updateProductListUI(filteredProducts){
+		function updateProductListUI(filteredProducts) {
 			var productListContainer = $('#productContainer')
 			productListContainer.empty()
 			filteredProducts.forEach(product => {
@@ -465,24 +475,27 @@
 						</div>
 					</div>
 					`
-					productListContainer.append(productHtml);
+				productListContainer.append(productHtml);
 			});
 		}
-	
+
 		// **** searching products
-		$(document).ready(function(){
-			$('#searchProduct').keyup(function(){
+		$(document).ready(function () {
+			$('#searchProduct').keyup(function () {
 				var query = $(this).val()
 				$.ajax({
-					url:'/searchProducts',
-					type:'GET',
-					data:{query:query},
-					success:function (suggestedProducts) {
+					url: '/searchProducts',
+					type: 'GET',
+					data: { query: query },
+					success: function (suggestedProducts) {
 						updateProductListUI(suggestedProducts)
 					}
 				})
 			})
 		})
+
+
+		//***add to wishlist***
 
 
 	</script>

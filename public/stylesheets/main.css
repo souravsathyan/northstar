@@ -3768,3 +3768,14 @@ input.num-product::-webkit-inner-spin-button {
 .circle2{
   right: -25px;
 }
+
+
+
+
+#animatedImage {
+  transition: transform 0.3s ease-in-out;
+}
+
+#animatedImage:hover {
+  transform: scale(1.1);
+}

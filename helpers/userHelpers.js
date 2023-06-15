@@ -19,6 +19,7 @@ var instance = new Razorpay({
 const couponDatas = require('../model/couponModel')
 const productHelpers = require('../helpers/productHelpers');
 const walletSchema = require('../model/walletModel');
+const wishlistSchema = require('../model/wishlist')
 
 
 
@@ -573,23 +574,23 @@ module.exports = {
         })
 
     },
-    applyCoupon: async(userId, couponCode, totalPrice) => {
-            try {
-                console.log(userId, couponCode, totalPrice)
-                let coupon = await couponDatas.findById(couponCode);
-                console.log('coupon found')       
-                        let cart = await cartDB.findOne({ userId: userId })
-                        const discount = coupon.discount
-                        cart.totalAmount = totalPrice - coupon.discount;
-                        cart.coupon = couponCode;
-                        await cart.save()//saving the totalAmt
-                        coupon.usedBy.push(userId);//registering the userId in the coupon
-                        await coupon.save()
-                        console.log('cart updated success')
-            } catch (error) {
-                throw new Error(error);
-            }
-       
+    applyCoupon: async (userId, couponCode, totalPrice) => {
+        try {
+            console.log(userId, couponCode, totalPrice)
+            let coupon = await couponDatas.findById(couponCode);
+            console.log('coupon found')
+            let cart = await cartDB.findOne({ userId: userId })
+            const discount = coupon.discount
+            cart.totalAmount = totalPrice - coupon.discount;
+            cart.coupon = couponCode;
+            await cart.save()//saving the totalAmt
+            coupon.usedBy.push(userId);//registering the userId in the coupon
+            await coupon.save()
+            console.log('cart updated success')
+        } catch (error) {
+            throw new Error(error);
+        }
+
     },
     deleteAddress: (addId) => {
         console.log(addId)
@@ -606,7 +607,7 @@ module.exports = {
     // *WALLET**
     getWalletData: (userId) => {
         return new Promise(async (resolve, reject) => {
-            const userWallet = await walletSchema.findOne({user:userId})
+            const userWallet = await walletSchema.findOne({ user: userId })
             if (!userWallet) {
                 resolve({ walletBalance: 0 })
             } else {
@@ -618,9 +619,9 @@ module.exports = {
         return new Promise((resolve, reject) => {
             orderData.findById(orderId)
                 .then((response) => {
-                    const result ={
-                      totalAmont :response.totalAmount,
-                       paymentMethod:response.paymentMethod
+                    const result = {
+                        totalAmont: response.totalAmount,
+                        paymentMethod: response.paymentMethod
                     }
                     resolve(result)
                 })
@@ -630,8 +631,8 @@ module.exports = {
                 })
         })
     },
-    getCancelOrder: (orderId , reason) => {
-      return  new Promise((resolve, reject) => {
+    getCancelOrder: (orderId, reason) => {
+        return new Promise((resolve, reject) => {
             orderData.updateOne(//changing the order status
                 { _id: orderId },
                 {
@@ -640,52 +641,117 @@ module.exports = {
                         orderStatus: 'cancelled'
                     }
                 }
-            ).then(()=>{
+            ).then(() => {
                 resolve()
             })
-            .catch((error)=>{
-                console.log(error)
-                reject(error)
-            })
-        })
-    },
-    addToWallet:(addCash,userId)=>{
-        console.log(addCash,'00000000000000')
-        return new Promise(async(resolve, reject) => {
-            const userWalletExists = await walletSchema.findOne({user:userId}) 
-            //if no wallet is created
-            if(!userWalletExists){
-                await walletSchema.create({
-                    walletBalance:addCash,
-                    user:userId
-                }).then((response)=>{
-                    console.log(response,'11111111111111111111')
-                    resolve()
-                })
-                .catch((error)=>{
+                .catch((error) => {
+                    console.log(error)
                     reject(error)
                 })
-            }else{
+        })
+    },
+    addToWallet: (addCash, userId) => {
+        console.log(addCash, '00000000000000')
+        return new Promise(async (resolve, reject) => {
+            const userWalletExists = await walletSchema.findOne({ user: userId })
+            //if no wallet is created
+            if (!userWalletExists) {
+                await walletSchema.create({
+                    walletBalance: addCash,
+                    user: userId
+                }).then((response) => {
+                    console.log(response, '11111111111111111111')
+                    resolve()
+                })
+                    .catch((error) => {
+                        reject(error)
+                    })
+            } else {
                 //if user has wallet then add the new balance to the existing wallet amount 
                 const walletBalance = userWalletExists.walletBalance
-                const newBalance = walletBalance+addCash
+                const newBalance = walletBalance + addCash
                 await walletSchema.updateOne(
-                    {user:userId},
+                    { user: userId },
                     {
-                        $set:{
-                            walletBalance:newBalance
+                        $set: {
+                            walletBalance: newBalance
                         }
                     }
                 )
-                .then(()=>{
+                    .then(() => {
 
-                    resolve()
-                })
-                .catch((error)=>{
-                    reject(error)
-                })
+                        resolve()
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    })
             }
 
+        })
+    },
+    addToWishlist: (userId, prodId) => {
+        return new Promise(async (resolve, reject) => {
+            const isWishlistExist = await wishlistSchema.findOne({ userId: new ObjectId(userId) })
+            if (!isWishlistExist) {
+                console.log('not exists')
+                wishlistSchema.create({
+                    userId: userId,
+                    products: [{ productId: new ObjectId(prodId) }]
+                })
+                    .then((response) => {
+                        console.log('product added ')
+                        resolve({ status: true, message: 'product added to wishlist successfully' })
+                    })
+                    .catch((error) => {
+                        reject({ status: false, message: 'there were some internal Error. Please try again' })
+                    })
+            } else {//if wishlist exists
+                //if the product already exists
+                console.log('it exists')
+                console.log(isWishlistExist)
+                let exisitingProd = isWishlistExist.products.findIndex(product => product.productId == prodId)
+                if(exisitingProd !== -1){
+                    console.log('123 already exists')
+                    reject({status:false,message:'product already exists in the wishlist'})
+                }else{
+                    console.log('prod not exists - updated array')
+                    await wishlistSchema.updateOne(
+                        { userId: new ObjectId(userId) },
+                        {
+                            $push: { products: { productId: new ObjectId(prodId) } }
+                        }
+                    ).then((response)=>{
+                        console.log('updated wish')
+                        resolve({status:true,message:'product added ti wishlist successfully'})
+                    }).catch((error)=>{
+                        reject({status:false,message:'there were some internal Error. Please try again'})
+                    })
+                }
+            }
+        })
+    },
+    getAllWishProducts:(userId)=>{
+        return new Promise((resolve, reject) => {
+             wishlistSchema.aggregate([
+                {
+                    $match:{
+                        userId : userId
+                    }
+                },
+                {
+                    $lookup:{
+                        from:'products',
+                        localField:'products.productId',
+                        foreignField:'_id',
+                        as:'wishProducts'
+                    }
+                }
+             ]).then((response)=>{
+                resolve(response[0].wishProducts)
+            }).catch((error)=>{
+                console.log(error)
+                reject(error)
+            })
         })
     }
 
